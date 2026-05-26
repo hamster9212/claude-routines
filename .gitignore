@@ -23,3 +23,13 @@ tmp_*.json
 # IDE
 .vscode/
 .idea/
+
+# 토큰 하드코딩된 배치 파일 (절대 push 금지)
+run_notion_task.bat
+run_selfgrowth_task.bat
+
+# Claude Code 설정 (로컬 전용)
+settings.json
+settings.local.json
+.claude/settings.json
+.claude/settings.local.json
