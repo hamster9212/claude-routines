@@ -1,0 +1,25 @@
+# 환경변수 / 토큰 파일 (절대 push 금지)
+api.env
+*.env
+.env
+*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# 로그
+*.log
+tmp_*.json
+
+# 백업
+*.backup
+*.backup_*
+
+# IDE
+.vscode/
+.idea/

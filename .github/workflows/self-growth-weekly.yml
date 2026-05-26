@@ -1,0 +1,29 @@
+name: Self-Growth Weekly Analysis
+
+on:
+  schedule:
+    - cron: '0 19 * * 2'  # 매주 수요일 04:00 KST (UTC 화요일 19:00)
+  workflow_dispatch:
+
+jobs:
+  grow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests anthropic slack-sdk
+
+      - name: Run self-growth analysis
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
+          python run_selfgrowth_routine.py
