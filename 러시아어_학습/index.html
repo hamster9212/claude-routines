@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기초러시아어 학습 - 교양수업 완벽 대비</title>
+<style>
+:root {
+  --primary: #1a3a6b;
+  --primary-light: #2554a0;
+  --accent: #d4a017;
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --border: #e2e8f0;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.6;
+}
+/* Prevent zoom on input focus (iOS) */
+input, select, textarea { font-size: 16px; }
+/* Better touch target sizing */
+button, a, input[type="checkbox"], input[type="radio"] { touch-action: manipulation; }
+
+/* NAV */
+nav {
+  background: var(--primary);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-logo {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.nav-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.75);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+.nav-btn.active { color: var(--accent); }
+
+/* PROGRESS BAR */
+.progress-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s ease;
+}
+
+/* MAIN */
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 12px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* SECTION */
+.section { display: none; }
+.section.active { display: block; }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 20px;
+  color: white;
+  margin-bottom: 32px;
+}
+.hero h1 { font-size: 36px; margin-bottom: 8px; }
+.hero h1 span { color: var(--accent); }
+.hero p { font-size: 16px; opacity: 0.85; margin-bottom: 24px; }
+.hero-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.stat-box {
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 120px;
+}
+.stat-box .num { font-size: 32px; font-weight: 700; color: var(--accent); }
+.stat-box .lbl { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+
+/* MODULE CARDS */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+.module-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 28px 24px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-shadow: var(--shadow);
+  transition: all 0.25s;
+  text-align: center;
+}
+.module-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(26,58,107,0.15);
+}
+.module-icon { font-size: 40px; margin-bottom: 12px; }
+.module-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+.module-sub { font-size: 13px; color: var(--muted); }
+.module-progress {
+  margin-top: 16px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.module-progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.5s; }
+
+/* LESSON TABS */
+.lesson-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  padding: 0 8px;
+}
+.lesson-tab {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.2s;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.lesson-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+.lesson-tab:hover:not(.active) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.section-title { font-size: 24px; font-weight: 700; color: var(--primary); }
+.section-subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+/* WORD TABLE */
+.word-table-wrap { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.word-search {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.word-search input {
+  flex: 1;
+  min-width: 160px;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  min-height: 48px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.word-search input:focus {
+  border-color: var(--primary);
+}
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  max-height: 500px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.word-cell {
+  background: var(--card);
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.word-cell:hover {
+  background: #f8fafc;
+}
+.word-cell.learned {
+  background: #f0fdf4;
+}
+.word-cell.learned::after {
+  content: '✓';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--success);
+  font-weight: 700;
+  font-size: 18px;
+}
+.word-ru {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+}
+.word-ko {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* FLASHCARD */
+.flashcard-container {
+  text-align: center;
+  padding: 16px 0;
+  max-width: 100%;
+}
+.flashcard-info {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.flashcard-wrap {
+  perspective: 1000px;
+  max-width: 100%;
+  margin: 0 auto 20px;
+  padding: 0 8px;
+}
+.flashcard {
+  width: 100%;
+  height: 260px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+}
+.card-front {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+}
+.card-back {
+  background: linear-gradient(135deg, #fff8e7, #fff);
+  transform: rotateY(180deg);
+}
+.card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+.card-word {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  word-break: break-word;
+}
+.card-front .card-word {
+  color: white;
+}
+.card-back .card-word {
+  font-size: 28px;
+  color: var(--primary);
+}
+.card-lesson {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 10px;
+}
+.card-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 6px;
+  font-style: italic;
+}
+.flashcard-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 8px;
+}
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  min-height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  active: {
+    transform: scale(0.98);
+  }
+}
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover, .btn-primary:active {
+  background: var(--primary-light);
+}
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+.btn-success:hover, .btn-success:active {
+  background: #15803d;
+}
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover, .btn-danger:active {
+  background: #b91c1c;
+}
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+.btn-outline:hover, .btn-outline:active {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.btn-accent {
+  background: var(--accent);
+  color: white;
+}
+.btn-accent:hover, .btn-accent:active {
+  background: #b8860b;
+}
+
+/* QUIZ */
+.quiz-setup {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+.quiz-setup h3 { font-size: 20px; color: var(--primary); margin-bottom: 16px; }
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 24px 0;
+}
+.quiz-option-btn {
+  padding: 14px 12px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.quiz-option-btn.selected {
+  border-color: var(--primary);
+  background: #eff6ff;
+  color: var(--primary);
+}
+.quiz-option-btn:hover:not(.selected) { border-color: var(--primary); }
+.quiz-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  max-width: 650px;
+  margin: 0 auto;
+}
+.quiz-q-num { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.quiz-q-progress {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.quiz-q-progress-fill { height: 100%; background: var(--primary); transition: width 0.4s; }
+.quiz-question { font-size: 28px; font-weight: 700; color: var(--primary); text-align: center; margin: 20px 0 32px; }
+.quiz-choices {
+  display: grid;
+  gap: 10px;
+  padding: 0 8px;
+}
+.quiz-choice {
+  padding: 16px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  background: white;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.quiz-choice:hover:not(.disabled) {
+  border-color: var(--primary);
+  background: #eff6ff;
+}
+.quiz-choice.correct {
+  border-color: var(--success);
+  background: #f0fdf4;
+  color: var(--success);
+  font-weight: 600;
+}
+.quiz-choice.wrong {
+  border-color: var(--danger);
+  background: #fef2f2;
+  color: var(--danger);
+}
+.quiz-choice.disabled {
+  cursor: default;
+}
+.quiz-input-wrap {
+  text-align: center;
+  padding: 0 8px;
+}
+.quiz-input-wrap input {
+  width: 100%;
+  max-width: 400px;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+  min-height: 48px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.quiz-input-wrap input:focus {
+  border-color: var(--primary);
+}
+.quiz-input-wrap input.correct {
+  border-color: var(--success);
+  background: #f0fdf4;
+}
+.quiz-input-wrap input.wrong {
+  border-color: var(--danger);
+  background: #fef2f2;
+}
+.quiz-feedback {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.quiz-feedback.correct { background: #f0fdf4; color: var(--success); }
+.quiz-feedback.wrong { background: #fef2f2; color: var(--danger); }
+.quiz-result {
+  text-align: center;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  margin: 0 auto;
+}
+.quiz-result .score { font-size: 64px; font-weight: 800; color: var(--primary); }
+.quiz-result .score-label { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.quiz-result .grade { font-size: 24px; font-weight: 700; margin: 16px 0; }
+.grade-A { color: var(--success); }
+.grade-B { color: #2563eb; }
+.grade-C { color: var(--accent); }
+.grade-F { color: var(--danger); }
+.wrong-list { text-align: left; margin-top: 24px; }
+.wrong-item { display: flex; gap: 12px; padding: 10px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.wrong-item .ru { font-weight: 600; color: var(--primary); min-width: 160px; }
+.wrong-item .ko { color: var(--muted); }
+
+/* GRAMMAR */
+.grammar-nav { display: flex; flex-direction: column; gap: 8px; }
+.grammar-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 640px) { .grammar-layout { grid-template-columns: 1fr; } }
+.grammar-sidebar {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 80px;
+}
+.grammar-sidebar h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; padding: 0 8px; }
+.grammar-nav-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+  transition: all 0.15s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.grammar-nav-btn:hover {
+  background: var(--bg);
+}
+.grammar-nav-btn.active {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+}
+.grammar-content {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+.grammar-content h2 { font-size: 22px; color: var(--primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+.grammar-content h3 { font-size: 17px; color: var(--primary-light); margin: 24px 0 12px; }
+.grammar-content p { font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
+.grammar-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+.grammar-table th { background: var(--primary); color: white; padding: 10px 14px; text-align: center; }
+.grammar-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+.grammar-table tr:hover td { background: #f8fafc; }
+.grammar-table .ru { font-weight: 600; color: var(--primary); font-size: 16px; }
+.grammar-table .ko { color: var(--muted); font-size: 13px; }
+.example-box {
+  background: #f8fafc;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 12px 12px 0;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+.example-box .ru { font-size: 17px; font-weight: 600; color: var(--primary); margin-bottom: 4px; }
+.example-box .ko { font-size: 14px; color: var(--muted); }
+.alpha-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin: 16px 0; }
+.alpha-cell {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.alpha-cell .upper { font-size: 24px; font-weight: 700; color: var(--primary); }
+.alpha-cell .lower { font-size: 20px; color: var(--primary-light); }
+.alpha-cell .pron { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px;
+}
+.tag-m { background: #dbeafe; color: #1d4ed8; }
+.tag-f { background: #fce7f3; color: #9d174d; }
+.tag-n { background: #dcfce7; color: #166534; }
+
+/* CONVERSATION */
+.conv-list { display: flex; flex-direction: column; gap: 24px; }
+.conv-card {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.conv-header {
+  background: var(--primary);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.conv-header h3 { font-size: 16px; font-weight: 600; }
+.conv-body { padding: 24px; }
+.conv-line {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+.conv-speaker {
+  background: var(--primary);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 40px;
+  min-height: 40px;
+}
+.conv-speaker.b { background: var(--accent); color: white; }
+.conv-bubble { flex: 1; }
+.conv-bubble .ru { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.conv-bubble .ko { font-size: 13px; color: var(--muted); }
+.conv-vocab {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+.conv-vocab h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.conv-vocab-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.conv-vocab-chip {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.conv-vocab-chip:hover { border-color: var(--primary); color: var(--primary); }
+.conv-vocab-chip .ru-small { font-weight: 600; color: var(--primary); }
+.conv-vocab-chip .ko-small { color: var(--muted); font-size: 11px; margin-left: 6px; }
+
+/* TOOLTIP */
+.tooltip {
+  position: fixed;
+  background: #1a1a2e;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s;
+  max-width: 200px;
+}
+.tooltip.show { opacity: 1; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+/* TOGGLE */
+.toggle-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 44px;
+}
+.toggle {
+  position: relative;
+  width: 50px;
+  height: 28px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 14px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle input:checked + .toggle-slider {
+  background: var(--primary);
+}
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+/* NOTIFICATION */
+.notif {
+  position: fixed;
+  bottom: 20px;
+  right: 16px;
+  left: 16px;
+  background: var(--text);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  max-width: calc(100% - 32px);
+}
+.notif.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.notif.success {
+  background: var(--success);
+}
+.notif.warning {
+  background: var(--accent);
+}
+
+/* SONG */
+.song-card {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+.song-card h3 { color: var(--accent); font-size: 18px; margin-bottom: 20px; }
+.song-lines { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 540px) { .song-lines { grid-template-columns: 1fr; } }
+.song-line-pair { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.song-ru { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+.song-ko { font-size: 12px; opacity: 0.65; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 64px; margin-bottom: 16px; }
+.empty-state p { font-size: 16px; }
+
+/* RESPONSIVE - MOBILE FIRST APPROACH */
+/* ============================================================ */
+
+/* SMALL PHONES (375px - iPhone SE) */
+@media (max-width: 375px) {
+  body { font-size: 14px; }
+  nav { padding: 0 8px; height: 56px; }
+  .nav-logo { font-size: 13px; }
+  .nav-links { gap: 2px; }
+  .nav-btn {
+    padding: 8px 8px;
+    font-size: 12px;
+    min-height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  main { padding: 16px 8px; }
+  .hero { padding: 24px 12px; border-radius: 16px; }
+  .hero h1 { font-size: 20px; margin-bottom: 6px; }
+  .hero p { font-size: 13px; margin-bottom: 16px; }
+  .hero-stats { gap: 12px; }
+  .stat-box { padding: 12px 16px; min-width: 100px; }
+  .stat-box .num { font-size: 24px; }
+  .stat-box .lbl { font-size: 10px; }
+  .module-grid { grid-template-columns: 1fr; gap: 12px; }
+  .module-card { padding: 20px 16px; }
+  .module-icon { font-size: 32px; margin-bottom: 8px; }
+  .module-title { font-size: 16px; }
+  .module-sub { font-size: 12px; }
+  .section-title { font-size: 20px; }
+  .section-subtitle { font-size: 12px; }
+  .lesson-tabs { gap: 6px; }
+  .lesson-tab { padding: 8px 14px; font-size: 12px; }
+  .word-search { padding: 12px; gap: 8px; flex-wrap: wrap; }
+  .word-search input {
+    min-width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  .toggle-wrap { font-size: 12px; gap: 6px; }
+  .word-grid { grid-template-columns: 1fr; gap: 0; }
+  .word-cell { padding: 12px 14px; min-height: 48px; display: flex; flex-direction: column; justify-content: center; }
+  .word-ru { font-size: 15px; }
+  .word-ko { font-size: 12px; }
+  .flashcard { height: 240px; }
+  .flashcard-wrap { max-width: 100%; }
+  .card-face { padding: 20px; }
+  .card-word { font-size: 28px; }
+  .card-front .card-word { font-size: 28px; }
+  .card-back .card-word { font-size: 24px; }
+  .card-label { font-size: 10px; margin-bottom: 8px; }
+  .flashcard-controls { gap: 8px; }
+  .btn {
+    padding: 12px 16px;
+    font-size: 13px;
+    min-height: 48px;
+    min-width: 48px;
+    border-radius: 8px;
+  }
+  .quiz-setup { padding: 20px; }
+  .quiz-setup h3 { font-size: 18px; margin-bottom: 12px; }
+  .quiz-options { grid-template-columns: 1fr; gap: 10px; }
+  .quiz-option-btn {
+    padding: 14px 12px;
+    font-size: 13px;
+    min-height: 48px;
+  }
+  .quiz-card { padding: 20px; }
+  .quiz-question { font-size: 20px; margin: 16px 0 20px; }
+  .quiz-choice {
+    padding: 14px 16px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+  .quiz-input-wrap input {
+    max-width: 100%;
+    padding: 14px 12px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  .grammar-layout { grid-template-columns: 1fr; gap: 12px; }
+  .grammar-sidebar { position: static; padding: 12px; }
+  .grammar-sidebar h3 { font-size: 12px; margin-bottom: 8px; }
+  .grammar-nav-btn {
+    padding: 10px 10px;
+    font-size: 13px;
+    min-height: 44px;
+  }
+  .grammar-content { padding: 16px; }
+  .grammar-content h2 { font-size: 18px; margin-bottom: 16px; }
+  .grammar-content h3 { font-size: 15px; margin: 16px 0 10px; }
+  .grammar-content p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .grammar-table { font-size: 12px; }
+  .grammar-table th { padding: 8px 10px; }
+  .grammar-table td { padding: 8px 10px; }
+  .grammar-table .ru { font-size: 14px; }
+  .grammar-table .ko { font-size: 12px; }
+  .example-box { padding: 12px 14px; margin: 10px 0; }
+  .example-box .ru { font-size: 14px; margin-bottom: 4px; }
+  .example-box .ko { font-size: 12px; }
+  .alpha-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
+  .alpha-cell { padding: 10px 6px; }
+  .alpha-cell .upper { font-size: 18px; }
+  .alpha-cell .lower { font-size: 16px; }
+  .alpha-cell .pron { font-size: 9px; }
+  .conv-card { margin-bottom: 16px; }
+  .conv-header { padding: 12px 14px; }
+  .conv-header h3 { font-size: 14px; }
+  .conv-body { padding: 12px; }
+  .conv-line { gap: 8px; margin-bottom: 10px; }
+  .conv-speaker { width: 32px; height: 32px; font-size: 12px; }
+  .conv-bubble .ru { font-size: 14px; }
+  .conv-bubble .ko { font-size: 12px; }
+  .conv-vocab { margin-top: 10px; padding: 12px; }
+  .conv-vocab h4 { font-size: 12px; margin-bottom: 8px; }
+  .conv-vocab-chip { padding: 4px 10px; font-size: 12px; }
+  .conv-vocab-chip .ko-small { font-size: 10px; }
+  .song-card { padding: 20px; margin-bottom: 16px; }
+  .song-card h3 { font-size: 16px; margin-bottom: 12px; }
+  .song-lines { grid-template-columns: 1fr; gap: 8px; }
+  .song-line-pair { padding: 8px 0; }
+  .song-ru { font-size: 13px; }
+  .song-ko { font-size: 11px; }
+  .notif { bottom: 16px; right: 12px; padding: 10px 14px; font-size: 12px; }
+}
+
+/* SMALL TABLETS & LARGER PHONES (376px - 600px) */
+@media (min-width: 376px) and (max-width: 600px) {
+  body { font-size: 15px; }
+  nav { padding: 0 10px; height: 56px; }
+  .nav-logo { font-size: 14px; }
+  .nav-links { gap: 3px; }
+  .nav-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-height: 48px;
+  }
+  main { padding: 16px 12px; }
+  .hero { padding: 28px 16px; }
+  .hero h1 { font-size: 24px; margin-bottom: 8px; }
+  .hero p { font-size: 14px; margin-bottom: 20px; }
+  .hero-stats { gap: 16px; }
+  .stat-box { padding: 14px 20px; }
+  .stat-box .num { font-size: 28px; }
+  .stat-box .lbl { font-size: 11px; }
+  .module-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .module-card { padding: 22px 18px; }
+  .module-icon { font-size: 36px; }
+  .module-title { font-size: 16px; }
+  .module-sub { font-size: 13px; }
+  .section-title { font-size: 22px; }
+  .section-header { gap: 14px; }
+  .lesson-tabs { gap: 6px; }
+  .lesson-tab { padding: 8px 16px; font-size: 13px; }
+  .word-search { padding: 14px; gap: 10px; }
+  .word-search input {
+    min-width: 160px;
+    padding: 10px 14px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+  .word-grid { grid-template-columns: repeat(2, 1fr); }
+  .word-cell { padding: 12px 14px; min-height: 56px; }
+  .word-ru { font-size: 16px; }
+  .word-ko { font-size: 13px; }
+  .flashcard { height: 260px; }
+  .card-face { padding: 24px; }
+  .card-word { font-size: 32px; }
+  .card-back .card-word { font-size: 28px; }
+  .flashcard-controls { gap: 10px; }
+  .btn {
+    padding: 12px 20px;
+    font-size: 13px;
+    min-height: 48px;
+  }
+  .quiz-options { grid-template-columns: 1fr; gap: 10px; }
+  .quiz-option-btn {
+    padding: 14px 14px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+  .quiz-card { padding: 24px; }
+  .quiz-question { font-size: 24px; }
+  .quiz-choice {
+    padding: 14px 16px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+  .quiz-input-wrap input {
+    max-width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  .grammar-layout { grid-template-columns: 1fr; gap: 14px; }
+  .grammar-sidebar { position: static; padding: 14px; }
+  .grammar-nav-btn { padding: 10px 12px; min-height: 44px; }
+  .grammar-content { padding: 20px; }
+  .grammar-table { font-size: 13px; }
+  .grammar-table th { padding: 9px 12px; }
+  .grammar-table td { padding: 9px 12px; }
+  .alpha-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 9px; }
+  .alpha-cell { padding: 10px 8px; }
+  .alpha-cell .upper { font-size: 20px; }
+  .alpha-cell .lower { font-size: 18px; }
+  .conv-card { margin-bottom: 16px; }
+  .conv-header { padding: 14px 16px; }
+  .conv-header h3 { font-size: 15px; }
+  .conv-body { padding: 14px; }
+  .conv-speaker { width: 36px; height: 36px; font-size: 13px; }
+  .song-card { padding: 24px; }
+  .song-card h3 { font-size: 17px; margin-bottom: 14px; }
+  .song-lines { grid-template-columns: 1fr; gap: 10px; }
+  .song-line-pair { padding: 10px 0; }
+  .song-ru { font-size: 14px; }
+  .song-ko { font-size: 12px; }
+}
+
+/* TABLETS & LARGE PHONES (601px - 1000px) */
+@media (min-width: 601px) and (max-width: 1000px) {
+  nav { padding: 0 16px; }
+  main { padding: 24px 16px; }
+  .hero { padding: 32px 24px; }
+  .module-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .word-grid { grid-template-columns: repeat(3, 1fr); }
+  .word-search input { min-width: 240px; }
+  .flashcard { height: 300px; }
+  .quiz-options { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grammar-layout { grid-template-columns: 220px 1fr; gap: 20px; }
+  .grammar-sidebar { position: sticky; }
+  .song-lines { grid-template-columns: 1fr; gap: 12px; }
+}
+
+/* DESKTOP (1001px+) */
+@media (min-width: 1001px) {
+  .nav-btn { min-width: auto; }
+  .module-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .word-grid { grid-template-columns: repeat(4, 1fr); }
+  .grammar-layout { grid-template-columns: 240px 1fr; gap: 24px; }
+  .grammar-sidebar { position: sticky; top: 80px; }
+  .song-lines { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+/* MNEMONIC SECTION */
+.mnemonic-container { padding: 0; }
+.mnemonic-section {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent);
+}
+.mnemonic-heading {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mnemonic-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.mnemonic-table th {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 12px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+.mnemonic-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.mnemonic-table tr:last-child td { border-bottom: none; }
+.mnemonic-table tr:hover { background: rgba(26, 58, 107, 0.02); }
+.mnemonic-table .ru {
+  font-weight: 600;
+  color: var(--primary);
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+.mnemonic-table strong { color: var(--primary); font-weight: 700; }
+.mnemonic-tip {
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.08), rgba(212, 160, 23, 0.03));
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 32px;
+}
+.mnemonic-tip h3 {
+  color: var(--primary);
+  font-size: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mnemonic-tip ol {
+  margin-left: 20px;
+  line-height: 1.8;
+  font-size: 14px;
+}
+.mnemonic-tip li {
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.mnemonic-tip strong { color: var(--primary); }
+
+/* MNEMONIC RESPONSIVE */
+@media (max-width: 600px) {
+  .mnemonic-section {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+  .mnemonic-heading { font-size: 16px; }
+  .mnemonic-table th, .mnemonic-table td { padding: 10px 6px; font-size: 13px; }
+  .mnemonic-table .ru { font-size: 14px; }
+  .mnemonic-tip { padding: 16px; }
+  .mnemonic-tip h3 { font-size: 15px; margin-bottom: 12px; }
+  .mnemonic-tip ol { margin-left: 18px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🇷🇺 <span>기초러시아어</span> 학습</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showSection('home')">홈</button>
+    <button class="nav-btn" onclick="showSection('vocab')">단어</button>
+    <button class="nav-btn" onclick="showSection('flash')">플래시카드</button>
+    <button class="nav-btn" onclick="showSection('grammar')">문법</button>
+    <button class="nav-btn" onclick="showSection('conv')">회화</button>
+    <button class="nav-btn" onclick="showSection('quiz')">퀴즈</button>
+    <button class="nav-btn" onclick="showSection('mnemonic')">연상기억법</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<section id="sec-home" class="section active">
+  <div class="hero">
+    <h1>기초러시아어 <span>완벽 대비</span></h1>
+    <p>단어 · 문법 · 회화를 체계적으로 학습하고 좋은 학점을 받으세요!</p>
+    <div class="hero-stats">
+      <div class="stat-box"><div class="num" id="stat-words">0</div><div class="lbl">총 단어</div></div>
+      <div class="stat-box"><div class="num" id="stat-learned">0</div><div class="lbl">학습 완료</div></div>
+      <div class="stat-box"><div class="num" id="stat-quiz">0</div><div class="lbl">퀴즈 점수</div></div>
+      <div class="stat-box"><div class="num" id="stat-lessons">3</div><div class="lbl">수업 과</div></div>
+    </div>
+  </div>
+
+  <div class="module-grid">
+    <div class="module-card" onclick="showSection('vocab')">
+      <div class="module-icon">📖</div>
+      <div class="module-title">단어 목록</div>
+      <div class="module-sub">3개 과 · 전체 단어 확인<br>클릭으로 학습 표시</div>
+      <div class="module-progress"><div class="module-progress-fill" id="prog-vocab" style="width:0%"></div></div>
+    </div>
+    <div class="module-card" onclick="showSection('flash')">
+      <div class="module-icon">🃏</div>
+      <div class="module-title">플래시카드</div>
+      <div class="module-sub">러→한, 한→러 방향 선택<br>카드 뒤집어 암기</div>
+      <div class="module-progress"><div class="module-progress-fill" id="prog-flash" style="width:30%"></div></div>
+    </div>
+    <div class="module-card" onclick="showSection('grammar')">
+      <div class="module-icon">📐</div>
+      <div class="module-title">문법 정리</div>
+      <div class="module-sub">알파벳 · 명사성 · 동사변화<br>의문문 · 부정문 · 격</div>
+      <div class="module-progress"><div class="module-progress-fill" id="prog-grammar" style="width:0%"></div></div>
+    </div>
+    <div class="module-card" onclick="showSection('conv')">
+      <div class="module-icon">💬</div>
+      <div class="module-title">회화 연습</div>
+      <div class="module-sub">인사 · 자기소개 · 위치<br>일상표현 · 핵심 대화문</div>
+      <div class="module-progress"><div class="module-progress-fill" id="prog-conv" style="width:0%"></div></div>
+    </div>
+    <div class="module-card" onclick="showSection('quiz')">
+      <div class="module-icon">✏️</div>
+      <div class="module-title">퀴즈</div>
+      <div class="module-sub">객관식 · 주관식<br>과별 / 전체 모드</div>
+      <div class="module-progress"><div class="module-progress-fill" id="prog-quiz" style="width:0%"></div></div>
+    </div>
+    <div class="module-card" onclick="showSection('song')">
+      <div class="module-icon">🎵</div>
+      <div class="module-title">노래로 배우기</div>
+      <div class="module-sub">КИНО - Группа крови<br>가사 & 해석 학습</div>
+      <div class="module-progress"><div class="module-progress-fill" style="width:100%; background: var(--accent)"></div></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 32px; background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow);">
+    <h3 style="font-size: 16px; color: var(--primary); margin-bottom: 16px;">📋 학습 TIP</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; font-size: 14px; color: var(--muted); line-height: 1.7;">
+      <div>① <strong style="color:var(--text)">단어 목록</strong> → 전체 단어를 보고 모르는 단어 확인</div>
+      <div>② <strong style="color:var(--text)">플래시카드</strong> → 러시아어→한국어 방향으로 암기 시작</div>
+      <div>③ <strong style="color:var(--text)">문법</strong> → 알파벳·품사·동사변화 순으로 이론 정리</div>
+      <div>④ <strong style="color:var(--text)">회화</strong> → 대화문 소리내어 읽기 (발음 연습)</div>
+      <div>⑤ <strong style="color:var(--text)">퀴즈</strong> → 주관식으로 완전 암기 확인</div>
+      <div>⑥ <strong style="color:var(--text)">반복</strong> → 틀린 단어 위주로 재학습</div>
+    </div>
+  </div>
+</section>
+
+<!-- VOCAB -->
+<section id="sec-vocab" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">단어 목록</div>
+      <div class="section-subtitle">단어를 클릭하면 학습 완료 표시가 됩니다</div>
+    </div>
+    <button class="btn btn-outline" onclick="resetLearned()">초기화</button>
+  </div>
+
+  <div class="lesson-tabs" id="vocab-tabs">
+    <button class="lesson-tab active" onclick="filterVocab('all',this)">전체 <span class="badge" id="badge-all"></span></button>
+    <button class="lesson-tab" onclick="filterVocab('1',this)">1과 <span class="badge" id="badge-1"></span></button>
+    <button class="lesson-tab" onclick="filterVocab('2',this)">2과 <span class="badge" id="badge-2"></span></button>
+    <button class="lesson-tab" onclick="filterVocab('3',this)">3과 <span class="badge" id="badge-3"></span></button>
+    <button class="lesson-tab" onclick="filterVocab('conv',this)">회화단어 <span class="badge" id="badge-conv"></span></button>
+  </div>
+
+  <div class="word-table-wrap">
+    <div class="word-search">
+      <input type="text" id="vocab-search" placeholder="🔍 단어 검색..." oninput="filterBySearch()">
+      <div class="toggle-wrap">
+        <label class="toggle"><input type="checkbox" id="show-learned" onchange="filterVocab(currentLesson)"><span class="toggle-slider"></span></label>
+        학습완료만 보기
+      </div>
+    </div>
+    <div class="word-grid" id="word-grid"></div>
+  </div>
+</section>
+
+<!-- FLASHCARD -->
+<section id="sec-flash" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">플래시카드</div>
+      <div class="section-subtitle">카드를 클릭하면 뒤집힙니다</div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center;">
+    <div class="lesson-tabs" style="margin-bottom: 0;">
+      <button class="lesson-tab active" onclick="setFlashLesson('all',this)">전체</button>
+      <button class="lesson-tab" onclick="setFlashLesson('1',this)">1과</button>
+      <button class="lesson-tab" onclick="setFlashLesson('2',this)">2과</button>
+      <button class="lesson-tab" onclick="setFlashLesson('3',this)">3과</button>
+      <button class="lesson-tab" onclick="setFlashLesson('conv',this)">회화</button>
+    </div>
+    <div class="toggle-wrap" style="margin-left: auto;">
+      <label class="toggle"><input type="checkbox" id="flash-dir" onchange="setFlashDir()"><span class="toggle-slider"></span></label>
+      한→러 모드
+    </div>
+  </div>
+
+  <div class="flashcard-container">
+    <div class="flashcard-info" id="flash-info">카드 0 / 0</div>
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="card-face card-front">
+          <div class="card-label">РУССКИЙ</div>
+          <div class="card-word" id="flash-front">—</div>
+          <div class="card-lesson" id="flash-lesson-tag"></div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-label">한국어</div>
+          <div class="card-word" id="flash-back">—</div>
+          <div class="card-hint" id="flash-hint"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard-controls">
+      <button class="btn btn-outline" onclick="prevCard()">◀ 이전</button>
+      <button class="btn btn-danger" onclick="markCard(false)">✗ 모름</button>
+      <button class="btn btn-success" onclick="markCard(true)">✓ 알아요</button>
+      <button class="btn btn-outline" onclick="nextCard()">다음 ▶</button>
+    </div>
+    <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn btn-accent" onclick="shuffleCards()">🔀 섞기</button>
+      <button class="btn btn-outline" onclick="resetCards()">↺ 처음부터</button>
+      <button class="btn btn-primary" onclick="onlyUnknown()">❓ 모르는 것만</button>
+    </div>
+    <div id="flash-progress-wrap" style="max-width: 500px; margin: 20px auto 0;">
+      <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 6px;">
+        <span id="flash-known">알아요: 0</span>
+        <span id="flash-unknown">모름: 0</span>
+      </div>
+      <div style="height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;">
+        <div id="flash-prog" style="height: 100%; background: var(--success); border-radius: 4px; width: 0%; transition: width 0.4s;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAMMAR -->
+<section id="sec-grammar" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">문법 정리</div>
+      <div class="section-subtitle">시험에 나오는 핵심 문법 총정리</div>
+    </div>
+  </div>
+  <div class="grammar-layout">
+    <div class="grammar-sidebar">
+      <h3>목차</h3>
+      <div class="grammar-nav" id="grammar-nav"></div>
+    </div>
+    <div class="grammar-content" id="grammar-content"></div>
+  </div>
+</section>
+
+<!-- CONVERSATION -->
+<section id="sec-conv" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">회화 학습</div>
+      <div class="section-subtitle">실전 대화문으로 자연스러운 러시아어 연습</div>
+    </div>
+  </div>
+  <div class="conv-list" id="conv-list"></div>
+</section>
+
+<!-- QUIZ -->
+<section id="sec-quiz" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">퀴즈</div>
+      <div class="section-subtitle">실력을 테스트하고 약점을 파악하세요</div>
+    </div>
+  </div>
+  <div id="quiz-area"></div>
+</section>
+
+<!-- SONG -->
+<section id="sec-song" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">노래로 배우기</div>
+      <div class="section-subtitle">КИНО - Группа крови (키노 - 혈액형)</div>
+    </div>
+  </div>
+  <div class="song-card">
+    <h3>🎵 КИНО — Группа крови (1988)</h3>
+    <div class="song-lines" id="song-lines"></div>
+  </div>
+  <div style="background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); margin-top: 20px;">
+    <h3 style="font-size: 16px; color: var(--primary); margin-bottom: 16px;">노래에 나온 단어</h3>
+    <div class="word-grid" id="song-words" style="max-height: 300px; overflow-y: auto;"></div>
+  </div>
+</section>
+
+<!-- MNEMONIC -->
+<section id="sec-mnemonic" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">💡 연상기억법</div>
+      <div class="section-subtitle">3과 단어 43개를 재미있는 이야기로 외우기</div>
+    </div>
+  </div>
+
+  <div class="mnemonic-container">
+    <!-- 장소·시설 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">📍 장소·시설</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">рестора́н</td>
+          <td>레스토랑, 식당</td>
+          <td><strong>레스토랑</strong>은 러시아어도 똑같이 '레스토란' — 그냥 외워!</td>
+        </tr>
+        <tr>
+          <td class="ru">компа́ния</td>
+          <td>회사</td>
+          <td><strong>캠핑</strong> 가는 <strong>파니야</strong>(아줌마)들이 모인 곳 = 회사</td>
+        </tr>
+        <tr>
+          <td class="ru">о́фис</td>
+          <td>사무실</td>
+          <td><strong>오피스</strong>는 사무실 — 영어랑 완전 동일</td>
+        </tr>
+        <tr>
+          <td class="ru">санато́рий</td>
+          <td>휴양소, 요양원</td>
+          <td><strong>사나</strong>운 사람도 <strong>토리</strong>에서 쉬면 낫는다 = 요양원</td>
+        </tr>
+        <tr>
+          <td class="ru">парк</td>
+          <td>공원</td>
+          <td><strong>파르크</strong> — 파란 크레파스로 그린 곳 = 공원</td>
+        </tr>
+        <tr>
+          <td class="ru">больни́ца</td>
+          <td>병원</td>
+          <td><strong>발</strong>이 <strong>니</strong> 아파서 <strong>짜</strong>증난다 = 병원</td>
+        </tr>
+        <tr>
+          <td class="ru">заво́д</td>
+          <td>공장</td>
+          <td><strong>자봇</strong> — 자동차 봇(로봇)이 만들어지는 곳 = 공장</td>
+        </tr>
+        <tr>
+          <td class="ru">стадио́н</td>
+          <td>경기장, 스타디움</td>
+          <td><strong>스타디온</strong> — 스타들이 <strong>디</strong>(뛰)는 온 세상 = 경기장</td>
+        </tr>
+        <tr>
+          <td class="ru">уро́к</td>
+          <td>수업, 과</td>
+          <td><strong>우록</strong> — 우리 <strong>록</strong>(rock) 수업 들어가자 = 수업</td>
+        </tr>
+        <tr>
+          <td class="ru">сад</td>
+          <td>정원</td>
+          <td><strong>삿</strong> — 삿갓 쓰고 정원 거닌다 = 정원</td>
+        </tr>
+        <tr>
+          <td class="ru">лес</td>
+          <td>숲</td>
+          <td><strong>례스</strong> — 레이스처럼 얽힌 나무들 = 숲</td>
+        </tr>
+        <tr>
+          <td class="ru">пол</td>
+          <td>바닥, 성별</td>
+          <td><strong>뽈</strong> — 뽈뽈 기어다니는 <strong>바닥</strong> = 바닥</td>
+        </tr>
+        <tr>
+          <td class="ru">шкаф</td>
+          <td>옷장</td>
+          <td><strong>쉬캬프</strong> — 쉬면서 캬캬 웃으며 옷 꺼내는 장 = 옷장</td>
+        </tr>
+        <tr>
+          <td class="ru">аэропо́рт</td>
+          <td>공항</td>
+          <td><strong>에어로</strong>(aero) <strong>뽀르트</strong> = 공항</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 문화·행사 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🎭 문화·행사</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">конце́рт</td>
+          <td>콘서트</td>
+          <td><strong>깐쩨르트</strong> — 발음이 'concert'랑 닮았다 = 콘서트</td>
+        </tr>
+        <tr>
+          <td class="ru">бале́т</td>
+          <td>발레</td>
+          <td><strong>발렛</strong> — 발레는 러시아어도 발렛 = 발레</td>
+        </tr>
+        <tr>
+          <td class="ru">о́пера</td>
+          <td>오페라</td>
+          <td><strong>오페라</strong> — 영어랑 똑같다 = 오페라</td>
+        </tr>
+        <tr>
+          <td class="ru">пе́нсия</td>
+          <td>연금</td>
+          <td><strong>펜씨야</strong> — 펜 씌워 야금야금 모은 돈 = 연금</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 나라 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🌍 나라</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">Коре́я</td>
+          <td>한국</td>
+          <td><strong>까례야</strong> — 까리는 게 없는 예야(얘야)들의 나라 = 한국</td>
+        </tr>
+        <tr>
+          <td class="ru">Росси́я</td>
+          <td>러시아</td>
+          <td><strong>라씨야</strong> — 라씨(러시아식 음료) 마시는 나라 = 러시아</td>
+        </tr>
+        <tr>
+          <td class="ru">Кита́й</td>
+          <td>중국</td>
+          <td><strong>끼따이</strong> — 끼를 따이(따르는) 나라 = 중국</td>
+        </tr>
+        <tr>
+          <td class="ru">Япо́ния</td>
+          <td>일본</td>
+          <td><strong>야포니야</strong> — 야! 포니(조랑말)야! 하는 나라 = 일본</td>
+        </tr>
+        <tr>
+          <td class="ru">Аме́рика</td>
+          <td>미국</td>
+          <td><strong>아메리카</strong>노 커피를 마시며 미국 드라마 본다</td>
+        </tr>
+        <tr>
+          <td class="ru">А́нглия</td>
+          <td>영국</td>
+          <td><strong>앙! 글이야!</strong> 영국은 셰익스피어의 나라</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 직업 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">👷 직업</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">пенсионе́р</td>
+          <td>연금생활자</td>
+          <td><strong>펜씨아녜르</strong> — 펜 씩 아껴 쓰는 녀석, 연금으로 사는 할아버지</td>
+        </tr>
+        <tr>
+          <td class="ru">апте́карь</td>
+          <td>약사</td>
+          <td><strong>압쩨까리</strong> — 압박 체크 카리스마, 약사가 혈압 체크한다</td>
+        </tr>
+        <tr>
+          <td class="ru">библиоте́карь</td>
+          <td>도서관사서</td>
+          <td><strong>비블리아쩨까리</strong> — 비블(Bible) 리아가 책 쩨일 많이 카리하는 사서</td>
+        </tr>
+        <tr>
+          <td class="ru">бизнесме́н</td>
+          <td>사업가</td>
+          <td><strong>비즈네스멘</strong> — 비즈니스맨 = 사업가</td>
+        </tr>
+        <tr>
+          <td class="ru">инжене́р</td>
+          <td>엔지니어</td>
+          <td><strong>인줴녜르</strong> — 인줄 알았더니 줴대로 일하는 엔지니어</td>
+        </tr>
+        <tr>
+          <td class="ru">пова́р</td>
+          <td>요리사</td>
+          <td><strong>뽀바르</strong> — 뽀빠이 바로 요리사였어, 시금치 요리사</td>
+        </tr>
+        <tr>
+          <td class="ru">почтальо́н</td>
+          <td>우체부</td>
+          <td><strong>뽀취딸욘</strong> — 뽀취! 딸에게 욘(편지) 전하는 우체부</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 동사 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🏃 동사 (행동)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">жить</td>
+          <td>살다</td>
+          <td><strong>쥐치</strong> — 쥐처럼 치밀하게 살다</td>
+        </tr>
+        <tr>
+          <td class="ru">рабо́тать</td>
+          <td>일하다</td>
+          <td><strong>라보따찌</strong> — 라면 보따리 찌고 일하다</td>
+        </tr>
+        <tr>
+          <td class="ru">учи́ться</td>
+          <td>공부하다</td>
+          <td><strong>우치짜</strong> — 우치! 짜릿하게 공부하다</td>
+        </tr>
+        <tr>
+          <td class="ru">за́втракать</td>
+          <td>아침을 먹다</td>
+          <td><strong>자브뜨라까찌</strong> — 자브르까뜨! 아침 일찍 까치 소리에 일어나 아침밥 먹다</td>
+        </tr>
+        <tr>
+          <td class="ru">обе́дать</td>
+          <td>점심을 먹다</td>
+          <td>아! <strong>볘(배)다</strong> <strong>찌</strong>겠다, 점심 너무 많이 먹었다</td>
+        </tr>
+        <tr>
+          <td class="ru">у́жинать</td>
+          <td>저녁을 먹다</td>
+          <td>우리 <strong>쥐</strong>나 <strong>찌</strong>지 말고 저녁 같이 먹자</td>
+        </tr>
+        <tr>
+          <td class="ru">гуля́ть</td>
+          <td>산책하다</td>
+          <td><strong>굴</strong>러다니며 <strong>랴찌</strong>(랄라) 산책하다</td>
+        </tr>
+        <tr>
+          <td class="ru">отдыха́ть</td>
+          <td>쉬다, 휴가</td>
+          <td>앗! <strong>디하!</strong> <strong>하치!</strong> 쉬어야 해, 휴가 가자</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 방향 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🧭 방향</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr>
+          <td class="ru">восто́к</td>
+          <td>동쪽</td>
+          <td><strong>바스똑!</strong> 동쪽에서 해가 바스락 똑 떠오른다</td>
+        </tr>
+        <tr>
+          <td class="ru">за́пад</td>
+          <td>서쪽</td>
+          <td><strong>자빳(자빠졌)다!</strong> 서쪽으로 해가 지며 쓰러진다</td>
+        </tr>
+        <tr>
+          <td class="ru">юг</td>
+          <td>남쪽</td>
+          <td><strong>유크</strong> — 따뜻한 남쪽나라에서 유크(우쿨렐레) 연주한다</td>
+        </tr>
+        <tr>
+          <td class="ru">се́вер</td>
+          <td>북쪽</td>
+          <td><strong>쎄! 볘! 르!</strong> 북쪽 바람이 세차게 불어온다</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 암기 팁 -->
+    <div class="mnemonic-tip">
+      <h3>💡 암기 전략</h3>
+      <ol>
+        <li><strong>표를 보며 소리 내어 읽기</strong> — 발음을 크게 해보세요</li>
+        <li><strong>눈 감고 이미지 떠올리기</strong> — 연상 이미지를 생생하게 그려보세요</li>
+        <li><strong>플래시카드로 확인하기</strong> — 한국어만 보고 러시아어 말하기</li>
+        <li><strong>반복학습</strong> — 3일, 7일, 30일 주기로 복습하기</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="notif" id="notif"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const VOCAB = [
+  // 1과
+  {ru:'кто',ko:'누가, 누구',lesson:'1'},
+  {ru:'что',ko:'무엇이, 무엇',lesson:'1'},
+  {ru:'ма́ма',ko:'엄마',lesson:'1'},
+  {ru:'па́па',ko:'아빠',lesson:'1'},
+  {ru:'мать',ko:'어머니',lesson:'1'},
+  {ru:'оте́ц',ko:'아버지',lesson:'1'},
+  {ru:'сын',ko:'아들',lesson:'1'},
+  {ru:'дочь',ko:'딸',lesson:'1'},
+  {ru:'брат',ko:'형제, 남자형제',lesson:'1'},
+  {ru:'сестра́',ko:'자매, 여자형제',lesson:'1'},
+  {ru:'муж',ko:'남편',lesson:'1'},
+  {ru:'жена́',ko:'아내',lesson:'1'},
+  {ru:'де́душка',ko:'할아버지',lesson:'1'},
+  {ru:'ба́бушка',ko:'할머니',lesson:'1'},
+  {ru:'мужчи́на',ko:'남자',lesson:'1'},
+  {ru:'же́нщина',ko:'여자',lesson:'1'},
+  {ru:'студе́нт',ko:'대학생(남자)',lesson:'1'},
+  {ru:'студе́нтка',ko:'대학생(여자)',lesson:'1'},
+  {ru:'учи́тель',ko:'남자선생님(초중고)',lesson:'1'},
+  {ru:'учи́тельница',ko:'여자선생님(초중고)',lesson:'1'},
+  {ru:'профе́ссор',ko:'교수',lesson:'1'},
+  {ru:'преподава́тель',ko:'선생님(대학, 연구소)',lesson:'1'},
+  {ru:'ма́льчик',ko:'남자아이',lesson:'1'},
+  {ru:'де́вочка',ko:'여자아이',lesson:'1'},
+  {ru:'де́вушка',ko:'아가씨, 젊은 여자',lesson:'1'},
+  {ru:'молодо́й челове́к',ko:'젊은이, 젊은 남자',lesson:'1'},
+  {ru:'де́ти',ko:'아이들',lesson:'1'},
+  {ru:'шко́ла',ko:'학교(초중고)',lesson:'1'},
+  {ru:'университе́т',ko:'대학교',lesson:'1'},
+  {ru:'институ́т',ko:'연구소, 대학',lesson:'1'},
+  {ru:'журна́л',ko:'잡지',lesson:'1'},
+  {ru:'музе́й',ko:'박물관',lesson:'1'},
+  {ru:'кафе́',ko:'카페',lesson:'1'},
+  {ru:'стол',ko:'탁자, 테이블, 식탁',lesson:'1'},
+  {ru:'стул',ko:'의자',lesson:'1'},
+  {ru:'кни́га',ko:'책',lesson:'1'},
+  {ru:'газе́та',ko:'신문',lesson:'1'},
+  {ru:'письмо́',ko:'편지',lesson:'1'},
+  {ru:'ру́чка',ko:'볼펜, 손잡이',lesson:'1'},
+  {ru:'слова́рь',ko:'사전',lesson:'1'},
+  {ru:'тетра́дь',ko:'공책',lesson:'1'},
+  {ru:'ра́дио',ko:'라디오',lesson:'1'},
+  {ru:'общежи́тие',ko:'기숙사',lesson:'1'},
+  {ru:'день',ko:'날, 하루, 낮',lesson:'1'},
+  {ru:'пе́сня',ko:'노래',lesson:'1'},
+  {ru:'мо́ре',ko:'바다',lesson:'1'},
+  {ru:'ночь',ko:'밤',lesson:'1'},
+  {ru:'портфе́ль',ko:'서류가방',lesson:'1'},
+  {ru:'му́зыка',ko:'음악',lesson:'1'},
+  {ru:'каранда́ш',ko:'연필',lesson:'1'},
+  {ru:'ле́кция',ko:'강의',lesson:'1'},
+  {ru:'ко́шка',ko:'고양이',lesson:'1'},
+  {ru:'до́ма',ko:'집에서',lesson:'1'},
+  {ru:'сейча́с',ko:'지금, 이제',lesson:'1'},
+  {ru:'здесь',ko:'여기',lesson:'1'},
+  {ru:'там',ko:'저기',lesson:'1'},
+  {ru:'э́то',ko:'이것은, 이것이',lesson:'1'},
+  {ru:'сигаре́ты',ko:'담배',lesson:'1'},
+  {ru:'стихи́',ko:'시',lesson:'1'},
+  {ru:'вре́мя',ko:'시간, 시각',lesson:'1'},
+  {ru:'и́мя',ko:'이름',lesson:'1'},
+  {ru:'чита́ть',ko:'읽다',lesson:'1'},
+  {ru:'слу́шать',ko:'듣다',lesson:'1'},
+  {ru:'де́лать',ko:'하다',lesson:'1'},
+  {ru:'я',ko:'나 (1인칭 단수)',lesson:'1'},
+  {ru:'ты',ko:'너 (2인칭 단수)',lesson:'1'},
+  {ru:'он',ko:'그(남자)',lesson:'1'},
+  {ru:'она́',ko:'그녀(여자)',lesson:'1'},
+  {ru:'оно́',ko:'그것(사물)',lesson:'1'},
+  {ru:'мы',ko:'우리',lesson:'1'},
+  {ru:'вы',ko:'너희, 당신(존댓말)',lesson:'1'},
+  {ru:'они́',ko:'그들',lesson:'1'},
+  // 2과
+  {ru:'дя́дя',ko:'아저씨, 삼촌',lesson:'2'},
+  {ru:'тётя',ko:'아줌마, 이모, 고모',lesson:'2'},
+  {ru:'врач',ko:'의사',lesson:'2'},
+  {ru:'друг',ko:'친구(남자)',lesson:'2'},
+  {ru:'подру́га',ko:'여자친구',lesson:'2'},
+  {ru:'сосе́д',ko:'이웃남자',lesson:'2'},
+  {ru:'сосе́дка',ko:'이웃여자',lesson:'2'},
+  {ru:'кинотеа́тр',ko:'영화극장',lesson:'2'},
+  {ru:'теа́тр',ko:'극장',lesson:'2'},
+  {ru:'кино́',ko:'영화, 영화극장',lesson:'2'},
+  {ru:'исто́рия',ko:'역사',lesson:'2'},
+  {ru:'литерату́ра',ko:'문학',lesson:'2'},
+  {ru:'пальто́',ko:'외투, 겉옷',lesson:'2'},
+  {ru:'пло́щадь',ko:'광장',lesson:'2'},
+  {ru:'го́род',ko:'도시',lesson:'2'},
+  {ru:'дом',ko:'집, 건물',lesson:'2'},
+  {ru:'библиоте́ка',ko:'도서관',lesson:'2'},
+  {ru:'вокза́л',ko:'역(기차)',lesson:'2'},
+  {ru:'банк',ko:'은행',lesson:'2'},
+  {ru:'магази́н',ko:'가게',lesson:'2'},
+  {ru:'апте́ка',ko:'약국',lesson:'2'},
+  {ru:'по́чта',ko:'우체국',lesson:'2'},
+  {ru:'трамва́й',ko:'트램, 전차',lesson:'2'},
+  {ru:'авто́бус',ko:'버스',lesson:'2'},
+  {ru:'тролле́йбус',ko:'트롤리버스',lesson:'2'},
+  {ru:'такси́',ko:'택시',lesson:'2'},
+  {ru:'спра́шивать',ko:'묻다, 질문하다',lesson:'2'},
+  {ru:'понима́ть',ko:'이해하다',lesson:'2'},
+  {ru:'знать',ko:'알다',lesson:'2'},
+  // 3과
+  {ru:'рестора́н',ko:'레스토랑, 식당',lesson:'3'},
+  {ru:'компа́ния',ko:'회사',lesson:'3'},
+  {ru:'о́фис',ko:'사무실',lesson:'3'},
+  {ru:'санато́рий',ko:'휴양소, 요양원',lesson:'3'},
+  {ru:'парк',ko:'공원',lesson:'3'},
+  {ru:'больни́ца',ko:'병원',lesson:'3'},
+  {ru:'заво́д',ko:'공장',lesson:'3'},
+  {ru:'стадио́н',ko:'경기장, 스타디움',lesson:'3'},
+  {ru:'уро́к',ko:'수업, 과',lesson:'3'},
+  {ru:'конце́рт',ko:'콘서트',lesson:'3'},
+  {ru:'бале́т',ko:'발레',lesson:'3'},
+  {ru:'о́пера',ko:'오페라',lesson:'3'},
+  {ru:'пе́нсия',ko:'연금',lesson:'3'},
+  {ru:'сад',ko:'정원',lesson:'3'},
+  {ru:'лес',ko:'숲',lesson:'3'},
+  {ru:'пол',ko:'바닥, 성별',lesson:'3'},
+  {ru:'шкаф',ko:'옷장',lesson:'3'},
+  {ru:'аэропо́рт',ko:'공항',lesson:'3'},
+  {ru:'Коре́я',ko:'한국',lesson:'3'},
+  {ru:'Росси́я',ko:'러시아',lesson:'3'},
+  {ru:'Кита́й',ko:'중국',lesson:'3'},
+  {ru:'Япо́ния',ko:'일본',lesson:'3'},
+  {ru:'Аме́рика',ko:'미국',lesson:'3'},
+  {ru:'А́нглия',ko:'영국',lesson:'3'},
+  {ru:'пенсионе́р',ko:'연금생활자',lesson:'3'},
+  {ru:'апте́карь',ko:'약사',lesson:'3'},
+  {ru:'библиоте́карь',ko:'도서관사서',lesson:'3'},
+  {ru:'бизнесме́н',ko:'사업가, 비즈니스맨',lesson:'3'},
+  {ru:'инжене́р',ko:'기사, 엔지니어',lesson:'3'},
+  {ru:'пова́р',ko:'요리사',lesson:'3'},
+  {ru:'почтальо́н',ko:'우체부',lesson:'3'},
+  {ru:'жить',ko:'살다',lesson:'3'},
+  {ru:'рабо́тать',ko:'일하다',lesson:'3'},
+  {ru:'учи́ться',ko:'공부하다',lesson:'3'},
+  {ru:'за́втракать',ko:'아침을 먹다',lesson:'3'},
+  {ru:'обе́дать',ko:'점심을 먹다',lesson:'3'},
+  {ru:'у́жинать',ko:'저녁을 먹다',lesson:'3'},
+  {ru:'гуля́ть',ko:'산책하다',lesson:'3'},
+  {ru:'отдыха́ть',ko:'쉬다, 휴가를 보내다',lesson:'3'},
+  {ru:'восто́к',ko:'동쪽',lesson:'3'},
+  {ru:'за́пад',ko:'서쪽',lesson:'3'},
+  {ru:'юг',ko:'남쪽',lesson:'3'},
+  {ru:'се́вер',ko:'북쪽',lesson:'3'},
+  // 회화 전용 단어
+  {ru:'Здра́вствуйте',ko:'안녕하세요 (존댓말)',lesson:'conv'},
+  {ru:'Приве́т',ko:'안녕 (반말)',lesson:'conv'},
+  {ru:'До свида́ния',ko:'안녕히 가세요',lesson:'conv'},
+  {ru:'Пока́',ko:'잘가 (반말)',lesson:'conv'},
+  {ru:'Спаси́бо',ko:'감사합니다',lesson:'conv'},
+  {ru:'Пожа́луйста',ko:'천만에요, 부탁합니다',lesson:'conv'},
+  {ru:'Извини́те',ko:'실례합니다, 죄송합니다',lesson:'conv'},
+  {ru:'Как вас зову́т?',ko:'성함이 어떻게 되세요?',lesson:'conv'},
+  {ru:'Меня́ зову́т...',ko:'제 이름은 ...입니다',lesson:'conv'},
+  {ru:'Как дела́?',ko:'어떻게 지내세요?',lesson:'conv'},
+  {ru:'Хорошо́',ko:'좋아요, 잘 지내요',lesson:'conv'},
+  {ru:'Норма́льно',ko:'그럭저럭요',lesson:'conv'},
+  {ru:'Пло́хо',ko:'안 좋아요',lesson:'conv'},
+  {ru:'Отку́да вы?',ko:'어디서 오셨어요?',lesson:'conv'},
+  {ru:'Я из Коре́и',ko:'저는 한국에서 왔어요',lesson:'conv'},
+  {ru:'Где',ko:'어디에 (위치 의문사)',lesson:'conv'},
+  {ru:'Куда́',ko:'어디로 (방향 의문사)',lesson:'conv'},
+  {ru:'Как',ko:'어떻게, 어때요',lesson:'conv'},
+  {ru:'Когда́',ko:'언제',lesson:'conv'},
+  {ru:'Почему́',ko:'왜',lesson:'conv'},
+  {ru:'Да',ko:'네, 예',lesson:'conv'},
+  {ru:'Нет',ko:'아니요',lesson:'conv'},
+  {ru:'Не',ko:'~이 아니다 (부정)',lesson:'conv'},
+  {ru:'Кем вы рабо́таете?',ko:'직업이 무엇입니까?',lesson:'conv'},
+  {ru:'Я студе́нт',ko:'저는 학생입니다',lesson:'conv'},
+  {ru:'О́чень прия́тно',ko:'만나서 반갑습니다',lesson:'conv'},
+];
+
+// ============================================================
+// GRAMMAR DATA
+// ============================================================
+const GRAMMAR_TOPICS = [
+  {
+    id: 'alphabet',
+    title: '① 러시아어 알파벳',
+    content: `
+<h2>러시아어 알파벳 (Кириллица)</h2>
+<p>러시아어는 <strong>33개</strong>의 키릴문자를 사용합니다. 알파벳 암기가 학습의 첫 번째 단계입니다.</p>
+<div class="alpha-grid" id="alpha-grid"></div>
+<h3>발음 규칙</h3>
+<p>• 강세(акце́нт)가 있는 음절의 모음은 원래대로 발음, 강세 없는 <strong>о</strong>는 [아]로 발음됩니다.</p>
+<p>• 예: <strong>хорошо́</strong> [хара쇼] → 세 번째 음절에 강세</p>
+<p>• <strong>е, ё, ю, я</strong> — 모음 앞이나 단어 첫 자리에서 [й+모음]으로 발음됩니다.</p>
+<p>• 어말 유성자음은 무성음화: <strong>год</strong> [곳], <strong>хлеб</strong> [흘렙]</p>
+`
+  },
+  {
+    id: 'gender',
+    title: '② 명사의 성 (род)',
+    content: `
+<h2>명사의 성 (Род существи́тельного)</h2>
+<p>러시아어 명사는 <strong>남성(мужско́й)</strong>, <strong>여성(же́нский)</strong>, <strong>중성(сре́дний)</strong> 3가지 성이 있습니다.</p>
+<h3>어미로 성 구별하기</h3>
+<table class="grammar-table">
+<tr><th>성</th><th>어미</th><th>예시</th></tr>
+<tr><td><span class="tag tag-m">남성</span></td><td>자음 끝</td><td class="ru">стол (탁자), студе́нт (남학생), врач (의사)</td></tr>
+<tr><td><span class="tag tag-m">남성</span></td><td>-й</td><td class="ru">музе́й (박물관)</td></tr>
+<tr><td><span class="tag tag-f">여성</span></td><td>-а, -я</td><td class="ru">ма́ма (엄마), ле́кция (강의), тётя (아줌마)</td></tr>
+<tr><td><span class="tag tag-f">여성</span></td><td>연자음 -ь</td><td class="ru">дочь (딸), ночь (밤), тетра́дь (공책)</td></tr>
+<tr><td><span class="tag tag-n">중성</span></td><td>-о, -е</td><td class="ru">мо́ре (바다), кафе́ (카페)</td></tr>
+<tr><td><span class="tag tag-n">중성</span></td><td>-мя</td><td class="ru">вре́мя (시간), и́мя (이름)</td></tr>
+</table>
+<h3>시험 TIP</h3>
+<p>• <strong>мужчи́на</strong> (남자), <strong>дя́дя</strong> (아저씨) — 남성이지만 어미가 -а → <span class="tag tag-m">예외 남성</span></p>
+<p>• <strong>кафе́, ра́дио, общежи́тие</strong> — 불변화 명사(외래어)</p>
+<div class="example-box">
+<div class="ru">Э́то стол. / Э́то кни́га. / Э́то мо́ре.</div>
+<div class="ko">이것은 탁자다. / 이것은 책이다. / 이것은 바다다.</div>
+</div>
+`
+  },
+  {
+    id: 'pronoun',
+    title: '③ 인칭대명사 & 동사변화',
+    content: `
+<h2>인칭대명사와 동사변화</h2>
+<h3>인칭대명사 (Ли́чные местоиме́ния)</h3>
+<table class="grammar-table">
+<tr><th>인칭</th><th>단수</th><th>의미</th><th>복수</th><th>의미</th></tr>
+<tr><td>1인칭</td><td class="ru">я</td><td>나</td><td class="ru">мы</td><td>우리</td></tr>
+<tr><td>2인칭</td><td class="ru">ты</td><td>너(반말)</td><td class="ru">вы</td><td>너희 / 당신(존댓말)</td></tr>
+<tr><td>3인칭 남</td><td class="ru">он</td><td>그(남자)</td><td class="ru">они́</td><td>그들</td></tr>
+<tr><td>3인칭 여</td><td class="ru">она́</td><td>그녀</td><td></td><td></td></tr>
+<tr><td>3인칭 중</td><td class="ru">оно́</td><td>그것</td><td></td><td></td></tr>
+</table>
+<h3>동사 현재형 어미변화 (1식: -ать)</h3>
+<p>예: <strong>чита́ть</strong> (읽다), <strong>слу́шать</strong> (듣다), <strong>де́лать</strong> (하다), <strong>знать</strong> (알다)</p>
+<table class="grammar-table">
+<tr><th>인칭</th><th>어미</th><th>읽다</th><th>듣다</th><th>하다</th><th>알다</th></tr>
+<tr><td class="ru">я</td><td>-ю</td><td class="ru">чита́ю</td><td class="ru">слу́шаю</td><td class="ru">де́лаю</td><td class="ru">зна́ю</td></tr>
+<tr><td class="ru">ты</td><td>-ешь</td><td class="ru">чита́ешь</td><td class="ru">слу́шаешь</td><td class="ru">де́лаешь</td><td class="ru">зна́ешь</td></tr>
+<tr><td class="ru">он/она́</td><td>-ет</td><td class="ru">чита́ет</td><td class="ru">слу́шает</td><td class="ru">де́лает</td><td class="ru">зна́ет</td></tr>
+<tr><td class="ru">мы</td><td>-ем</td><td class="ru">чита́ем</td><td class="ru">слу́шаем</td><td class="ru">де́лаем</td><td class="ru">зна́ем</td></tr>
+<tr><td class="ru">вы</td><td>-ете</td><td class="ru">чита́ете</td><td class="ru">слу́шаете</td><td class="ru">де́лаете</td><td class="ru">зна́ете</td></tr>
+<tr><td class="ru">они́</td><td>-ют</td><td class="ru">чита́ют</td><td class="ru">слу́шают</td><td class="ru">де́лают</td><td class="ru">зна́ют</td></tr>
+</table>
+<h3>동사 현재형 어미변화 (2식: -ить/-еть)</h3>
+<p>예: <strong>говори́ть</strong> (말하다), <strong>учи́ться</strong> (공부하다)</p>
+<table class="grammar-table">
+<tr><th>인칭</th><th>어미</th><th>말하다</th><th>공부하다</th></tr>
+<tr><td class="ru">я</td><td>-ю/-у</td><td class="ru">говорю́</td><td class="ru">учу́сь</td></tr>
+<tr><td class="ru">ты</td><td>-ишь</td><td class="ru">говори́шь</td><td class="ru">у́чишься</td></tr>
+<tr><td class="ru">он/она́</td><td>-ит</td><td class="ru">говори́т</td><td class="ru">у́чится</td></tr>
+<tr><td class="ru">мы</td><td>-им</td><td class="ru">говори́м</td><td class="ru">у́чимся</td></tr>
+<tr><td class="ru">вы</td><td>-ите</td><td class="ru">говори́те</td><td class="ru">у́читесь</td></tr>
+<tr><td class="ru">они́</td><td>-ят/-ат</td><td class="ru">говоря́т</td><td class="ru">у́чатся</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">Я чита́ю кни́гу. / Ты слу́шаешь му́зыку. / Она́ зна́ет ру́сский.</div>
+<div class="ko">나는 책을 읽는다. / 너는 음악을 듣는다. / 그녀는 러시아어를 안다.</div>
+</div>
+`
+  },
+  {
+    id: 'negation',
+    title: '④ 부정문 (не)',
+    content: `
+<h2>부정문 — не (아니다/않다)</h2>
+<p>러시아어 부정은 동사 앞에 <strong>не</strong>를 붙입니다. 한국어의 "~이 아니다", "~하지 않는다"에 해당합니다.</p>
+<h3>동사 부정</h3>
+<div class="example-box">
+<div class="ru">Я чита́ю. → Я не чита́ю.</div>
+<div class="ko">나는 읽는다. → 나는 읽지 않는다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Она́ зна́ет. → Она́ не зна́ет.</div>
+<div class="ko">그녀는 안다. → 그녀는 모른다.</div>
+</div>
+<h3>это 부정 (이것은 ~이 아니다)</h3>
+<div class="example-box">
+<div class="ru">Э́то кни́га. → Э́то не кни́га.</div>
+<div class="ko">이것은 책이다. → 이것은 책이 아니다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Э́то студе́нт. → Э́то не студе́нт.</div>
+<div class="ko">이 사람은 학생이다. → 이 사람은 학생이 아니다.</div>
+</div>
+<h3>주어 부정</h3>
+<p>주어가 부정될 때 명사는 <strong>생격(роди́тельный паде́ж)</strong>으로 변합니다.</p>
+<div class="example-box">
+<div class="ru">У меня́ есть кни́га. → У меня́ нет кни́ги.</div>
+<div class="ko">나는 책이 있다. → 나는 책이 없다.</div>
+</div>
+`
+  },
+  {
+    id: 'question',
+    title: '⑤ 의문문 & 의문사',
+    content: `
+<h2>의문문과 의문사</h2>
+<h3>예/아니오 의문문</h3>
+<p>어순을 그대로 유지하고 <strong>억양만 올려서</strong> 의문문을 만듭니다.</p>
+<div class="example-box">
+<div class="ru">Э́то кни́га? (억양↑)</div>
+<div class="ko">이것은 책입니까?</div>
+</div>
+<div class="example-box">
+<div class="ru">Ты студе́нт?</div>
+<div class="ko">너는 학생이니?</div>
+</div>
+<h3>의문사 목록</h3>
+<table class="grammar-table">
+<tr><th>의문사</th><th>의미</th><th>예문</th></tr>
+<tr><td class="ru">кто</td><td>누가, 누구</td><td class="ru">Кто э́то? — 이 사람은 누구입니까?</td></tr>
+<tr><td class="ru">что</td><td>무엇이, 무엇</td><td class="ru">Что э́то? — 이것은 무엇입니까?</td></tr>
+<tr><td class="ru">где</td><td>어디에</td><td class="ru">Где библиоте́ка? — 도서관이 어디에 있나요?</td></tr>
+<tr><td class="ru">куда́</td><td>어디로</td><td class="ru">Куда́ вы идёте? — 어디로 가세요?</td></tr>
+<tr><td class="ru">как</td><td>어떻게, 어때요</td><td class="ru">Как дела́? — 어떻게 지내세요?</td></tr>
+<tr><td class="ru">когда́</td><td>언제</td><td class="ru">Когда́ уро́к? — 수업이 언제입니까?</td></tr>
+<tr><td class="ru">почему́</td><td>왜</td><td class="ru">Почему́? — 왜요?</td></tr>
+<tr><td class="ru">ско́лько</td><td>얼마나, 몇</td><td class="ru">Ско́лько сто́ит? — 얼마예요?</td></tr>
+</table>
+<h3>Кто э́то? vs Что э́то?</h3>
+<div class="example-box">
+<div class="ru">— Кто э́то? — Э́то студе́нт.</div>
+<div class="ko">— 이 사람은 누구입니까? — 이 사람은 학생입니다.</div>
+</div>
+<div class="example-box">
+<div class="ru">— Что э́то? — Э́то кни́га.</div>
+<div class="ko">— 이것은 무엇입니까? — 이것은 책입니다.</div>
+</div>
+`
+  },
+  {
+    id: 'tobe',
+    title: '⑥ быть 동사 (있다/이다)',
+    content: `
+<h2>быть 동사 — "이다/있다"</h2>
+<p>러시아어 현재시제에서 <strong>быть (be 동사)</strong>는 일반적으로 생략됩니다.</p>
+<h3>현재시제 — 주로 생략</h3>
+<div class="example-box">
+<div class="ru">Я студе́нт. (= Я есть студе́нт.)</div>
+<div class="ko">나는 학생이다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Она́ врач. / Он профе́ссор.</div>
+<div class="ko">그녀는 의사이다. / 그는 교수이다.</div>
+</div>
+<h3>есть — 있다 (존재)</h3>
+<p>무언가가 존재한다고 할 때 <strong>есть</strong>를 씁니다.</p>
+<div class="example-box">
+<div class="ru">Здесь есть библиоте́ка.</div>
+<div class="ko">여기에 도서관이 있다.</div>
+</div>
+<div class="example-box">
+<div class="ru">У меня́ есть слова́рь.</div>
+<div class="ko">나에게 사전이 있다. (나는 사전을 가지고 있다.)</div>
+</div>
+<h3>нет — 없다</h3>
+<div class="example-box">
+<div class="ru">Здесь нет рестора́на.</div>
+<div class="ko">여기에 레스토랑이 없다.</div>
+</div>
+<div class="example-box">
+<div class="ru">У меня́ нет слова́ря.</div>
+<div class="ko">나는 사전이 없다.</div>
+</div>
+`
+  },
+  {
+    id: 'names',
+    title: '⑦ 이름 묻고 답하기',
+    content: `
+<h2>이름 묻고 답하기</h2>
+<h3>주요 표현</h3>
+<table class="grammar-table">
+<tr><th>러시아어</th><th>한국어</th></tr>
+<tr><td class="ru">Как вас зову́т?</td><td>성함이 어떻게 되세요? (존댓말)</td></tr>
+<tr><td class="ru">Как тебя́ зову́т?</td><td>이름이 뭐야? (반말)</td></tr>
+<tr><td class="ru">Меня́ зову́т Минсу.</td><td>저는 민수라고 합니다.</td></tr>
+<tr><td class="ru">Как ва́ше и́мя?</td><td>성함이 어떻게 되세요?</td></tr>
+<tr><td class="ru">Моё и́мя Минсу.</td><td>내 이름은 민수입니다.</td></tr>
+<tr><td class="ru">О́чень прия́тно!</td><td>만나서 반갑습니다!</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">— Здра́вствуйте! Как вас зову́т?<br>— Меня́ зову́т А́нна. А вас?<br>— Я Минсу. О́чень прия́тно!</div>
+<div class="ko">— 안녕하세요! 성함이 어떻게 되세요?<br>— 저는 안나입니다. 당신은요?<br>— 저는 민수입니다. 만나서 반갑습니다!</div>
+</div>
+<h3>출신 묻고 답하기</h3>
+<div class="example-box">
+<div class="ru">— Отку́да вы?<br>— Я из Коре́и. А вы?<br>— Я из Росси́и.</div>
+<div class="ko">— 어디서 오셨어요?<br>— 저는 한국에서 왔어요. 당신은요?<br>— 저는 러시아에서 왔어요.</div>
+</div>
+`
+  },
+  {
+    id: 'verb3',
+    title: '⑧ 3과 동사 활용',
+    content: `
+<h2>3과 핵심 동사 변화표</h2>
+<h3>жить (살다) — 2식 변형</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">живу́</td><td class="ru">живёшь</td><td class="ru">живёт</td><td class="ru">живём</td><td class="ru">живёте</td><td class="ru">живу́т</td></tr>
+</table>
+<h3>рабо́тать (일하다) — 1식</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">рабо́таю</td><td class="ru">рабо́таешь</td><td class="ru">рабо́тает</td><td class="ru">рабо́таем</td><td class="ru">рабо́таете</td><td class="ru">рабо́тают</td></tr>
+</table>
+<h3>учи́ться (공부하다, 재귀동사) — 2식</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">учу́сь</td><td class="ru">у́чишься</td><td class="ru">у́чится</td><td class="ru">у́чимся</td><td class="ru">у́читесь</td><td class="ru">у́чатся</td></tr>
+</table>
+<h3>식사 동사 — 1식</h3>
+<table class="grammar-table">
+<tr><th>동사</th><th>я</th><th>ты</th><th>он/она́</th><th>они́</th></tr>
+<tr><td>за́втракать (아침)</td><td class="ru">за́втракаю</td><td class="ru">за́втракаешь</td><td class="ru">за́втракает</td><td class="ru">за́втракают</td></tr>
+<tr><td>обе́дать (점심)</td><td class="ru">обе́даю</td><td class="ru">обе́даешь</td><td class="ru">обе́дает</td><td class="ru">обе́дают</td></tr>
+<tr><td>у́жинать (저녁)</td><td class="ru">у́жинаю</td><td class="ru">у́жинаешь</td><td class="ru">у́жинает</td><td class="ru">у́жинают</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">— Где вы рабо́таете? — Я рабо́таю в компа́нии.<br>— Где вы живёте? — Я живу́ в общежи́тии.</div>
+<div class="ko">— 어디서 일하세요? — 저는 회사에서 일합니다.<br>— 어디 사세요? — 저는 기숙사에 삽니다.</div>
+</div>
+`
+  },
+];
+
+// ============================================================
+// CONVERSATION DATA
+// ============================================================
+const CONVERSATIONS = [
+  {
+    title: '1. 첫 만남 인사 — Знако́мство',
+    lines: [
+      {speaker:'A', ru:'Здра́вствуйте! Меня́ зову́т Минсу. А как вас зову́т?', ko:'안녕하세요! 저는 민수입니다. 성함이 어떻게 되세요?'},
+      {speaker:'B', ru:'Здра́вствуйте! Меня́ зову́т А́нна. О́чень прия́тно!', ko:'안녕하세요! 저는 안나입니다. 만나서 반갑습니다!'},
+      {speaker:'A', ru:'О́чень прия́тно! Вы студе́нтка?', ko:'저도 반갑습니다! 학생이신가요?'},
+      {speaker:'B', ru:'Да, я студе́нтка. А вы?', ko:'네, 저는 학생입니다. 당신은요?'},
+      {speaker:'A', ru:'Я то́же студе́нт. Отку́да вы?', ko:'저도 학생입니다. 어디서 오셨어요?'},
+      {speaker:'B', ru:'Я из Росси́и. А вы из Коре́и?', ko:'저는 러시아에서 왔어요. 당신은 한국에서 왔나요?'},
+      {speaker:'A', ru:'Да, я из Коре́и.', ko:'네, 저는 한국에서 왔어요.'},
+    ],
+    vocab: ['Здра́вствуйте','Меня́ зову́т...','Как вас зову́т?','О́чень прия́тно','студе́нтка','Отку́да вы?','Я из Коре́и']
+  },
+  {
+    title: '2. 안부 인사 — Как дела́?',
+    lines: [
+      {speaker:'A', ru:'Приве́т, А́ня! Как дела́?', ko:'안녕, 아냐! 어떻게 지내?'},
+      {speaker:'B', ru:'Приве́т, Минсу! Хорошо́, спаси́бо. А ты?', ko:'안녕, 민수! 잘 지내, 고마워. 너는?'},
+      {speaker:'A', ru:'Норма́льно. Ты сейча́с до́ма?', ko:'그럭저럭. 지금 집에 있어?'},
+      {speaker:'B', ru:'Нет, я в библиоте́ке. Чита́ю кни́гу.', ko:'아니, 나는 도서관에 있어. 책을 읽고 있어.'},
+      {speaker:'A', ru:'Поня́тно! Пока́.', ko:'알겠어! 잘 있어.'},
+      {speaker:'B', ru:'Пока́!', ko:'잘가!'},
+    ],
+    vocab: ['Приве́т','Как дела́?','Хорошо́','Спаси́бо','Норма́льно','сейча́с','до́ма','библиоте́ка','чита́ть','Пока́']
+  },
+  {
+    title: '3. 직업 묻기 — Профе́ссия',
+    lines: [
+      {speaker:'A', ru:'Извини́те, вы врач?', ko:'실례합니다만, 의사이신가요?'},
+      {speaker:'B', ru:'Нет, я не врач. Я инжене́р.', ko:'아니요, 저는 의사가 아닙니다. 저는 엔지니어입니다.'},
+      {speaker:'A', ru:'А где вы рабо́таете?', ko:'어디서 일하세요?'},
+      {speaker:'B', ru:'Я рабо́таю в компа́нии. А вы? Кто вы?', ko:'저는 회사에서 일합니다. 당신은요? 직업이 뭐세요?'},
+      {speaker:'A', ru:'Я студе́нт. Я учу́сь в университе́те.', ko:'저는 학생입니다. 대학교에서 공부합니다.'},
+    ],
+    vocab: ['Извини́те','врач','инжене́р','рабо́тать','компа́ния','студе́нт','учи́ться','университе́т']
+  },
+  {
+    title: '4. 위치 묻기 — Где нахо́дится...?',
+    lines: [
+      {speaker:'A', ru:'Извини́те, где здесь банк?', ko:'실례합니다, 여기 은행이 어디에 있나요?'},
+      {speaker:'B', ru:'Банк там. Э́то не далеко́.', ko:'은행은 저기 있어요. 멀지 않아요.'},
+      {speaker:'A', ru:'А апте́ка? Где апте́ка?', ko:'약국은요? 약국이 어디에 있나요?'},
+      {speaker:'B', ru:'Апте́ка ря́дом с ба́нком.', ko:'약국은 은행 옆에 있어요.'},
+      {speaker:'A', ru:'Спаси́бо большо́е!', ko:'대단히 감사합니다!'},
+      {speaker:'B', ru:'Пожа́луйста!', ko:'천만에요!'},
+    ],
+    vocab: ['Извини́те','банк','там','здесь','апте́ка','Спаси́бо','Пожа́луйста']
+  },
+  {
+    title: '5. 일상 표현 — Повседне́вная жизнь',
+    lines: [
+      {speaker:'A', ru:'Что ты де́лаешь сейча́с?', ko:'지금 뭐 해?'},
+      {speaker:'B', ru:'Я слу́шаю му́зыку. А ты?', ko:'음악 듣고 있어. 너는?'},
+      {speaker:'A', ru:'Я обе́даю. Ты уже́ за́втракал?', ko:'점심 먹고 있어. 너는 아침 먹었어?'},
+      {speaker:'B', ru:'Да, я уже́ за́втракал. Ве́чером гуля́ю в па́рке.', ko:'응, 아침은 먹었어. 저녁에 공원에서 산책할 거야.'},
+      {speaker:'A', ru:'Хорошо́! Я то́же отдыха́ю ве́чером.', ko:'좋겠다! 나도 저녁에 쉴 거야.'},
+    ],
+    vocab: ['де́лать','слу́шать','му́зыка','обе́дать','за́втракать','гуля́ть','па́рк','отдыха́ть']
+  },
+];
+
+// ============================================================
+// SONG DATA
+// ============================================================
+const SONG_LINES = [
+  {ru:'Тёплое место', ko:'따뜻한 곳'},
+  {ru:'Но улицы ждут отпечатков наших ног', ko:'밖에서는 우리의 발자국을 기다린다'},
+  {ru:'Звёздная пыль на сапогах', ko:'군화 위에는 별빛 먼지'},
+  {ru:'Мягкое кресло, клетчатый плед', ko:'부드러운 안락의자, 격자무늬 담요'},
+  {ru:'Группа крови на рукаве', ko:'소매 위의 혈액형'},
+  {ru:'Мой порядковый номер на рукаве', ko:'소매 위의 나의 군번'},
+  {ru:'Пожелай мне удачи в бою', ko:'전투에서 나에게 행운을 빌어다오'},
+  {ru:'Не остаться в этой траве', ko:'이 들판에 남겨지지 않기를'},
+  {ru:'Пожелай мне удачи', ko:'나에게 행운을 빌어다오'},
+  {ru:'И есть чем платить', ko:'지불할 것이 있고'},
+  {ru:'Но я не хочу победы любой ценой', ko:'그러나 나는 어떤 댓가도 치른 승리를 원치 않는다'},
+  {ru:'Я хотел бы остаться с тобой', ko:'나는 당신과 함께 있고 싶다'},
+  {ru:'Просто остаться с тобой', ko:'그냥 당신과 함께 있고 싶다'},
+  {ru:'Но высокая в небе звезда зовёт меня в путь', ko:'하지만 하늘 높이 있는 별이 나를 여행으로 부른다'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let learned = JSON.parse(localStorage.getItem('ru_learned') || '{}');
+let quizScores = JSON.parse(localStorage.getItem('ru_scores') || '[]');
+let currentLesson = 'all';
+let flashCards = [];
+let flashIdx = 0;
+let flashDir = false; // false = 러→한, true = 한→러
+let flashKnown = new Set();
+let flashUnknown = new Set();
+let currentFlashLesson = 'all';
+
+// ============================================================
+// ALPHABET DATA
+// ============================================================
+const ALPHA = [
+  ['А','а','아'],['Б','б','브'],['В','в','브'],['Г','г','그'],
+  ['Д','д','드'],['Е','е','예'],['Ё','ё','요'],['Ж','ж','쥐'],
+  ['З','з','즈'],['И','и','이'],['Й','й','이(짧)'],['К','к','크'],
+  ['Л','л','르'],['М','м','므'],['Н','н','느'],['О','о','오'],
+  ['П','п','프'],['Р','р','르(굴)'],['С','с','스'],['Т','т','트'],
+  ['У','у','우'],['Ф','ф','프(영)'],['Х','х','흐'],['Ц','ц','츠'],
+  ['Ч','ч','치'],['Ш','ш','쉬'],['Щ','щ','쉬(연)'],['Ъ','ъ','경자음'],
+  ['Ы','ы','이(딱딱)'],['Ь','ь','연자음'],['Э','э','에'],['Ю','ю','유'],
+  ['Я','я','야'],
+];
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  updateStats();
+  renderWordGrid('all');
+  renderFlashCards('all');
+  renderGrammar();
+  renderConversations();
+  renderQuizSetup();
+  renderSong();
+  updateBadges();
+}
+
+function updateStats() {
+  const total = VOCAB.length;
+  const learnedCount = Object.values(learned).filter(Boolean).length;
+  const lastScore = quizScores.length ? quizScores[quizScores.length-1] : 0;
+  document.getElementById('stat-words').textContent = total;
+  document.getElementById('stat-learned').textContent = learnedCount;
+  document.getElementById('stat-quiz').textContent = lastScore ? lastScore + '%' : '—';
+  const pct = Math.round(learnedCount / total * 100);
+  document.getElementById('prog-vocab').style.width = pct + '%';
+  document.getElementById('prog-grammar').style.width = '0%';
+}
+
+function updateBadges() {
+  const counts = {all: VOCAB.length, '1': 0, '2': 0, '3': 0, conv: 0};
+  VOCAB.forEach(w => { counts[w.lesson]++; });
+  document.getElementById('badge-all').textContent = counts.all;
+  document.getElementById('badge-1').textContent = counts['1'];
+  document.getElementById('badge-2').textContent = counts['2'];
+  document.getElementById('badge-3').textContent = counts['3'];
+  document.getElementById('badge-conv').textContent = counts.conv;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  btns.forEach(b => { if (b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('active'); });
+  if (name === 'quiz') renderQuizSetup();
+}
+
+// ============================================================
+// VOCAB
+// ============================================================
+function renderWordGrid(lesson) {
+  currentLesson = lesson;
+  const search = (document.getElementById('vocab-search')?.value || '').toLowerCase();
+  const showLearnedOnly = document.getElementById('show-learned')?.checked;
+
+  let words = VOCAB.filter(w => {
+    if (lesson !== 'all' && w.lesson !== lesson) return false;
+    if (search && !w.ru.toLowerCase().includes(search) && !w.ko.includes(search)) return false;
+    if (showLearnedOnly && !learned[w.ru]) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('word-grid');
+  grid.innerHTML = '';
+  words.forEach(w => {
+    const cell = document.createElement('div');
+    cell.className = 'word-cell' + (learned[w.ru] ? ' learned' : '');
+    cell.innerHTML = `<div class="word-ru">${w.ru}</div><div class="word-ko">${w.ko}</div>`;
+    cell.onclick = () => toggleLearned(w.ru, cell);
+    grid.appendChild(cell);
+  });
+
+  if (words.length === 0) {
+    grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);grid-column:1/-1;">검색 결과가 없습니다</div>';
+  }
+}
+
+function toggleLearned(ru, cell) {
+  learned[ru] = !learned[ru];
+  localStorage.setItem('ru_learned', JSON.stringify(learned));
+  cell.classList.toggle('learned', learned[ru]);
+  updateStats();
+  notify(learned[ru] ? '✓ 학습 완료로 표시했습니다' : '학습 완료 표시를 해제했습니다', learned[ru] ? 'success' : '');
+}
+
+function filterVocab(lesson, btn) {
+  currentLesson = lesson;
+  if (btn) {
+    document.querySelectorAll('#vocab-tabs .lesson-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderWordGrid(lesson);
+}
+
+function filterBySearch() { renderWordGrid(currentLesson); }
+
+function resetLearned() {
+  if (!confirm('모든 학습 완료 기록을 초기화할까요?')) return;
+  learned = {};
+  localStorage.removeItem('ru_learned');
+  renderWordGrid(currentLesson);
+  updateStats();
+  notify('초기화되었습니다', 'warning');
+}
+
+// ============================================================
+// FLASHCARD
+// ============================================================
+function getFlashDeck(lesson) {
+  if (lesson === 'all') return [...VOCAB];
+  return VOCAB.filter(w => w.lesson === lesson);
+}
+
+function renderFlashCards(lesson) {
+  currentFlashLesson = lesson;
+  flashCards = [...getFlashDeck(lesson)];
+  flashIdx = 0;
+  flashKnown.clear();
+  flashUnknown.clear();
+  showFlashCard();
+}
+
+function setFlashLesson(lesson, btn) {
+  document.querySelectorAll('#sec-flash .lesson-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFlashCards(lesson);
+}
+
+function setFlashDir() {
+  flashDir = document.getElementById('flash-dir').checked;
+  showFlashCard();
+}
+
+function showFlashCard() {
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+
+  const total = flashCards.length;
+  document.getElementById('flash-info').textContent = `카드 ${Math.min(flashIdx+1, total)} / ${total}`;
+
+  if (total === 0) {
+    document.getElementById('flash-front').textContent = '단어 없음';
+    document.getElementById('flash-back').textContent = '—';
+    document.getElementById('flash-lesson-tag').textContent = '';
+    document.getElementById('flash-hint').textContent = '';
+    return;
+  }
+
+  const w = flashCards[flashIdx % total];
+  if (!flashDir) {
+    document.getElementById('flash-front').textContent = w.ru;
+    document.getElementById('flash-back').textContent = w.ko;
+  } else {
+    document.getElementById('flash-front').textContent = w.ko;
+    document.getElementById('flash-back').textContent = w.ru;
+  }
+  document.getElementById('flash-lesson-tag').textContent = w.lesson === 'conv' ? '회화' : w.lesson + '과';
+  document.getElementById('flash-hint').textContent = '';
+
+  const known = flashKnown.size;
+  const unknown = flashUnknown.size;
+  const answered = known + unknown;
+  document.getElementById('flash-known').textContent = '알아요: ' + known;
+  document.getElementById('flash-unknown').textContent = '모름: ' + unknown;
+  document.getElementById('flash-prog').style.width = answered > 0 ? (known/answered*100) + '%' : '0%';
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard() {
+  flashIdx = (flashIdx + 1) % flashCards.length;
+  showFlashCard();
+}
+
+function prevCard() {
+  flashIdx = (flashIdx - 1 + flashCards.length) % flashCards.length;
+  showFlashCard();
+}
+
+function markCard(known) {
+  if (flashCards.length === 0) return;
+  const w = flashCards[flashIdx % flashCards.length];
+  if (known) {
+    flashKnown.add(w.ru);
+    flashUnknown.delete(w.ru);
+    notify('✓ 알아요!', 'success');
+  } else {
+    flashUnknown.add(w.ru);
+    flashKnown.delete(w.ru);
+    notify('다시 공부하세요');
+  }
+  nextCard();
+}
+
+function shuffleCards() {
+  for (let i = flashCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [flashCards[i], flashCards[j]] = [flashCards[j], flashCards[i]];
+  }
+  flashIdx = 0;
+  showFlashCard();
+  notify('🔀 카드를 섞었습니다!');
+}
+
+function resetCards() {
+  renderFlashCards(currentFlashLesson);
+  notify('↺ 처음부터 시작합니다');
+}
+
+function onlyUnknown() {
+  if (flashUnknown.size === 0) { notify('모르는 카드가 없어요! 🎉', 'success'); return; }
+  flashCards = VOCAB.filter(w => flashUnknown.has(w.ru));
+  flashIdx = 0;
+  flashKnown.clear();
+  flashUnknown.clear();
+  showFlashCard();
+  notify(`모르는 단어 ${flashCards.length}개만 표시합니다`);
+}
+
+// ============================================================
+// GRAMMAR
+// ============================================================
+function renderGrammar() {
+  const nav = document.getElementById('grammar-nav');
+  const content = document.getElementById('grammar-content');
+
+  nav.innerHTML = GRAMMAR_TOPICS.map((t, i) =>
+    `<button class="grammar-nav-btn${i===0?' active':''}" onclick="showGrammar(${i},this)">${t.title}</button>`
+  ).join('');
+
+  showGrammar(0);
+}
+
+function showGrammar(idx, btn) {
+  document.querySelectorAll('.grammar-nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelectorAll('.grammar-nav-btn')[idx]?.classList.add('active');
+
+  const content = document.getElementById('grammar-content');
+  content.innerHTML = GRAMMAR_TOPICS[idx].content;
+
+  if (GRAMMAR_TOPICS[idx].id === 'alphabet') {
+    const grid = document.getElementById('alpha-grid');
+    if (grid) {
+      grid.innerHTML = ALPHA.map(([U,L,p]) =>
+        `<div class="alpha-cell"><div class="upper">${U}</div><div class="lower">${L}</div><div class="pron">${p}</div></div>`
+      ).join('');
+    }
+  }
+}
+
+// ============================================================
+// CONVERSATIONS
+// ============================================================
+function renderConversations() {
+  const list = document.getElementById('conv-list');
+  list.innerHTML = CONVERSATIONS.map(conv => {
+    const vocabItems = conv.vocab.map(v => {
+      const word = VOCAB.find(w => w.ru === v || w.ru.startsWith(v));
+      return word ?
+        `<div class="conv-vocab-chip"><span class="ru-small">${word.ru}</span><span class="ko-small">${word.ko}</span></div>` :
+        `<div class="conv-vocab-chip"><span class="ru-small">${v}</span></div>`;
+    }).join('');
+
+    const lines = conv.lines.map(l => `
+      <div class="conv-line">
+        <div class="conv-speaker${l.speaker==='B'?' b':''}">${l.speaker}</div>
+        <div class="conv-bubble">
+          <div class="ru">${l.ru}</div>
+          <div class="ko">${l.ko}</div>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="conv-card">
+        <div class="conv-header"><h3>${conv.title}</h3></div>
+        <div class="conv-body">
+          ${lines}
+          <div class="conv-vocab">
+            <h4>핵심 단어</h4>
+            <div class="conv-vocab-grid">${vocabItems}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let quizState = {
+  mode: 'mc', // mc = multiple choice, fill = fill in blank
+  lesson: 'all',
+  direction: 'ru2ko', // ru2ko or ko2ru
+  questions: [],
+  currentQ: 0,
+  score: 0,
+  wrongAnswers: [],
+  answered: false,
+};
+
+function renderQuizSetup() {
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = `
+    <div class="quiz-setup">
+      <h3>퀴즈 설정</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">학습 범위와 유형을 선택하세요</p>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">범위 선택</div>
+        <div class="quiz-options" style="grid-template-columns: repeat(5, 1fr);">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'lesson','all')">전체</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','1')">1과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','2')">2과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','3')">3과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','conv')">회화</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">방향</div>
+        <div class="quiz-options">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'direction','ru2ko')">🇷🇺 러시아어 → 한국어</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'direction','ko2ru')">🇰🇷 한국어 → 러시아어</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">유형</div>
+        <div class="quiz-options">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'mode','mc')">객관식 (4지선다)</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'mode','fill')">주관식 (직접 입력)</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;" onclick="startQuiz()">퀴즈 시작 →</button>
+    </div>
+  `;
+  quizState.lesson = 'all';
+  quizState.mode = 'mc';
+  quizState.direction = 'ru2ko';
+}
+
+function selectQuizOpt(btn, field, value) {
+  const parent = btn.closest('.quiz-options');
+  parent.querySelectorAll('.quiz-option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizState[field] = value;
+}
+
+function startQuiz() {
+  let pool = VOCAB;
+  if (quizState.lesson !== 'all') pool = pool.filter(w => w.lesson === quizState.lesson);
+
+  if (pool.length < 4) { notify('단어가 너무 적습니다 (최소 4개 필요)'); return; }
+
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  quizState.questions = shuffled.slice(0, Math.min(20, shuffled.length));
+  quizState.currentQ = 0;
+  quizState.score = 0;
+  quizState.wrongAnswers = [];
+  quizState.pool = pool;
+
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const area = document.getElementById('quiz-area');
+  const {questions, currentQ, mode, direction, pool} = quizState;
+
+  if (currentQ >= questions.length) { renderQuizResult(); return; }
+
+  const q = questions[currentQ];
+  const question = direction === 'ru2ko' ? q.ru : q.ko;
+  const answer = direction === 'ru2ko' ? q.ko : q.ru;
+  const pct = Math.round(currentQ / questions.length * 100);
+
+  let inputHTML = '';
+  if (mode === 'mc') {
+    const others = pool.filter(w => w.ru !== q.ru).sort(() => Math.random() - 0.5).slice(0, 3);
+    const choices = [...others.map(w => direction === 'ru2ko' ? w.ko : w.ru), answer].sort(() => Math.random() - 0.5);
+    inputHTML = `<div class="quiz-choices">` + choices.map(c =>
+      `<button class="quiz-choice" onclick="checkMC(this,'${c.replace(/'/g,"\\'")}','${answer.replace(/'/g,"\\'")}')">${c}</button>`
+    ).join('') + `</div>`;
+  } else {
+    inputHTML = `<div class="quiz-input-wrap">
+      <input type="text" id="quiz-input" placeholder="정답을 입력하세요..." onkeydown="if(event.key==='Enter')checkFill()">
+      <br><button class="btn btn-primary" onclick="checkFill()">확인</button>
+    </div>`;
+  }
+
+  area.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-q-num">문제 ${currentQ+1} / ${questions.length}</div>
+      <div class="quiz-q-progress"><div class="quiz-q-progress-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-question">${question}</div>
+      ${inputHTML}
+      <div id="quiz-feedback" class="quiz-feedback" style="display:none;"></div>
+      <button id="next-btn" class="btn btn-primary" style="width:100%;margin-top:16px;display:none;" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  `;
+
+  if (mode === 'fill') setTimeout(() => document.getElementById('quiz-input')?.focus(), 50);
+}
+
+function checkMC(btn, chosen, answer) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  document.querySelectorAll('.quiz-choice').forEach(b => {
+    b.classList.add('disabled');
+    if (b.textContent === answer) b.classList.add('correct');
+  });
+
+  const correct = chosen === answer;
+  if (!correct) {
+    btn.classList.add('wrong');
+    quizState.wrongAnswers.push(quizState.questions[quizState.currentQ]);
+  } else {
+    quizState.score++;
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.textContent = correct ? '✓ 정답!' : `✗ 오답. 정답: ${answer}`;
+
+  document.getElementById('next-btn').style.display = 'block';
+  quizState.answered = false;
+}
+
+function checkFill() {
+  const input = document.getElementById('quiz-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+
+  const q = quizState.questions[quizState.currentQ];
+  const answer = quizState.direction === 'ru2ko' ? q.ko : q.ru;
+  const correct = val.toLowerCase() === answer.toLowerCase();
+
+  input.className = correct ? 'correct' : 'wrong';
+  input.disabled = true;
+
+  if (correct) {
+    quizState.score++;
+  } else {
+    quizState.wrongAnswers.push(q);
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.textContent = correct ? '✓ 정답!' : `✗ 오답. 정답: ${answer}`;
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  quizState.currentQ++;
+  renderQuizQuestion();
+}
+
+function renderQuizResult() {
+  const area = document.getElementById('quiz-area');
+  const {score, questions, wrongAnswers} = quizState;
+  const pct = Math.round(score / questions.length * 100);
+
+  quizScores.push(pct);
+  if (quizScores.length > 20) quizScores.shift();
+  localStorage.setItem('ru_scores', JSON.stringify(quizScores));
+  updateStats();
+
+  let gradeClass = 'grade-A', gradeText = 'A+ 완벽해요! 🎉';
+  if (pct < 90) { gradeClass = 'grade-B'; gradeText = 'B 잘하고 있어요! 💪'; }
+  if (pct < 70) { gradeClass = 'grade-C'; gradeText = 'C 더 연습하세요 📚'; }
+  if (pct < 50) { gradeClass = 'grade-F'; gradeText = 'F 다시 공부해요 😢'; }
+
+  const wrongHTML = wrongAnswers.length > 0 ? `
+    <div class="wrong-list">
+      <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:10px;">틀린 단어 (${wrongAnswers.length}개)</div>
+      ${wrongAnswers.map(w => `<div class="wrong-item"><span class="ru">${w.ru}</span><span class="ko">${w.ko}</span></div>`).join('')}
+    </div>
+  ` : '<div style="color:var(--success);font-size:14px;margin-top:16px;">🎉 모두 맞혔어요!</div>';
+
+  area.innerHTML = `
+    <div class="quiz-result">
+      <div class="score">${pct}%</div>
+      <div class="score-label">${score} / ${questions.length} 정답</div>
+      <div class="grade ${gradeClass}">${gradeText}</div>
+      ${wrongHTML}
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="startQuiz()">다시 풀기</button>
+        <button class="btn btn-outline" onclick="renderQuizSetup()">설정 변경</button>
+        ${wrongAnswers.length > 0 ? `<button class="btn btn-danger" onclick="quizWrongOnly()">틀린 것만 다시</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function quizWrongOnly() {
+  if (quizState.wrongAnswers.length < 2) { notify('틀린 단어가 부족합니다 (최소 2개)'); return; }
+  const pool = quizState.wrongAnswers;
+  quizState.questions = [...pool].sort(() => Math.random() - 0.5);
+  quizState.pool = pool;
+  quizState.currentQ = 0;
+  quizState.score = 0;
+  quizState.wrongAnswers = [];
+  renderQuizQuestion();
+}
+
+// ============================================================
+// SONG
+// ============================================================
+function renderSong() {
+  const lines = document.getElementById('song-lines');
+  lines.innerHTML = SONG_LINES.map(l => `
+    <div class="song-line-pair">
+      <div class="song-ru">${l.ru}</div>
+      <div class="song-ko">${l.ko}</div>
+    </div>
+  `).join('');
+
+  const songWords = ['кровь','рукав','удача','трава','звезда','победа','путь','место','пыль','сапог'];
+  const wordEl = document.getElementById('song-words');
+  const found = VOCAB.filter(w => songWords.some(sw => w.ru.toLowerCase().includes(sw)));
+  const extra = [
+    {ru:'рукав',ko:'소매',lesson:'conv'},
+    {ru:'удача',ko:'행운',lesson:'conv'},
+    {ru:'трава',ko:'풀, 들판',lesson:'conv'},
+    {ru:'звезда',ko:'별',lesson:'conv'},
+    {ru:'победа',ko:'승리',lesson:'conv'},
+    {ru:'кровь',ko:'피, 혈액',lesson:'conv'},
+    {ru:'бой',ko:'전투',lesson:'conv'},
+  ];
+  const allWords = [...found, ...extra.filter(e => !found.find(f => f.ru === e.ru))];
+  wordEl.innerHTML = allWords.map(w => `
+    <div class="word-cell">
+      <div class="word-ru">${w.ru}</div>
+      <div class="word-ko">${w.ko}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// UTILITY
+// ============================================================
+function notify(msg, type = '') {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = 'notif show' + (type ? ' ' + type : '');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
