@@ -1,0 +1,20 @@
+🚀 Netlify Drop - 5초 배포 가이드
+
+1️⃣ 이 폴더를 복사하세요:
+   C:\Users\wnsdu\OneDrive\Desktop\claude code\러시아어_학습
+
+2️⃣ 브라우저에서 열기:
+   https://app.netlify.com/drop
+
+3️⃣ 폴더를 드래그드롭
+   (또는 폴더의 모든 파일을 선택해서 드래그)
+
+4️⃣ 기다리기... (3초)
+
+5️⃣ 끝!
+   🎉 공개 URL 자동 생성됨
+   예: https://hungry-panda-a1b2c3.netlify.app
+
+✨ 완료! 전 세계 누구나 접근 가능합니다!
+
+📱 모바일도 완벽하게 작동합니다.

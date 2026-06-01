@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기초러시아어 단어 정리</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 13px;
+  }
+
+  /* ── 인쇄 버튼 ── */
+  .print-btn {
+    position: fixed; top: 16px; right: 16px; z-index: 999;
+    background: #1a3a6b; color: white;
+    border: none; border-radius: 10px;
+    padding: 10px 22px; font-size: 15px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  }
+  .print-btn:hover { background: #2554a0; }
+
+  /* ── 페이지 ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    background: white;
+    padding: 14mm 14mm 12mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12);
+    page-break-after: always;
+  }
+
+  /* ── 헤더 ── */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid #1a3a6b;
+    padding-bottom: 7px; margin-bottom: 12px;
+  }
+  .page-header h1 { font-size: 18px; color: #1a3a6b; font-weight: 900; }
+  .page-header .pg { font-size: 12px; color: #888; font-weight: 600; }
+
+  /* ── 섹션 ── */
+  .section { margin-bottom: 12px; }
+  .section-title {
+    display: inline-block;
+    background: #1a3a6b; color: white;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 4px;
+    margin-bottom: 6px; letter-spacing: .5px;
+  }
+
+  /* ── 단어 그리드 ── */
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .word-grid.col3 { grid-template-columns: repeat(3, 1fr); }
+  .word-grid.col5 { grid-template-columns: repeat(5, 1fr); }
+  .word-grid.col6 { grid-template-columns: repeat(6, 1fr); }
+
+  .word-card {
+    border: 1px solid #e0e7ef;
+    border-radius: 5px;
+    padding: 5px 7px;
+    background: #f8fafc;
+  }
+  .word-card .ru {
+    font-size: 13px; font-weight: 700;
+    color: #1a3a6b; line-height: 1.3;
+  }
+  .word-card .ko {
+    font-size: 11px; color: #555; margin-top: 1px;
+  }
+
+  /* 색상 변형 */
+  .word-card.green  { background: #f0fdf4; border-color: #86efac; }
+  .word-card.green .ru { color: #166534; }
+  .word-card.blue   { background: #eff6ff; border-color: #93c5fd; }
+  .word-card.blue .ru { color: #1e40af; }
+  .word-card.purple { background: #faf5ff; border-color: #c4b5fd; }
+  .word-card.purple .ru { color: #6b21a8; }
+  .word-card.orange { background: #fff7ed; border-color: #fdba74; }
+  .word-card.orange .ru { color: #9a3412; }
+  .word-card.pink   { background: #fdf2f8; border-color: #f9a8d4; }
+  .word-card.pink .ru { color: #9d174d; }
+  .word-card.teal   { background: #f0fdfa; border-color: #5eead4; }
+  .word-card.teal .ru { color: #134e4a; }
+  .word-card.red    { background: #fef2f2; border-color: #fca5a5; }
+  .word-card.red .ru { color: #991b1b; }
+
+  /* ── 두 컬럼 레이아웃 ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* ── 발음 테이블 ── */
+  .pron-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .pron-table th {
+    background: #1a3a6b; color: white;
+    padding: 5px 8px; text-align: center; font-size: 11px;
+  }
+  .pron-table td {
+    padding: 5px 8px; border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle; text-align: center;
+  }
+  .pron-table tr:nth-child(even) td { background: #f8fafc; }
+  .pron-table .ru-big { font-size: 16px; font-weight: 700; color: #1a3a6b; }
+  .pron-table .arrow { color: #888; font-size: 14px; }
+  .pron-table .note { font-size: 11px; color: #555; text-align: left; }
+  .pron-table .ex { font-weight: 600; color: #2554a0; }
+
+  /* ── 혼동 쌍 박스 ── */
+  .confuse-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .confuse-card {
+    border: 2px solid #e0e7ef; border-radius: 7px;
+    padding: 8px 10px; background: #fafbfc;
+  }
+  .confuse-card .pair {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 18px; font-weight: 800;
+    color: #1a3a6b; margin-bottom: 5px;
+  }
+  .confuse-card .pair .vs {
+    font-size: 11px; font-weight: 400;
+    color: #999; background: #e5e7eb;
+    padding: 1px 5px; border-radius: 10px;
+  }
+  .confuse-card .desc { font-size: 11px; color: #444; line-height: 1.6; }
+  .confuse-card .desc .ru { color: #1a3a6b; font-weight: 600; }
+
+  /* ── 알파벳 구역 ── */
+  .alpha-zone {
+    display: grid; grid-template-columns: repeat(11, 1fr);
+    gap: 3px; margin-bottom: 4px;
+  }
+  .alpha-cell {
+    text-align: center; border: 1px solid #d1d5db;
+    border-radius: 4px; padding: 4px 2px; background: #f8fafc;
+  }
+  .alpha-cell .uc { font-size: 14px; font-weight: 700; color: #1a3a6b; line-height: 1.1; }
+  .alpha-cell .lc { font-size: 11px; color: #374151; }
+  .alpha-cell .ph { font-size: 10px; color: #6b7280; }
+  .alpha-cell.vowel { background: #eff6ff; border-color: #93c5fd; }
+  .alpha-cell.vowel .uc { color: #1e40af; }
+  .alpha-cell.special { background: #faf5ff; border-color: #c4b5fd; }
+  .alpha-cell.special .uc { color: #6b21a8; }
+
+  /* ── 인쇄 설정 ── */
+  @media print {
+    body { background: white; }
+    .print-btn { display: none; }
+    .page {
+      margin: 0; box-shadow: none;
+      width: 100%; padding: 10mm 12mm;
+    }
+    @page { size: A4; margin: 0; }
+  }
+
+  /* ── 꼬리말 ── */
+  .page-footer {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 10px; padding-top: 6px;
+    font-size: 10px; color: #aaa;
+    display: flex; justify-content: space-between;
+  }
+
+  .tip-box {
+    background: #fffbeb; border: 1px solid #fcd34d;
+    border-radius: 6px; padding: 6px 10px;
+    font-size: 11px; color: #78350f;
+    margin-bottom: 10px; line-height: 1.7;
+  }
+  .tip-box strong { color: #92400e; }
+
+  hr.divider { border: none; border-top: 1px dashed #d1d5db; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — 사람 / 직업 / 가족
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <h1>🇷🇺 기초러시아어 단어 정리</h1>
+    <span class="pg">📄 1 / 3 &nbsp;|&nbsp; 사람 · 가족 · 직업 · 장소 · 교통</span>
+  </div>
+
+  <div class="tip-box">
+    💡 <strong>강세(역점) 표시 ́</strong> — 역점이 붙은 모음에 힘을 주어 읽으세요.
+    강세 없는 <strong>о</strong>는 [아]로 발음됩니다. 예: <strong>хорошо́</strong> → [хара쇼]
+  </div>
+
+  <!-- 가족 -->
+  <div class="section">
+    <div class="section-title">👨‍👩‍👧 가족 (Семья́)</div>
+    <div class="word-grid col6">
+      <div class="word-card pink"><div class="ru">ма́ма</div><div class="ko">엄마</div></div>
+      <div class="word-card pink"><div class="ru">па́па</div><div class="ko">아빠</div></div>
+      <div class="word-card pink"><div class="ru">мать</div><div class="ko">어머니</div></div>
+      <div class="word-card pink"><div class="ru">оте́ц</div><div class="ko">아버지</div></div>
+      <div class="word-card pink"><div class="ru">сын</div><div class="ko">아들</div></div>
+      <div class="word-card pink"><div class="ru">дочь</div><div class="ko">딸</div></div>
+      <div class="word-card pink"><div class="ru">брат</div><div class="ko">형제</div></div>
+      <div class="word-card pink"><div class="ru">сестра́</div><div class="ko">자매</div></div>
+      <div class="word-card pink"><div class="ru">муж</div><div class="ko">남편</div></div>
+      <div class="word-card pink"><div class="ru">жена́</div><div class="ko">아내</div></div>
+      <div class="word-card pink"><div class="ru">де́душка</div><div class="ko">할아버지</div></div>
+      <div class="word-card pink"><div class="ru">ба́бушка</div><div class="ko">할머니</div></div>
+      <div class="word-card pink"><div class="ru">дя́дя</div><div class="ko">아저씨·삼촌</div></div>
+      <div class="word-card pink"><div class="ru">тётя</div><div class="ko">아줌마·이모</div></div>
+      <div class="word-card pink"><div class="ru">де́ти</div><div class="ko">아이들</div></div>
+      <div class="word-card pink"><div class="ru">сосе́д/ка</div><div class="ko">이웃(남/녀)</div></div>
+    </div>
+  </div>
+
+  <!-- 사람 -->
+  <div class="section">
+    <div class="section-title">🧑 사람 표현 (Люди)</div>
+    <div class="word-grid col6">
+      <div class="word-card blue"><div class="ru">мужчи́на</div><div class="ko">남자</div></div>
+      <div class="word-card blue"><div class="ru">же́нщина</div><div class="ko">여자</div></div>
+      <div class="word-card blue"><div class="ru">ма́льчик</div><div class="ko">남자아이</div></div>
+      <div class="word-card blue"><div class="ru">де́вочка</div><div class="ko">여자아이</div></div>
+      <div class="word-card blue"><div class="ru">де́вушка</div><div class="ko">아가씨</div></div>
+      <div class="word-card blue"><div class="ru">молодо́й челове́к</div><div class="ko">젊은 남자</div></div>
+      <div class="word-card blue"><div class="ru">друг</div><div class="ko">친구(남)</div></div>
+      <div class="word-card blue"><div class="ru">подру́га</div><div class="ko">친구(여)</div></div>
+    </div>
+  </div>
+
+  <!-- 직업 -->
+  <div class="section">
+    <div class="section-title">💼 직업 (Профе́ссия)</div>
+    <div class="word-grid col5">
+      <div class="word-card green"><div class="ru">студе́нт/ка</div><div class="ko">대학생(남/녀)</div></div>
+      <div class="word-card green"><div class="ru">учи́тель/ница</div><div class="ko">교사(남/녀)</div></div>
+      <div class="word-card green"><div class="ru">профе́ссор</div><div class="ko">교수</div></div>
+      <div class="word-card green"><div class="ru">преподава́тель</div><div class="ko">강사(대학)</div></div>
+      <div class="word-card green"><div class="ru">врач</div><div class="ko">의사</div></div>
+      <div class="word-card green"><div class="ru">инжене́р</div><div class="ko">엔지니어</div></div>
+      <div class="word-card green"><div class="ru">бизнесме́н</div><div class="ko">사업가</div></div>
+      <div class="word-card green"><div class="ru">пова́р</div><div class="ko">요리사</div></div>
+      <div class="word-card green"><div class="ru">апте́карь</div><div class="ko">약사</div></div>
+      <div class="word-card green"><div class="ru">библиоте́карь</div><div class="ko">사서</div></div>
+      <div class="word-card green"><div class="ru">почтальо́н</div><div class="ko">우체부</div></div>
+      <div class="word-card green"><div class="ru">пенсионе́р</div><div class="ko">연금생활자</div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 장소 -->
+  <div class="section">
+    <div class="section-title">🏛️ 장소·건물 (Места́)</div>
+    <div class="word-grid col6">
+      <div class="word-card orange"><div class="ru">шко́ла</div><div class="ko">학교(초중고)</div></div>
+      <div class="word-card orange"><div class="ru">университе́т</div><div class="ko">대학교</div></div>
+      <div class="word-card orange"><div class="ru">институ́т</div><div class="ko">연구소·대학</div></div>
+      <div class="word-card orange"><div class="ru">библиоте́ка</div><div class="ko">도서관</div></div>
+      <div class="word-card orange"><div class="ru">больни́ца</div><div class="ko">병원</div></div>
+      <div class="word-card orange"><div class="ru">апте́ка</div><div class="ko">약국</div></div>
+      <div class="word-card orange"><div class="ru">рестора́н</div><div class="ko">레스토랑</div></div>
+      <div class="word-card orange"><div class="ru">кафе́</div><div class="ko">카페</div></div>
+      <div class="word-card orange"><div class="ru">магази́н</div><div class="ko">가게·상점</div></div>
+      <div class="word-card orange"><div class="ru">банк</div><div class="ko">은행</div></div>
+      <div class="word-card orange"><div class="ru">по́чта</div><div class="ko">우체국</div></div>
+      <div class="word-card orange"><div class="ru">вокза́л</div><div class="ko">기차역</div></div>
+      <div class="word-card orange"><div class="ru">аэропо́рт</div><div class="ko">공항</div></div>
+      <div class="word-card orange"><div class="ru">музе́й</div><div class="ko">박물관</div></div>
+      <div class="word-card orange"><div class="ru">стадио́н</div><div class="ko">경기장</div></div>
+      <div class="word-card orange"><div class="ru">заво́д</div><div class="ko">공장</div></div>
+      <div class="word-card orange"><div class="ru">компа́ния</div><div class="ko">회사</div></div>
+      <div class="word-card orange"><div class="ru">о́фис</div><div class="ko">사무실</div></div>
+      <div class="word-card orange"><div class="ru">парк</div><div class="ko">공원</div></div>
+      <div class="word-card orange"><div class="ru">санато́рий</div><div class="ko">휴양소</div></div>
+      <div class="word-card orange"><div class="ru">теа́тр</div><div class="ko">극장</div></div>
+      <div class="word-card orange"><div class="ru">кинотеа́тр</div><div class="ko">영화극장</div></div>
+      <div class="word-card orange"><div class="ru">пло́щадь</div><div class="ko">광장</div></div>
+      <div class="word-card orange"><div class="ru">дом</div><div class="ko">집·건물</div></div>
+    </div>
+  </div>
+
+  <!-- 교통 -->
+  <div class="section">
+    <div class="section-title">🚌 교통 (Тра́нспорт)</div>
+    <div class="word-grid col5">
+      <div class="word-card teal"><div class="ru">авто́бус</div><div class="ko">버스</div></div>
+      <div class="word-card teal"><div class="ru">трамва́й</div><div class="ko">트램·전차</div></div>
+      <div class="word-card teal"><div class="ru">тролле́йбус</div><div class="ko">트롤리버스</div></div>
+      <div class="word-card teal"><div class="ru">такси́</div><div class="ko">택시</div></div>
+      <div class="word-card teal"><div class="ru">го́род</div><div class="ko">도시</div></div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>기초러시아어 단어 정리 — 1과~3과 + 회화 전 범위</span>
+    <span>Page 1 / 3</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — 사물 / 동사 / 나라 / 방향 / 인사
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <h1>🇷🇺 기초러시아어 단어 정리</h1>
+    <span class="pg">📄 2 / 3 &nbsp;|&nbsp; 사물 · 동사 · 나라 · 방향 · 인사표현</span>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <!-- 사물 -->
+      <div class="section">
+        <div class="section-title">📦 사물·물건 (Предме́ты)</div>
+        <div class="word-grid col3">
+          <div class="word-card blue"><div class="ru">кни́га</div><div class="ko">책</div></div>
+          <div class="word-card blue"><div class="ru">газе́та</div><div class="ko">신문</div></div>
+          <div class="word-card blue"><div class="ru">журна́л</div><div class="ko">잡지</div></div>
+          <div class="word-card blue"><div class="ru">письмо́</div><div class="ko">편지</div></div>
+          <div class="word-card blue"><div class="ru">ру́чка</div><div class="ko">볼펜</div></div>
+          <div class="word-card blue"><div class="ru">каранда́ш</div><div class="ko">연필</div></div>
+          <div class="word-card blue"><div class="ru">слова́рь</div><div class="ko">사전</div></div>
+          <div class="word-card blue"><div class="ru">тетра́дь</div><div class="ko">공책</div></div>
+          <div class="word-card blue"><div class="ru">стол</div><div class="ko">탁자·식탁</div></div>
+          <div class="word-card blue"><div class="ru">стул</div><div class="ko">의자</div></div>
+          <div class="word-card blue"><div class="ru">шкаф</div><div class="ko">옷장</div></div>
+          <div class="word-card blue"><div class="ru">портфе́ль</div><div class="ko">서류가방</div></div>
+          <div class="word-card blue"><div class="ru">пальто́</div><div class="ko">외투·겉옷</div></div>
+          <div class="word-card blue"><div class="ru">ра́дио</div><div class="ko">라디오</div></div>
+          <div class="word-card blue"><div class="ru">сигаре́ты</div><div class="ko">담배</div></div>
+        </div>
+      </div>
+
+      <!-- 자연·장소 명사 -->
+      <div class="section">
+        <div class="section-title">🌿 자연·공간</div>
+        <div class="word-grid col3">
+          <div class="word-card teal"><div class="ru">мо́ре</div><div class="ko">바다</div></div>
+          <div class="word-card teal"><div class="ru">лес</div><div class="ko">숲</div></div>
+          <div class="word-card teal"><div class="ru">сад</div><div class="ko">정원</div></div>
+          <div class="word-card teal"><div class="ru">пол</div><div class="ko">바닥</div></div>
+          <div class="word-card teal"><div class="ru">общежи́тие</div><div class="ko">기숙사</div></div>
+          <div class="word-card teal"><div class="ru">до́ма</div><div class="ko">집에서</div></div>
+        </div>
+      </div>
+
+      <!-- 나라 -->
+      <div class="section">
+        <div class="section-title">🌏 나라 (Стра́ны)</div>
+        <div class="word-grid col3">
+          <div class="word-card purple"><div class="ru">Коре́я</div><div class="ko">한국</div></div>
+          <div class="word-card purple"><div class="ru">Росси́я</div><div class="ko">러시아</div></div>
+          <div class="word-card purple"><div class="ru">Кита́й</div><div class="ko">중국</div></div>
+          <div class="word-card purple"><div class="ru">Япо́ния</div><div class="ko">일본</div></div>
+          <div class="word-card purple"><div class="ru">Аме́рика</div><div class="ko">미국</div></div>
+          <div class="word-card purple"><div class="ru">А́нглия</div><div class="ko">영국</div></div>
+        </div>
+      </div>
+
+      <!-- 방향 -->
+      <div class="section">
+        <div class="section-title">🧭 방향 (Направле́ния)</div>
+        <div class="word-grid col4">
+          <div class="word-card orange"><div class="ru">восто́к</div><div class="ko">동쪽 🌅</div></div>
+          <div class="word-card orange"><div class="ru">за́пад</div><div class="ko">서쪽 🌇</div></div>
+          <div class="word-card orange"><div class="ru">юг</div><div class="ko">남쪽 ☀️</div></div>
+          <div class="word-card orange"><div class="ru">се́вер</div><div class="ko">북쪽 ❄️</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- 동사 전체 -->
+      <div class="section">
+        <div class="section-title">⚡ 핵심 동사 (Глаго́лы)</div>
+        <div class="word-grid col2" style="grid-template-columns:1fr 1fr;">
+          <div class="word-card green"><div class="ru">чита́ть</div><div class="ko">읽다</div></div>
+          <div class="word-card green"><div class="ru">слу́шать</div><div class="ko">듣다</div></div>
+          <div class="word-card green"><div class="ru">де́лать</div><div class="ko">하다</div></div>
+          <div class="word-card green"><div class="ru">знать</div><div class="ko">알다</div></div>
+          <div class="word-card green"><div class="ru">понима́ть</div><div class="ko">이해하다</div></div>
+          <div class="word-card green"><div class="ru">спра́шивать</div><div class="ko">묻다</div></div>
+          <div class="word-card green"><div class="ru">жить</div><div class="ko">살다</div></div>
+          <div class="word-card green"><div class="ru">рабо́тать</div><div class="ko">일하다</div></div>
+          <div class="word-card green"><div class="ru">учи́ться</div><div class="ko">공부하다</div></div>
+          <div class="word-card green"><div class="ru">гуля́ть</div><div class="ko">산책하다</div></div>
+          <div class="word-card green"><div class="ru">отдыха́ть</div><div class="ko">쉬다</div></div>
+          <div class="word-card green"><div class="ru">за́втракать</div><div class="ko">아침먹다</div></div>
+          <div class="word-card green"><div class="ru">обе́дать</div><div class="ko">점심먹다</div></div>
+          <div class="word-card green"><div class="ru">у́жинать</div><div class="ko">저녁먹다</div></div>
+        </div>
+      </div>
+
+      <!-- 대명사 -->
+      <div class="section">
+        <div class="section-title">🙋 인칭대명사 (Местоиме́ния)</div>
+        <div class="word-grid col3">
+          <div class="word-card red"><div class="ru">я</div><div class="ko">나</div></div>
+          <div class="word-card red"><div class="ru">ты</div><div class="ko">너(반말)</div></div>
+          <div class="word-card red"><div class="ru">он</div><div class="ko">그(남)</div></div>
+          <div class="word-card red"><div class="ru">она́</div><div class="ko">그녀</div></div>
+          <div class="word-card red"><div class="ru">оно́</div><div class="ko">그것</div></div>
+          <div class="word-card red"><div class="ru">мы</div><div class="ko">우리</div></div>
+          <div class="word-card red"><div class="ru">вы</div><div class="ko">너희·당신</div></div>
+          <div class="word-card red"><div class="ru">они́</div><div class="ko">그들</div></div>
+          <div class="word-card red"><div class="ru">э́то</div><div class="ko">이것은</div></div>
+        </div>
+      </div>
+
+      <!-- 의문사 -->
+      <div class="section">
+        <div class="section-title">❓ 의문사 (Вопроси́тельные)</div>
+        <div class="word-grid col3">
+          <div class="word-card purple"><div class="ru">кто</div><div class="ko">누가</div></div>
+          <div class="word-card purple"><div class="ru">что</div><div class="ko">무엇</div></div>
+          <div class="word-card purple"><div class="ru">где</div><div class="ko">어디에</div></div>
+          <div class="word-card purple"><div class="ru">куда́</div><div class="ko">어디로</div></div>
+          <div class="word-card purple"><div class="ru">как</div><div class="ko">어떻게</div></div>
+          <div class="word-card purple"><div class="ru">когда́</div><div class="ko">언제</div></div>
+          <div class="word-card purple"><div class="ru">почему́</div><div class="ko">왜</div></div>
+          <div class="word-card purple"><div class="ru">ско́лько</div><div class="ko">얼마·몇</div></div>
+        </div>
+      </div>
+
+      <!-- 핵심 인사·회화 -->
+      <div class="section">
+        <div class="section-title">💬 핵심 인사·회화</div>
+        <div class="word-grid col2" style="grid-template-columns:1fr 1fr;">
+          <div class="word-card teal"><div class="ru">Здра́вствуйте</div><div class="ko">안녕하세요(존댓말)</div></div>
+          <div class="word-card teal"><div class="ru">Приве́т</div><div class="ko">안녕(반말)</div></div>
+          <div class="word-card teal"><div class="ru">До свида́ния</div><div class="ko">안녕히가세요</div></div>
+          <div class="word-card teal"><div class="ru">Пока́</div><div class="ko">잘가(반말)</div></div>
+          <div class="word-card teal"><div class="ru">Спаси́бо</div><div class="ko">감사합니다</div></div>
+          <div class="word-card teal"><div class="ru">Пожа́луйста</div><div class="ko">천만에요</div></div>
+          <div class="word-card teal"><div class="ru">Извини́те</div><div class="ko">실례합니다</div></div>
+          <div class="word-card teal"><div class="ru">Хорошо́</div><div class="ko">좋아요·네</div></div>
+          <div class="word-card teal"><div class="ru">Да / Нет</div><div class="ko">예 / 아니요</div></div>
+          <div class="word-card teal"><div class="ru">О́чень прия́тно</div><div class="ko">만나서반갑습니다</div></div>
+          <div class="word-card teal"><div class="ru">Как дела́?</div><div class="ko">어떻게지내세요?</div></div>
+          <div class="word-card teal"><div class="ru">Как вас зову́т?</div><div class="ko">성함이어떻게되세요?</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>기초러시아어 단어 정리 — 1과~3과 + 회화 전 범위</span>
+    <span>Page 2 / 3</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — 발음 정리 / 알파벳 / 혼동 쌍
+══════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <h1>🇷🇺 기초러시아어 발음 정리</h1>
+    <span class="pg">📄 3 / 3 &nbsp;|&nbsp; 알파벳 · 발음 규칙 · 헷갈리는 쌍</span>
+  </div>
+
+  <!-- 알파벳 -->
+  <div class="section">
+    <div class="section-title">🔤 러시아어 알파벳 33자 (파란색=모음, 보라색=부호)</div>
+    <div class="alpha-zone">
+      <div class="alpha-cell vowel"><div class="uc">А</div><div class="lc">а</div><div class="ph">[아]</div></div>
+      <div class="alpha-cell"><div class="uc">Б</div><div class="lc">б</div><div class="ph">[브]</div></div>
+      <div class="alpha-cell"><div class="uc">В</div><div class="lc">в</div><div class="ph">[브]</div></div>
+      <div class="alpha-cell"><div class="uc">Г</div><div class="lc">г</div><div class="ph">[그]</div></div>
+      <div class="alpha-cell"><div class="uc">Д</div><div class="lc">д</div><div class="ph">[드]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Е</div><div class="lc">е</div><div class="ph">[예]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Ё</div><div class="lc">ё</div><div class="ph">[요]</div></div>
+      <div class="alpha-cell"><div class="uc">Ж</div><div class="lc">ж</div><div class="ph">[쥐]</div></div>
+      <div class="alpha-cell"><div class="uc">З</div><div class="lc">з</div><div class="ph">[즈]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">И</div><div class="lc">и</div><div class="ph">[이]</div></div>
+      <div class="alpha-cell"><div class="uc">Й</div><div class="lc">й</div><div class="ph">[이짧]</div></div>
+      <div class="alpha-cell"><div class="uc">К</div><div class="lc">к</div><div class="ph">[크]</div></div>
+      <div class="alpha-cell"><div class="uc">Л</div><div class="lc">л</div><div class="ph">[르]</div></div>
+      <div class="alpha-cell"><div class="uc">М</div><div class="lc">м</div><div class="ph">[므]</div></div>
+      <div class="alpha-cell"><div class="uc">Н</div><div class="lc">н</div><div class="ph">[느]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">О</div><div class="lc">о</div><div class="ph">[오/아]</div></div>
+      <div class="alpha-cell"><div class="uc">П</div><div class="lc">п</div><div class="ph">[프]</div></div>
+      <div class="alpha-cell"><div class="uc">Р</div><div class="lc">р</div><div class="ph">[르굴]</div></div>
+      <div class="alpha-cell"><div class="uc">С</div><div class="lc">с</div><div class="ph">[스]</div></div>
+      <div class="alpha-cell"><div class="uc">Т</div><div class="lc">т</div><div class="ph">[트]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">У</div><div class="lc">у</div><div class="ph">[우]</div></div>
+      <div class="alpha-cell"><div class="uc">Ф</div><div class="lc">ф</div><div class="ph">[프]</div></div>
+      <div class="alpha-cell"><div class="uc">Х</div><div class="lc">х</div><div class="ph">[흐]</div></div>
+      <div class="alpha-cell"><div class="uc">Ц</div><div class="lc">ц</div><div class="ph">[츠]</div></div>
+      <div class="alpha-cell"><div class="uc">Ч</div><div class="lc">ч</div><div class="ph">[치]</div></div>
+      <div class="alpha-cell"><div class="uc">Ш</div><div class="lc">ш</div><div class="ph">[쉬]</div></div>
+      <div class="alpha-cell"><div class="uc">Щ</div><div class="lc">щ</div><div class="ph">[쉬연]</div></div>
+      <div class="alpha-cell special"><div class="uc">Ъ</div><div class="lc">ъ</div><div class="ph">경자음</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Ы</div><div class="lc">ы</div><div class="ph">[이딱]</div></div>
+      <div class="alpha-cell special"><div class="uc">Ь</div><div class="lc">ь</div><div class="ph">연자음</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Э</div><div class="lc">э</div><div class="ph">[에]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Ю</div><div class="lc">ю</div><div class="ph">[유]</div></div>
+      <div class="alpha-cell vowel"><div class="uc">Я</div><div class="lc">я</div><div class="ph">[야]</div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 핵심 발음 규칙 -->
+  <div class="section">
+    <div class="section-title">📢 핵심 발음 규칙 (꼭 암기!)</div>
+    <table class="pron-table">
+      <tr>
+        <th style="width:12%">글자</th>
+        <th style="width:18%">규칙</th>
+        <th style="width:35%">예시</th>
+        <th>설명</th>
+      </tr>
+      <tr>
+        <td><span class="ru-big">О</span></td>
+        <td>강세 없으면 <strong>[아]</strong></td>
+        <td><span class="ex">хорошо́</span> → [хара쇼] &nbsp;|&nbsp; <span class="ex">молоко́</span> → [малако]</td>
+        <td class="note">강세(́) 있는 О만 [오]로 읽고 나머지는 [아]</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Е</span></td>
+        <td>단어 첫글자·모음 뒤 <strong>[예]</strong></td>
+        <td><span class="ex">ест</span> [예스트] &nbsp;|&nbsp; <span class="ex">е́сть</span> [예스치]</td>
+        <td class="note">자음 뒤에서는 [에]에 가까운 소리</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Я</span></td>
+        <td>단어 첫글자·모음 뒤 <strong>[야]</strong></td>
+        <td><span class="ex">я</span> [야] &nbsp;|&nbsp; <span class="ex">моя́</span> [마야]</td>
+        <td class="note">앞 자음을 연음화(부드럽게)시킴</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Ю</span></td>
+        <td>단어 첫글자·모음 뒤 <strong>[유]</strong></td>
+        <td><span class="ex">юг</span> [유크] &nbsp;|&nbsp; <span class="ex">ую́т</span> [우윳]</td>
+        <td class="note">앞 자음을 연음화시킴</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Ь</span></td>
+        <td>앞 자음을 <strong>연음화</strong></td>
+        <td><span class="ex">дочь</span> [도치] &nbsp;|&nbsp; <span class="ex">тетра́дь</span> [찌뜨라찌]</td>
+        <td class="note">소리 없음, 앞 자음만 부드럽게 만듦</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Ъ</span></td>
+        <td><strong>경음화</strong> 부호</td>
+        <td><span class="ex">съезд</span> [스예스트]</td>
+        <td class="note">소리 없음, 앞 자음을 딱딱하게 분리</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Ы</span></td>
+        <td>한국어에 없는 소리</td>
+        <td><span class="ex">ты</span> [뜨이] &nbsp;|&nbsp; <span class="ex">вы</span> [브이]</td>
+        <td class="note">[이]보다 혀를 더 뒤로 당겨서 발음</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">Ж</span></td>
+        <td>항상 <strong>경자음</strong></td>
+        <td><span class="ex">жена́</span> [쥐나] &nbsp;|&nbsp; <span class="ex">уже́</span> [우줴]</td>
+        <td class="note">뒤에 Ь가 와도 경자음 유지</td>
+      </tr>
+      <tr>
+        <td><span class="ru-big">어말<br>유성음</span></td>
+        <td><strong>무성음화</strong></td>
+        <td><span class="ex">год</span> [곳] &nbsp;|&nbsp; <span class="ex">хлеб</span> [흘렙]</td>
+        <td class="note">б→п, в→ф, г→к, д→т, з→с, ж→ш</td>
+      </tr>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 헷갈리는 발음 쌍 -->
+  <div class="section">
+    <div class="section-title">⚠️ 헷갈리는 발음 쌍 (시험 출제 포인트!)</div>
+    <div class="confuse-grid">
+
+      <div class="confuse-card">
+        <div class="pair">О <span class="vs">vs</span> А</div>
+        <div class="desc">
+          강세 O → <strong>[오]</strong><br>
+          무강세 O → <strong>[아]</strong><br>
+          <span class="ru">мо́ре</span> [모례] vs <span class="ru">молоко́</span> [малако]
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Е <span class="vs">vs</span> Э</div>
+        <div class="desc">
+          Е → 연자음 뒤 <strong>[에]</strong><br>
+          Э → 경자음 뒤 <strong>[에]</strong><br>
+          <span class="ru">это</span> [에따] (Э 사용)
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">И <span class="vs">vs</span> Ы</div>
+        <div class="desc">
+          И → 혀 앞 <strong>[이]</strong><br>
+          Ы → 혀 뒤 <strong>[이↗]</strong><br>
+          <span class="ru">ты</span> [뜨이] vs <span class="ru">они́</span> [아니]
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Й <span class="vs">vs</span> И</div>
+        <div class="desc">
+          И → 모음 <strong>[이]</strong><br>
+          Й → 반모음 <strong>[이(짧)]</strong><br>
+          <span class="ru">музе́й</span>의 끝 й = [이] 짧게
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Ш <span class="vs">vs</span> Щ</div>
+        <div class="desc">
+          Ш → 경자음 <strong>[쉬]</strong><br>
+          Щ → 연자음 <strong>[쒸/시]</strong><br>
+          <span class="ru">шко́ла</span> vs <span class="ru">щи</span>
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">З <span class="vs">vs</span> С</div>
+        <div class="desc">
+          З → 유성 <strong>[즈]</strong><br>
+          С → 무성 <strong>[스]</strong><br>
+          어말에서 З→ [с] 로 변함<br>
+          <span class="ru">раз</span> → [рас]
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Б <span class="vs">vs</span> П</div>
+        <div class="desc">
+          Б → 유성 <strong>[브]</strong><br>
+          П → 무성 <strong>[프]</strong><br>
+          어말에서 Б→П<br>
+          <span class="ru">хлеб</span> → [흘렙]
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Г <span class="vs">vs</span> К</div>
+        <div class="desc">
+          Г → 유성 <strong>[그]</strong><br>
+          К → 무성 <strong>[크]</strong><br>
+          어말에서 Г→К<br>
+          <span class="ru">год</span> → [곳]처럼 Д→Т
+        </div>
+      </div>
+
+      <div class="confuse-card">
+        <div class="pair">Р <span class="vs">vs</span> Л</div>
+        <div class="desc">
+          Р → <strong>혀 떨림 [르]</strong> (굴림 r)<br>
+          Л → <strong>설측음 [르]</strong><br>
+          <span class="ru">ра́дио</span> vs <span class="ru">ле́кция</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 명사 성(性) 어미 -->
+  <div class="section">
+    <div class="section-title">🏷️ 명사 성(性) 구별법 — 시험 빈출!</div>
+    <div class="three-col">
+      <div style="background:#dbeafe;border-radius:8px;padding:8px 12px;">
+        <div style="font-size:12px;font-weight:800;color:#1e40af;margin-bottom:6px;">🔵 남성 (мужской)</div>
+        <div style="font-size:12px;line-height:1.9;color:#1e3a8a;">
+          자음으로 끝 → <b>стол, брат, врач</b><br>
+          -й 로 끝 → <b>музе́й</b><br>
+          예외: <b>мужчи́на, дя́дя</b> (남성이지만 -а)
+        </div>
+      </div>
+      <div style="background:#fce7f3;border-radius:8px;padding:8px 12px;">
+        <div style="font-size:12px;font-weight:800;color:#9d174d;margin-bottom:6px;">🔴 여성 (женский)</div>
+        <div style="font-size:12px;line-height:1.9;color:#831843;">
+          -а, -я 로 끝 → <b>ма́ма, ле́кция</b><br>
+          연자음 -ь → <b>дочь, ночь, тетра́дь</b>
+        </div>
+      </div>
+      <div style="background:#dcfce7;border-radius:8px;padding:8px 12px;">
+        <div style="font-size:12px;font-weight:800;color:#166534;margin-bottom:6px;">🟢 중성 (средний)</div>
+        <div style="font-size:12px;line-height:1.9;color:#14532d;">
+          -о, -е 로 끝 → <b>мо́ре, о́коло</b><br>
+          -мя 로 끝 → <b>вре́мя, и́мя</b><br>
+          불변화: <b>кафе́, ра́дио</b>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>기초러시아어 단어 정리 — 1과~3과 + 회화 전 범위</span>
+    <span>Page 3 / 3</span>
+  </div>
+</div>
+
+</body>
+</html>

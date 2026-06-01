@@ -604,7 +604,12 @@ def main():
         sys.exit(1)
 
     try:
-        json_str = sys.argv[1].strip().lstrip('﻿')
+        arg = sys.argv[1].strip().lstrip('﻿')
+        # 파일 경로이면 파일 내용 읽기
+        if os.path.isfile(arg):
+            json_str = Path(arg).read_text(encoding='utf-8')
+        else:
+            json_str = arg
         try:
             data = json.loads(json_str)
         except json.JSONDecodeError:

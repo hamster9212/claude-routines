@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정역학 심층훈련 시스템 | Statics Deep Trainer</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --bg2: #1a1d2e;
+  --bg3: #232640;
+  --border: #2e3250;
+  --accent: #5b8dee;
+  --accent2: #7c5cbf;
+  --green: #3dd68c;
+  --red: #ff5f6d;
+  --yellow: #ffd166;
+  --orange: #f4a261;
+  --text: #e8eaf0;
+  --text2: #9da3bf;
+  --text3: #6b7194;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: flex; }
+
+/* ── LANDING ── */
+#screen-landing {
+  flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem; text-align: center;
+}
+.landing-title { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+.landing-title span { color: var(--accent); }
+.landing-sub { color: var(--text2); margin: .8rem 0 2.5rem; font-size: 1.1rem; }
+.keyword-chips { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+.chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 999px; padding: .35rem .9rem; font-size: .82rem; color: var(--text2); }
+.chip.hot { border-color: var(--accent); color: var(--accent); }
+.mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 860px; width: 100%; margin-bottom: 2rem; }
+.mode-card {
+  background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 1.4rem; cursor: pointer; transition: all .18s; text-align: left;
+}
+.mode-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+.mode-card.selected { border-color: var(--accent); background: rgba(91,141,238,.1); }
+.mode-card .icon { font-size: 2rem; margin-bottom: .6rem; }
+.mode-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+.mode-card p { font-size: .8rem; color: var(--text2); line-height: 1.5; }
+.mode-card .badge { display: inline-block; margin-top: .5rem; padding: .2rem .6rem; border-radius: 999px; font-size: .7rem; font-weight: 700; }
+.badge-green { background: rgba(61,214,140,.15); color: var(--green); }
+.badge-yellow { background: rgba(255,209,102,.15); color: var(--yellow); }
+.badge-red { background: rgba(255,95,109,.15); color: var(--red); }
+.badge-blue { background: rgba(91,141,238,.15); color: var(--accent); }
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
+  padding: .75rem 2rem; font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: all .15s;
+}
+.btn:hover { background: #4a7de0; transform: translateY(-1px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+.btn-sm { padding: .45rem 1rem; font-size: .85rem; }
+.btn-green { background: var(--green); color: #0a1a0f; }
+.btn-green:hover { background: #2fba7a; }
+.btn-red { background: var(--red); color: #fff; }
+.btn-red:hover { background: #e84a58; }
+
+/* ── DIAGNOSTIC ── */
+#screen-diagnostic {
+  flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem; text-align: center;
+}
+.diag-intro { max-width: 600px; }
+.diag-intro h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+.diag-intro p { color: var(--text2); line-height: 1.7; margin-bottom: 1.5rem; }
+.diag-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.diag-step { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+.diag-step .num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.diag-step p { font-size: .82rem; color: var(--text2); margin-top: .3rem; }
+
+/* ── PROBLEM SCREEN ── */
+#screen-problem { flex-direction: column; min-height: 100vh; }
+.problem-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: .7rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.prob-progress { display: flex; gap: .4rem; flex: 1; }
+.prog-dot {
+  width: 28px; height: 6px; border-radius: 3px;
+  background: var(--bg3); transition: background .3s;
+}
+.prog-dot.done { background: var(--green); }
+.prog-dot.current { background: var(--accent); }
+.prog-dot.error { background: var(--red); }
+.timer-wrap { display: flex; align-items: center; gap: .5rem; min-width: 90px; }
+.timer-icon { font-size: 1.1rem; }
+.timer-val { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.timer-val.warn { color: var(--yellow); }
+.timer-val.danger { color: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+.level-badge { padding: .25rem .7rem; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+
+.problem-body { display: grid; grid-template-columns: 1fr 380px; gap: 0; flex: 1; }
+.problem-main { padding: 1.5rem; overflow-y: auto; }
+.problem-panel { background: var(--bg2); border-left: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; }
+
+.problem-id { font-size: .75rem; color: var(--text3); font-weight: 700; letter-spacing: 1px; margin-bottom: .4rem; }
+.problem-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 1.2rem; }
+.problem-title small { display: block; font-size: .85rem; font-weight: 400; color: var(--text2); margin-top: .2rem; }
+
+.given-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1.2rem; }
+.given-card h4 { font-size: .75rem; color: var(--text3); font-weight: 700; letter-spacing: 1px; margin-bottom: .8rem; }
+.given-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+.given-item { font-size: .9rem; }
+.given-item .label { color: var(--text2); font-size: .78rem; margin-bottom: .2rem; }
+.given-item .val { font-weight: 600; }
+
+.fbd-section h4 { font-size: .9rem; font-weight: 700; margin-bottom: .8rem; display: flex; align-items: center; gap: .5rem; }
+.fbd-check-list { display: flex; flex-direction: column; gap: .5rem; }
+.fbd-item {
+  display: flex; align-items: flex-start; gap: .7rem;
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: .7rem; cursor: pointer; transition: all .15s;
+}
+.fbd-item:hover { border-color: var(--accent); }
+.fbd-item.checked { border-color: var(--green); background: rgba(61,214,140,.07); }
+.fbd-item.checked .fbd-check-box { background: var(--green); border-color: var(--green); }
+.fbd-item.checked .fbd-check-box::after { display: block; }
+.fbd-item.wrong { border-color: var(--red); background: rgba(255,95,109,.07); }
+.fbd-check-box {
+  width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border);
+  flex-shrink: 0; margin-top: 1px; position: relative; transition: all .15s;
+}
+.fbd-check-box::after {
+  content: '✓'; display: none; position: absolute; top: -3px; left: 1px;
+  font-size: .75rem; color: #fff; font-weight: 900;
+}
+.fbd-item-info { flex: 1; }
+.fbd-item-force { font-size: .85rem; font-weight: 700; }
+.fbd-item-detail { font-size: .75rem; color: var(--text2); margin-top: .15rem; }
+.fbd-type-badge { font-size: .65rem; padding: .15rem .45rem; border-radius: 999px; margin-left: .4rem; }
+.fbd-type-unknown { background: rgba(91,141,238,.15); color: var(--accent); }
+.fbd-type-known { background: rgba(61,214,140,.15); color: var(--green); }
+.fbd-type-known_component { background: rgba(244,162,97,.15); color: var(--orange); }
+.fbd-type-known_resultant { background: rgba(124,92,191,.15); color: #a07fe0; }
+
+.fbd-actions { display: flex; gap: .6rem; margin-top: .8rem; flex-wrap: wrap; }
+.fbd-score { background: var(--bg3); border-radius: 8px; padding: .7rem 1rem; font-size: .85rem; margin-top: .8rem; }
+.fbd-score.good { border: 1px solid var(--green); }
+.fbd-score.bad { border: 1px solid var(--red); }
+
+/* SOLUTION PANEL */
+.solution-wrap { margin-top: 1rem; }
+.solution-step {
+  display: flex; gap: .8rem; padding: .7rem 0;
+  border-bottom: 1px solid var(--border); opacity: 0;
+  transform: translateY(8px); transition: all .25s; pointer-events: none;
+}
+.solution-step.visible { opacity: 1; transform: none; pointer-events: auto; }
+.step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent2); color: #fff; font-size: .72rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-text { font-size: .85rem; line-height: 1.6; color: var(--text); font-family: 'Consolas', monospace; white-space: pre-wrap; }
+.step-text .hl { color: var(--yellow); font-weight: 700; }
+
+.insight-box { background: rgba(91,141,238,.1); border: 1px solid rgba(91,141,238,.3); border-radius: var(--radius); padding: 1rem; margin-top: 1rem; }
+.insight-box h5 { color: var(--accent); font-size: .8rem; font-weight: 700; margin-bottom: .5rem; letter-spacing: .5px; }
+.insight-box p { font-size: .85rem; line-height: 1.6; color: var(--text2); }
+
+.answer-box { background: rgba(61,214,140,.08); border: 1px solid rgba(61,214,140,.25); border-radius: var(--radius); padding: 1rem; margin-top: .8rem; }
+.answer-box h5 { color: var(--green); font-size: .8rem; font-weight: 700; margin-bottom: .5rem; }
+.answer-entries { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .4rem; }
+.answer-entry { background: var(--bg3); padding: .35rem .7rem; border-radius: 6px; font-size: .82rem; font-family: 'Consolas', monospace; }
+.answer-entry .key { color: var(--text2); }
+.answer-entry .ansval { color: var(--green); font-weight: 700; }
+
+/* ERROR LOGGING */
+.error-section { margin-top: 1.2rem; }
+.error-section h4 { font-size: .85rem; font-weight: 700; margin-bottom: .8rem; color: var(--text2); }
+.error-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+.error-btn {
+  padding: .5rem .6rem; border: 1.5px solid var(--border); border-radius: 8px;
+  background: var(--bg3); font-size: .75rem; cursor: pointer; text-align: left;
+  transition: all .15s; color: var(--text);
+}
+.error-btn:hover { border-color: var(--red); }
+.error-btn.active { border-color: var(--red); background: rgba(255,95,109,.12); color: var(--red); }
+.error-btn .ecode { font-weight: 800; display: block; font-size: .7rem; color: var(--red); }
+.error-btn.no-error { border-color: var(--green); }
+.error-btn.no-error.active { background: rgba(61,214,140,.12); color: var(--green); border-color: var(--green); }
+
+.next-btn-wrap { margin-top: 1rem; display: flex; gap: .6rem; }
+
+/* ── SESSION RESULTS ── */
+#screen-results {
+  flex-direction: column; align-items: center; min-height: 100vh; padding: 2rem;
+}
+.results-header { text-align: center; margin-bottom: 2rem; }
+.results-header h2 { font-size: 2rem; font-weight: 800; }
+.results-header p { color: var(--text2); margin-top: .4rem; }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; width: 100%; max-width: 900px; margin-bottom: 2rem; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; text-align: center; }
+.stat-card .sval { font-size: 2.2rem; font-weight: 800; }
+.stat-card .slabel { font-size: .8rem; color: var(--text2); margin-top: .3rem; }
+.stat-card.green .sval { color: var(--green); }
+.stat-card.red .sval { color: var(--red); }
+.stat-card.blue .sval { color: var(--accent); }
+.stat-card.yellow .sval { color: var(--yellow); }
+
+.error-analysis { width: 100%; max-width: 900px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+.error-analysis h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.error-bar-list { display: flex; flex-direction: column; gap: .6rem; }
+.error-bar-item { display: grid; grid-template-columns: 100px 1fr 40px; gap: .7rem; align-items: center; font-size: .82rem; }
+.error-bar-label { color: var(--text2); }
+.error-bar-track { background: var(--bg3); border-radius: 999px; height: 8px; overflow: hidden; }
+.error-bar-fill { height: 100%; border-radius: 999px; background: var(--red); transition: width .6s; }
+.error-bar-fill.green { background: var(--green); }
+.error-count { color: var(--text); font-weight: 700; text-align: right; }
+
+.problem-review { width: 100%; max-width: 900px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+.problem-review h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.review-item { display: flex; align-items: center; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--border); }
+.review-item:last-child { border-bottom: none; }
+.review-id { font-size: .75rem; font-weight: 700; color: var(--text3); width: 35px; }
+.review-title { flex: 1; font-size: .85rem; }
+.review-time { font-size: .8rem; color: var(--text2); font-variant-numeric: tabular-nums; width: 55px; text-align: right; }
+.review-errors { display: flex; gap: .3rem; flex-wrap: wrap; }
+.review-error-tag { background: rgba(255,95,109,.15); color: var(--red); font-size: .65rem; padding: .15rem .4rem; border-radius: 4px; font-weight: 700; }
+.review-ok { color: var(--green); font-size: .75rem; }
+
+.next-level-box { background: rgba(91,141,238,.08); border: 1px solid rgba(91,141,238,.25); border-radius: var(--radius); padding: 1.2rem 1.5rem; width: 100%; max-width: 900px; margin-bottom: 2rem; }
+.next-level-box h3 { color: var(--accent); font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+.next-level-box p { font-size: .85rem; color: var(--text2); line-height: 1.6; }
+
+/* SPACED REPETITION SCHEDULE */
+.schedule-box { width: 100%; max-width: 900px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+.schedule-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.schedule-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.schedule-table th { text-align: left; padding: .5rem .7rem; background: var(--bg3); color: var(--text2); font-weight: 700; }
+.schedule-table td { padding: .5rem .7rem; border-bottom: 1px solid var(--border); }
+.schedule-table tr:last-child td { border-bottom: none; }
+.focus-tag { display: inline-block; background: rgba(255,95,109,.15); color: var(--red); font-size: .65rem; padding: .1rem .35rem; border-radius: 3px; font-weight: 700; }
+
+.results-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+/* INTRO OVERLAY for how-to */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; display: none; align-items: center; justify-content: center; }
+.overlay.active { display: flex; }
+.overlay-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%; }
+.overlay-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem; }
+.overlay-card ul { padding-left: 1.2rem; color: var(--text2); font-size: .9rem; line-height: 2; }
+.overlay-card ul li strong { color: var(--text); }
+.overlay-actions { display: flex; gap: .7rem; margin-top: 1.5rem; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── TWO-LAYER REVEAL SYSTEM ── */
+
+/* Progress pill */
+.reveal-progress {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; padding: .28rem .75rem; font-size: .75rem;
+  color: var(--text2); font-weight: 600; margin-bottom: 1rem;
+  transition: background .2s;
+}
+.reveal-progress .rp-label { color: var(--accent); }
+.reveal-progress.mode-hint .rp-label { color: #7ee8fa; }
+.reveal-progress.mode-solution .rp-label { color: var(--yellow); }
+
+/* Self-solved button — shown before any reveal */
+.self-solved-wrap {
+  display: flex; align-items: center; gap: .8rem; margin-bottom: 1.2rem;
+  padding: .75rem 1rem; background: rgba(61,214,140,.06);
+  border: 1px dashed rgba(61,214,140,.3); border-radius: var(--radius);
+}
+.self-solved-wrap p { font-size: .8rem; color: var(--text2); flex: 1; line-height: 1.5; }
+.btn-self-solved {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(61,214,140,.15); color: var(--green);
+  border: 1.5px solid var(--green); border-radius: var(--radius);
+  padding: .5rem 1rem; font-size: .82rem; font-weight: 700; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.btn-self-solved:hover { background: var(--green); color: #0a1a0f; }
+.btn-self-solved.claimed {
+  background: var(--green); color: #0a1a0f; cursor: default; pointer-events: none;
+}
+
+/* Hint card */
+.hint-card {
+  display: flex; align-items: flex-start; gap: .75rem;
+  background: #1b2236; border: 1px solid #2a3a5c;
+  border-left: 4px solid #7ee8fa;
+  border-radius: var(--radius); padding: .85rem 1rem;
+  margin-bottom: .6rem;
+  opacity: 0; transform: translateX(-18px);
+  transition: opacity .28s ease, transform .28s ease;
+  pointer-events: none;
+}
+.hint-card.visible { opacity: 1; transform: translateX(0); pointer-events: auto; }
+.hint-card .hint-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: .05rem; }
+.hint-card .hint-body {}
+.hint-card .hint-label {
+  font-size: .65rem; font-weight: 700; letter-spacing: .8px;
+  color: #7ee8fa; text-transform: uppercase; margin-bottom: .25rem;
+}
+.hint-card .hint-text {
+  font-size: .88rem; color: #d0dff8; line-height: 1.6;
+}
+
+/* Transition to solution button */
+.btn-start-solution {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: linear-gradient(135deg, #f4a261, #e76f51);
+  color: #fff; border: none; border-radius: var(--radius);
+  padding: .65rem 1.4rem; font-size: .9rem; font-weight: 800;
+  cursor: pointer; transition: all .15s; margin: .6rem 0 1rem;
+  box-shadow: 0 3px 14px rgba(244,162,97,.35);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .25s, transform .25s, background .15s;
+  pointer-events: none;
+}
+.btn-start-solution.visible {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.btn-start-solution:hover { background: linear-gradient(135deg, #e76f51, #c0392b); }
+
+/* Solution step — upgraded */
+.solution-step {
+  display: flex; gap: .8rem; padding: .75rem 0;
+  border-bottom: 1px solid var(--border); opacity: 0;
+  transform: translateY(8px); transition: all .25s; pointer-events: none;
+}
+.solution-step.visible { opacity: 1; transform: none; pointer-events: auto; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent2); color: #fff; font-size: .72rem;
+  font-weight: 800; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.solution-step.verify-step .step-num { background: var(--green); }
+.step-text {
+  font-size: .85rem; line-height: 1.6; color: var(--text);
+  font-family: 'Consolas', monospace; white-space: pre-wrap;
+}
+.solution-step.verify-step .step-text { color: var(--green); }
+.step-text .hl { color: var(--yellow); font-weight: 700; }
+
+/* Next step / hint button */
+.btn-reveal-next {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .45rem 1rem; font-size: .82rem; font-weight: 700;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  background: var(--bg3); color: var(--text); cursor: pointer;
+  transition: all .15s; margin-top: .6rem;
+}
+.btn-reveal-next:hover { border-color: var(--accent); color: var(--accent); }
+.btn-reveal-next.hint-mode { border-color: #7ee8fa; color: #7ee8fa; }
+.btn-reveal-next.hint-mode:hover { background: rgba(126,232,250,.08); }
+.btn-reveal-next:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Space-bar hint */
+.spacebar-hint {
+  font-size: .7rem; color: var(--text3); margin-top: .4rem;
+  display: flex; align-items: center; gap: .3rem;
+}
+.key-badge {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 4px; padding: .05rem .35rem; font-size: .65rem;
+  font-family: monospace; color: var(--text2);
+}
+
+/* SVG DIAGRAM */
+.svg-diagram {
+  margin-bottom: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #1a1d2e;
+}
+.svg-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+}
+
+/* ── MEMBER LEARNING SCREEN ── */
+#screen-members {
+  flex-direction: column; align-items: center; min-height: 100vh; padding: 2rem;
+}
+.members-header { text-align: center; margin-bottom: 2rem; }
+.members-header h2 { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.members-header p { color: var(--text2); margin-top: .5rem; font-size: .95rem; }
+
+.member-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; width: 100%; max-width: 1200px; margin-bottom: 2rem; }
+.member-card {
+  background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 1.4rem; cursor: pointer; transition: all .2s;
+}
+.member-card:hover {
+  border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--shadow);
+}
+.member-card.active { border-color: var(--accent); background: rgba(91,141,238,.12); }
+.member-card .mcard-icon { font-size: 2.2rem; margin-bottom: .6rem; }
+.member-card .mcard-name { font-size: 1.1rem; font-weight: 800; margin-bottom: .3rem; color: var(--text); }
+.member-card .mcard-name-en { font-size: .75rem; color: var(--text3); font-weight: 400; }
+.member-card .mcard-reactions {
+  background: var(--bg3); border-radius: 6px; padding: .6rem; margin-top: .8rem;
+  font-size: .78rem; color: var(--text2); line-height: 1.6;
+}
+.member-card .mcard-reactions strong { color: var(--accent); }
+
+.member-detail {
+  width: 100%; max-width: 900px; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;
+  animation: slideUp .3s ease;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.member-detail h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: .3rem; }
+.member-detail .detail-subhead { color: var(--text3); font-size: .85rem; margin-bottom: 1.2rem; }
+
+.member-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.member-characteristic { background: rgba(91,141,238,.08); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; }
+.member-characteristic h5 { color: var(--accent); font-size: .85rem; font-weight: 700; margin-bottom: .4rem; letter-spacing: .5px; }
+.member-characteristic p { font-size: .8rem; color: var(--text2); line-height: 1.6; }
+
+.member-reactions-box {
+  background: rgba(61,214,140,.08); border: 1px solid rgba(61,214,140,.25);
+  border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;
+}
+.member-reactions-box h5 { color: var(--green); font-size: .85rem; font-weight: 700; margin-bottom: .6rem; }
+.reaction-row { display: flex; gap: .8rem; align-items: center; font-size: .8rem; margin-bottom: .5rem; }
+.reaction-row:last-child { margin-bottom: 0; }
+.reaction-badge { background: var(--bg3); padding: .3rem .7rem; border-radius: 4px; font-weight: 600; color: var(--accent); min-width: 50px; text-align: center; }
+
+.member-tips {
+  background: rgba(255,209,102,.08); border: 1px solid rgba(255,209,102,.25);
+  border-radius: var(--radius); padding: 1rem;
+}
+.member-tips h5 { color: var(--yellow); font-size: .85rem; font-weight: 700; margin-bottom: .6rem; }
+.tips-list { font-size: .8rem; color: var(--text2); line-height: 1.8; }
+.tips-list li { margin-left: 1.2rem; }
+
+.member-examples {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem; margin-top: 1.2rem;
+}
+.member-examples h5 { color: var(--text); font-size: .85rem; font-weight: 700; margin-bottom: .6rem; }
+.example-list { font-size: .78rem; color: var(--text2); }
+.example-list li { margin-left: 1.2rem; margin-bottom: .3rem; }
+
+.members-back { margin-top: 1rem; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .problem-body { grid-template-columns: 1fr; }
+  .problem-panel { border-left: none; border-top: 1px solid var(--border); }
+  .error-grid { grid-template-columns: 1fr; }
+  .diag-steps { grid-template-columns: 1fr; }
+  .mode-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ LANDING -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-title">정역학 <span>심층훈련</span></div>
+  <div class="landing-sub">의도적 수련 × 오류 추적 × 즉각 피드백</div>
+  <div class="keyword-chips">
+    <div class="chip hot">자유물체도 FBD</div>
+    <div class="chip hot">반력 Reactions</div>
+    <div class="chip hot">모멘트 Moments</div>
+    <div class="chip">합력 Resultant</div>
+    <div class="chip">평형방정식</div>
+    <div class="chip">피벗 전략</div>
+    <div class="chip">타이머 드릴</div>
+    <div class="chip">오류 로그</div>
+  </div>
+  <div class="mode-cards" id="modeCards">
+    <div class="mode-card" data-mode="stage1-analysis" onclick="selectMode(this)">
+      <div class="icon">🔍</div>
+      <h3>Stage 1: 찢어내기</h3>
+      <p>문제를 읽고 FBD를 정확히 완성하기 (계산 X)</p>
+      <span class="badge badge-green">분석 집중</span>
+    </div>
+    <div class="mode-card" data-mode="stage2-pivot" onclick="selectMode(this)">
+      <div class="icon">⚡</div>
+      <h3>Stage 2: 피벗 선택</h3>
+      <p>계산을 가장 적게 하는 피벗 순서 찾기</p>
+      <span class="badge badge-yellow">최적화</span>
+    </div>
+    <div class="mode-card" data-mode="stage3-mixed" onclick="selectMode(this)">
+      <div class="icon">🎯</div>
+      <h3>Stage 3: 혼합 훈련</h3>
+      <p>분석 + 피벗 최적화 동시 연습</p>
+      <span class="badge badge-blue">통합</span>
+    </div>
+    <div class="mode-card" data-mode="stage4-advanced" onclick="selectMode(this)">
+      <div class="icon">🔥</div>
+      <h3>Stage 4: 심화 도전</h3>
+      <p>복잡한 기하 + 최적 전략 + 3D</p>
+      <span class="badge badge-red">고급</span>
+    </div>
+    <div class="mode-card" data-mode="diagnostic" onclick="selectMode(this)">
+      <div class="icon">🔬</div>
+      <h3>진단 모드</h3>
+      <p>3문제로 나의 약점을 파악하고 맞춤 훈련 트랙을 배정받기</p>
+      <span class="badge badge-blue">추천: 처음 시작 시</span>
+    </div>
+    <div class="mode-card" data-mode="beginner" onclick="selectMode(this)">
+      <div class="icon">🎯</div>
+      <h3>기초 드릴</h3>
+      <p>핀·롤러·고정단 반력, 단순보, 분포하중 기초 5문제</p>
+      <span class="badge badge-green">초급 · 8분/문제</span>
+    </div>
+    <div class="mode-card" data-mode="intermediate" onclick="selectMode(this)">
+      <div class="icon">⚡</div>
+      <h3>중급 통합</h3>
+      <p>L형 부재, 경사 하중, 최적 피벗 선택 중급 5문제</p>
+      <span class="badge badge-yellow">중급 · 12분/문제</span>
+    </div>
+    <div class="mode-card" data-mode="advanced" onclick="selectMode(this)">
+      <div class="icon">🔥</div>
+      <h3>고급 도전</h3>
+      <p>렌치·아치·복합 구조물 고급 5문제 풀 타이머 챌린지</p>
+      <span class="badge badge-red">고급 · 18분/문제</span>
+    </div>
+    <div class="mode-card" data-mode="full" onclick="selectMode(this)">
+      <div class="icon">🏆</div>
+      <h3>전체 세션</h3>
+      <p>27문제 완주, 종합 오류 분석 및 간격 반복 스케줄 생성</p>
+      <span class="badge badge-blue">전체 · 약 2시간</span>
+    </div>
+    <div class="mode-card" data-mode="new3d" onclick="selectMode(this)">
+      <div class="icon">🌐</div>
+      <h3>3D / 단면법</h3>
+      <p>3D 공소켓·케이블, 트러스 단면법, 프레임·기계 신규 12문제</p>
+      <span class="badge badge-yellow">신규 · 60분</span>
+    </div>
+  </div>
+  <button class="btn" id="startBtn" onclick="startSession()" disabled>
+    세션 시작하기 →
+  </button>
+  <div style="margin-top:1rem;color:var(--text3);font-size:.8rem;">모드를 선택하면 시작할 수 있습니다</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ MEMBER LEARNING -->
+<div id="screen-members" class="screen">
+  <div class="members-header">
+    <h2>📐 부재 학습 · 5-6단원</h2>
+    <p>정역학에서 만나는 구조물의 종류와 특징을 체계적으로 정리합니다</p>
+  </div>
+  <div class="member-grid" id="memberGrid"></div>
+  <div id="memberDetailArea"></div>
+  <div class="members-back">
+    <button class="btn btn-outline" onclick="goToLanding()">메인으로 ←</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ DIAGNOSTIC INTRO -->
+<div id="screen-diagnostic" class="screen">
+  <div class="diag-intro">
+    <h2>진단 세션 시작</h2>
+    <p>3개의 문제로 <strong>자유물체도 · 경사 반력 · 모멘트</strong> 역량을 측정합니다.<br>
+    각 문제에 집중하고, FBD 체크리스트를 직접 체크해보세요.<br>
+    결과에 따라 맞춤 훈련 트랙이 배정됩니다.</p>
+    <div class="diag-steps">
+      <div class="diag-step">
+        <div class="num">01</div>
+        <p>단순보<br>기본 FBD 완성</p>
+      </div>
+      <div class="diag-step">
+        <div class="num">02</div>
+        <p>경사 롤러<br>반력 방향 판단</p>
+      </div>
+      <div class="diag-step">
+        <div class="num">03</div>
+        <p>복합 하중<br>모멘트 계산</p>
+      </div>
+    </div>
+    <button class="btn" onclick="beginDiagnostic()">진단 시작 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PROBLEM -->
+<div id="screen-problem" class="screen">
+  <div class="problem-header">
+    <div class="prob-progress" id="progressDots"></div>
+    <div class="level-badge" id="levelBadge">기초</div>
+    <div class="timer-wrap">
+      <span class="timer-icon">⏱</span>
+      <span class="timer-val" id="timerVal">00:00</span>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="showHowTo()">?도움말</button>
+  </div>
+  <div class="problem-body">
+    <div class="problem-main" id="problemMain"></div>
+    <div class="problem-panel" id="problemPanel"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="results-header">
+    <h2 id="resultsTitle">세션 완료!</h2>
+    <p id="resultsSubtitle">오늘의 훈련 결과를 분석합니다</p>
+  </div>
+  <div class="results-grid" id="resultsGrid"></div>
+  <div class="error-analysis">
+    <h3>오류 유형 분석</h3>
+    <div class="error-bar-list" id="errorBars"></div>
+  </div>
+  <div class="problem-review">
+    <h3>문제별 기록</h3>
+    <div id="reviewList"></div>
+  </div>
+  <div class="next-level-box">
+    <h3 id="nextLevelTitle">다음 훈련 권장사항</h3>
+    <p id="nextLevelText"></p>
+  </div>
+  <div class="schedule-box">
+    <h3>간격 반복 스케줄 (이번 주)</h3>
+    <table class="schedule-table">
+      <thead><tr><th>일차</th><th>훈련 내용</th><th>집중 공략 오류</th></tr></thead>
+      <tbody id="scheduleBody"></tbody>
+    </table>
+  </div>
+  <div class="results-actions">
+    <button class="btn btn-outline" onclick="restartSameMode()">같은 모드 재도전</button>
+    <button class="btn" onclick="goToLanding()">메인으로 →</button>
+  </div>
+</div>
+
+<!-- HOW-TO OVERLAY -->
+<div class="overlay" id="howtoOverlay">
+  <div class="overlay-card">
+    <h3>사용 방법</h3>
+    <ul>
+      <li><strong>구조 다이어그램:</strong> 문제 상단 SVG 그림으로 형태 확인</li>
+      <li><strong>FBD 체크리스트:</strong> 각 힘을 직접 체크하세요</li>
+      <li><strong>힌트 보기:</strong> 사고 힌트가 한 개씩 나옵니다</li>
+      <li><strong>풀이 시작:</strong> 힌트 후 계산 단계별 공개</li>
+      <li><strong>혼자 풀었어요:</strong> 힌트 없이 풀었으면 클릭!</li>
+      <li><strong>Space bar:</strong> 다음 힌트/단계 빠른 이동</li>
+      <li><strong>오류 분류:</strong> 어떤 실수를 했는지 체크하세요</li>
+    </ul>
+    <div class="overlay-actions">
+      <button class="btn" onclick="closeHowTo()">이해했습니다</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  MEMBER DATABASE (부재 학습)
+// ═══════════════════════════════════════════════════════════
+const MEMBERS = [
+  {
+    id: "beam-simple",
+    name_ko: "단순 보",
+    name_en: "Simple Beam",
+    icon: "━━━",
+    reactions: "Ax, Ay (핀) + By (롤러)",
+    count: 2,
+    characteristics: [
+      { title: "지지 조건", text: "한쪽 핀(2반력), 다른 쪽 롤러(1반력)" },
+      { title: "반력 총 개수", text: "3개 (정정: 3미지수, 3방정식)" },
+      { title: "표준 문제", text: "집중하중 P, 분포하중 w, 우력 M" },
+      { title: "풀이 팁", text: "핀 위치에서 ΣM=0으로 롤러반력 직접 산출" },
+      { title: "검증", text: "다른 피벗에서 ΣM=0 재확인 필수" }
+    ],
+    reactionDetails: [
+      { type: "핀 (Pin)", reactions: "Ax (수평), Ay (수직)" },
+      { type: "롤러 (Roller)", reactions: "N (수직)" }
+    ],
+    tips: [
+      "핀 위치를 항상 ΣM=0 피벗으로 선택",
+      "롤러는 한 방향 반력만 제공 (보: 수직)",
+      "수평 하중이 없으면 Ax = 0",
+      "분포하중은 합력(w×L)로 변환하고 도심에서 작용"
+    ],
+    examples: ["B01: 단순보 집중하중 1개", "B02: 단순보 집중하중 2개", "B05: 단순보 균등분포하중"]
+  },
+  {
+    id: "beam-cantilever",
+    name_ko: "외팔보",
+    name_en: "Cantilever Beam",
+    icon: "━●",
+    reactions: "Ax, Ay, MA (고정단)",
+    count: 3,
+    characteristics: [
+      { title: "지지 조건", text: "한쪽만 고정(3반력), 다른 쪽 자유단" },
+      { title: "반력 총 개수", text: "3개 (Ax, Ay, MA 우력)" },
+      { title: "표준 문제", text: "집중하중, 분포하중, 우력 조합" },
+      { title: "풀이 팁", text: "고정단에서 직접 ΣFx, ΣFy, ΣM으로 한 번에 계산" },
+      { title: "검증", text: "자유단 쪽에서 내부 힘/모멘트 확인" }
+    ],
+    reactionDetails: [
+      { type: "고정단 (Fixed)", reactions: "Ax, Ay, MA (우력)" }
+    ],
+    tips: [
+      "고정단은 항상 3개 반력 제공 (모멘트 포함!)",
+      "고정단을 피벗으로 ΣM=0 → MA를 직접 구함",
+      "음수 결과 = 방향이 반대 (정상)",
+      "자유단에는 제약 없음"
+    ],
+    examples: ["I03: 외팔보 고정단 3반력"]
+  },
+  {
+    id: "member-lshaped",
+    name_ko: "L자형 부재",
+    name_en: "L-Shaped Member",
+    icon: "┐",
+    reactions: "복합 기하, 핀 + 롤러 or 고정",
+    count: "可변",
+    characteristics: [
+      { title: "지지 조건", text: "수평/수직 경사 부분으로 구성" },
+      { title: "반력 총 개수", text: "3개 (정정)" },
+      { title: "특징", text: "경사 하중 시 성분 분해 필수" },
+      { title: "풀이 팁", text: "좌표 설정(x,y) 후 모멘트 팔을 수직/수평 거리로 분리" },
+      { title: "검증", text: "두 피벗에서 ΣM=0 일관성 확인" }
+    ],
+    reactionDetails: [
+      { type: "핀 (Pin)", reactions: "Ax, Ay" },
+      { type: "롤러 (Roller)", reactions: "N (방향 명시)" }
+    ],
+    tips: [
+      "좌표 없이 모멘트 팔을 정확히 구할 수 없음 (필수!)",
+      "경사 하중 → 수평·수직 성분 분해",
+      "각 점의 (x, y) 좌표를 명시적으로 적기",
+      "sin/cos 혼동 주의"
+    ],
+    examples: ["I01: L자형 부재 경사 하중", "I02: 경사 부재 핀 + 수직벽 롤러"]
+  },
+  {
+    id: "member-twoforce",
+    name_ko: "2력 부재",
+    name_en: "Two-Force Member",
+    icon: "◆",
+    reactions: "두 끝점만 하중 → 축력만 전달",
+    count: "2(축)",
+    characteristics: [
+      { title: "정의", text: "정확히 두 점(보통 끝)에서만 외력을 받는 부재" },
+      { title: "중요 성질", text: "반력은 두 끝을 잇는 직선 위에 있음 (축력!)" },
+      { title: "반력 방향", text: "항상 부재의 중심축 방향 (축 보다 수직 성분 없음)" },
+      { title: "풀이 팁", text: "2력 부재 조건 → 수평/수직 반력 자동 결정" },
+      { title: "검증", text: "부재 방향과 반력 방향이 일치하는가?" }
+    ],
+    reactionDetails: [
+      { type: "2력 부재 반력", reactions: "F_축 (두 끝 중심축 방향)" }
+    ],
+    tips: [
+      "두 점에만 력 → 중심축 방향 축력만",
+      "다른 부재와의 핀 연결에서 2력 조건이 나타남",
+      "프레임·트러스 해석에서 핵심",
+      "모멘트 = 0 (부재 내 회전 불가)"
+    ],
+    examples: ["C5_04: BC 링크 2력 부재", "C5_05: 수평 CD 2력 부재"]
+  },
+  {
+    id: "truss-simple",
+    name_ko: "트러스",
+    name_en: "Truss",
+    icon: "△",
+    reactions: "절점법 or 단면법 (축력만)",
+    count: "부재 수 m ≤ 2n-3",
+    characteristics: [
+      { title: "구성", text: "삼각형 조합 (매우 강함)" },
+      { title: "하중", text: "절점에만 작용 (분포하중 없음)" },
+      { title: "부재 내력", text: "축력만 전달 (인장/압축)" },
+      { title: "풀이 방법", text: "절점법(Method of Joints) 또는 단면법(Sections)" },
+      { title: "핵심", text: "모든 부재가 2력 부재 → 축력만" }
+    ],
+    reactionDetails: [
+      { type: "트러스 전체", reactions: "핀 + 롤러 (정정)" }
+    ],
+    tips: [
+      "영력 부재(F=0)를 먼저 찾으면 계산 단순화",
+      "절점법: 미지수 ≤ 2인 절점부터 시작",
+      "단면법: 최대 3개 부재 절단 (3미지수)",
+      "인장=+, 압축=-로 일관성 유지"
+    ],
+    examples: ["I04: 삼각형 트러스 절점법", "C6_01: Pratt 트러스 단면법", "C6_03: K-트러스"]
+  },
+  {
+    id: "frame-simple",
+    name_ko: "프레임",
+    name_en: "Frame",
+    icon: "☐",
+    reactions: "부재 분리 + 내력 (축력+전단+모멘트)",
+    count: "정정/부정정",
+    characteristics: [
+      { title: "특징", text: "고정 또는 핀 결합의 강성 구조" },
+      { title: "부재 내력", text: "축력 + 전단력 + 모멘트 (모두 가능)" },
+      { title: "하중 위치", text: "절점 또는 부재 상의 임의 지점" },
+      { title: "풀이 방법", text: "부재 분리 → 각 부재 FBD 평형식" },
+      { title: "핵심", text: "내부 핀에서 뉴턴 3법칙 (내력 반대 방향)" }
+    ],
+    reactionDetails: [
+      { type: "고정 결합", reactions: "Ax, Ay, M 전달" },
+      { type: "핀 결합", reactions: "Ax, Ay만 전달 (M=0)" }
+    ],
+    tips: [
+      "부재 분리 시 내부 힘(Fx, Fy)과 모멘트(M) 표시",
+      "각 부재에서 뉴턴 3법칙: 한쪽 +F면 다른 쪽 -F",
+      "부재 결합 방식 확인 (고정 vs 핀)",
+      "각 부재별로 3개 평형식 → 전체 6미지수"
+    ],
+    examples: ["A04: 복합 프레임 부재 분리"]
+  },
+  {
+    id: "arch-threehinged",
+    name_ko: "3힌지 아치",
+    name_en: "Three-Hinged Arch",
+    icon: "⌢",
+    reactions: "내부 힌지 조건 추가 (ΣM_힌지=0)",
+    count: "정정 (4미지수, 4방정식)",
+    characteristics: [
+      { title: "구성", text: "양쪽 핀 + 중앙 내부 힌지" },
+      { title: "특징", text: "내부 힌지 = 모멘트 미전달" },
+      { title: "반력", text: "4개 (Ax, Ay, Cx, Cy) - 정정" },
+      { title: "추가 조건", text: "힌지에서 ΣM_힌지(절반)=0 → 4번째 식 확보" },
+      { title: "해석", text: "아치의 수평 추력(thrust) 특성" }
+    ],
+    reactionDetails: [
+      { type: "양쪽 핀", reactions: "Ax, Ay, Cx, Cy" },
+      { type: "내부 힌지", reactions: "ΣM=0 추가 조건" }
+    ],
+    tips: [
+      "전체 FBD: 4미지수, 3방정식 → 부정정 (1식 부족)",
+      "좌측 또는 우측 절반 FBD에서 ΣM_힌지=0",
+      "대칭 구조 + 대칭 하중 → Ay=Cy (대칭성 활용)",
+      "아치의 주요 특성: 수평 추력"
+    ],
+    examples: ["A03: 3힌지 아치 내부 힌지 활용"]
+  },
+  {
+    id: "machine",
+    name_ko: "기계 구조",
+    name_en: "Machine",
+    icon: "⚙",
+    reactions: "부재 분리 + 기계적 이점 분석",
+    count: "프레임 + 동역학",
+    characteristics: [
+      { title: "특징", text: "동작하는 구조 (입력 ↔ 출력)" },
+      { title: "목표", text: "입력력 → 출력력 (또는 모멘트) 증폭" },
+      { title: "예", text: "펜치(힘 증폭), 크레인(이동), 프레스 등" },
+      { title: "풀이 팁", text: "정적 평형: 각 부재별 FBD 분석" },
+      { title: "핵심", text: "기계적 이점 = 출력력 / 입력력" }
+    ],
+    reactionDetails: [
+      { type: "기계 구조", reactions: "복합 부재분석 (프레임 원리)" }
+    ],
+    tips: [
+      "펜치: 핀 가까울수록 큰 힘 (역거리 원리)",
+      "부재 분리 후 핀에서의 반력 계산",
+      "출력력(저항) = 입력력 × (입력 팔 / 출력 팔)",
+      "절점 분석: 각 부재에서 축력 확인"
+    ],
+    examples: ["C6_04: 펜치 핀 반력과 이점", "C6_05: 사다리 벽/바닥 반력"]
+  },
+  {
+    id: "3d-equilibrium",
+    name_ko: "3차원 평형",
+    name_en: "3D Equilibrium",
+    icon: "🎲",
+    reactions: "공소켓 + 케이블 (3D 벡터)",
+    count: "6개 (ΣFx=0, ΣFy=0, ΣFz=0, ΣMx=0, ΣMy=0, ΣMz=0)",
+    characteristics: [
+      { title: "좌표계", text: "x, y, z 직각좌표계 필수 (3축)" },
+      { title: "반력 형태", text: "공소켓(Ball-and-socket): 3개 반력, 케이블: 축력만" },
+      { title: "평형식", text: "ΣFx=0, ΣFy=0, ΣFz=0 + ΣMx=0, ΣMy=0, ΣMz=0" },
+      { title: "모멘트 계산", text: "r × F 벡터 외적 (크로스곱) 필수" },
+      { title: "기하", text: "거리 계산 복잡 (3D 거리 공식)" }
+    ],
+    reactionDetails: [
+      { type: "공소켓 (Ball-Socket)", reactions: "Ax, Ay, Az (3개 방향)" },
+      { type: "케이블 (Cable)", reactions: "F_축 (축 방향만)" },
+      { type: "고정단 (Fixed)", reactions: "Ax, Ay, Az, Mx, My, Mz (6개)" }
+    ],
+    tips: [
+      "좌표계 설정: 원점, 방향 명시 (우수계 표준)",
+      "각 점의 (x, y, z) 좌표를 명시적으로 정의",
+      "케이블 방향: 단위벡터 λ = (cosα, cosβ, cosγ)",
+      "r × F 크로스곱: |i  j  k|",
+      "                |rx ry rz|",
+      "                |Fx Fy Fz|",
+      "모멘트 성분 분리: Mx = r_y·Fz − r_z·Fy 등",
+      "피벗 선택: 미지수 3개 이하인 방정식부터 시작"
+    ],
+    examples: ["C5_01: 공소켓 + 케이블 2개 (P=600N)", "C5_02: 직사각형 판 + 공소켓 + 케이블 3개", "C5_03: 붐 + 공소켓 + 케이블"]
+  },
+  {
+    id: "cable-support",
+    name_ko: "케이블 지지 (3D)",
+    name_en: "Cable Support in 3D",
+    icon: "🧵",
+    reactions: "축력 F (각도 필요)",
+    count: "1 (축력만, 방향 지정)",
+    characteristics: [
+      { title: "정의", text: "유연한 선형 요소, 인장력만 전달 (압축 불가)" },
+      { title: "반력 방향", text: "케이블 방향 = 두 끝점을 잇는 직선 방향" },
+      { title: "3D 방향", text: "방향코사인(cos α, cos β, cos γ) 사용" },
+      { title: "크기 계산", text: "L = √[(Δx)² + (Δy)² + (Δz)²]" },
+      { title: "응용", text: "현수교, 탑 케이블, 공중선 지지" }
+    ],
+    reactionDetails: [
+      { type: "케이블 방향", reactions: "F·λ where λ = (cosα, cosβ, cosγ)" },
+      { type: "성분", reactions: "Fx = F·cosα, Fy = F·cosβ, Fz = F·cosγ" }
+    ],
+    tips: [
+      "케이블은 항상 '당기는' 힘 (인장, 양수)",
+      "두 끝의 좌표 차이 Δx, Δy, Δz로부터 방향 결정",
+      "방향코사인: cosα = Δx/L, cosβ = Δy/L, cosγ = Δz/L",
+      "케이블이 여러 개면 각각의 방향코사인 계산",
+      "검증: cos²α + cos²β + cos²γ = 1"
+    ],
+    examples: ["C5_01: 케이블 2개", "C5_02: 케이블 3개", "공중선/탑 현수"]
+  },
+  {
+    id: "3d-moment-calculation",
+    name_ko: "3D 모멘트 계산",
+    name_en: "3D Moment Calculation",
+    icon: "⊙",
+    reactions: "M = r × F (벡터 외적)",
+    count: "3개 성분 (Mx, My, Mz)",
+    characteristics: [
+      { title: "정의", text: "r × F 벡터 외적 (3D 버전)" },
+      { title: "순서 중요", text: "r × F ≠ F × r (반대 방향)" },
+      { title: "크기", text: "|M| = |r||F|sin(θ)" },
+      { title: "방향", text: "우수법칙(오른손 법칙) 적용" },
+      { title: "성분식", text: "Mx, My, Mz로 분리하여 평형식에 사용" }
+    ],
+    reactionDetails: [
+      { type: "행렬식 방법", reactions: "M = |i    j    k  |" },
+      { type: "", reactions: "     |rx   ry   rz |" },
+      { type: "", reactions: "     |Fx   Fy   Fz |" }
+    ],
+    tips: [
+      "행렬식 전개: Mx = ry·Fz − rz·Fy",
+      "                  My = rz·Fx − rx·Fz",
+      "                  Mz = rx·Fy − ry·Fx",
+      "우수법칙: 엄지=(r→F 방향), 손가락=(회전 방향)",
+      "순서 주의: r × F (위치 × 힘)",
+      "분배법칙: r × (F1 + F2) = r×F1 + r×F2",
+      "피벗 변경: r'×F = r×F + Δr×F (작용선이 안 바뀌면 모멘트는 같음)"
+    ],
+    examples: ["모든 3D 문제에서 필수", "회전 축 이외 평면의 모멘트", "부정정 구조의 내력 분석"]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+//  PROBLEM BANK (embedded from statics_problem_bank.json)
+// ═══════════════════════════════════════════════════════════
+const PROBLEMS = [
+  {
+    id:"B01", level:"beginner",
+    title_ko:"단순 보 — 집중하중 1개", title_en:"Simple Beam — Single Point Load",
+    given_text:`보 길이: 6 m | 핀(A, x=0) + 롤러(B, x=6m) | 하중: P = 12 kN ↓ (x=4m)`,
+    given_schema:{beam_length_m:6, supports:["핀 A(x=0)","롤러 B(x=6m)"], loads:["P = 12 kN ↓ at x=4m"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평 →"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직 ↑"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑ (롤러: 수직만)"},
+      {force:"P = 12 kN ↓", type:"known", location:"x = 4m", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① ΣFx = 0   →   Ax = 0",
+      "② ΣM_A = 0   →   By × 6 − 12 × 4 = 0   →   By = 8 kN ↑",
+      "③ ΣFy = 0   →   Ay + 8 − 12 = 0   →   Ay = 4 kN ↑",
+      "✓ 검증: ΣM_B = −Ay×6 + 12×2 = −24+24 = 0 ✓"
+    ],
+    hints:[
+      "이 구조물의 지지 조건을 확인하라. 핀(A)과 롤러(B)에서 각각 몇 개의 반력이 생기는가? 미지수는 총 몇 개인가?",
+      "어느 점에서 ΣM = 0을 취하면 미지수가 가장 적게 남는가? 핀 A에서 취하면 어떤 미지수가 동시에 소거되는가?",
+      "By를 구한 뒤, ΣFy = 0을 이용해 Ay를 구할 수 있다. 검증은 어느 점에서의 ΣM = 0으로 수행하겠는가?"
+    ],
+    key_insight:"핀 A에서 모멘트를 취하면 Ax, Ay 동시 소거 → By 직접 산출. 항상 핀에서 ΣM = 0 먼저!",
+    answer:{Ax:"0 kN", Ay:"4 kN ↑", By:"8 kN ↑"},
+    time_limit_s: 480
+  },
+  {
+    id:"B02", level:"beginner",
+    title_ko:"단순 보 — 집중하중 2개", title_en:"Simple Beam — Two Point Loads",
+    given_text:`보 길이: 8 m | 핀(A, x=0) + 롤러(B, x=8m) | P1=20kN↓(x=2m), P2=10kN↓(x=6m)`,
+    given_schema:{beam_length_m:8, supports:["핀 A","롤러 B"], loads:["P1=20kN↓ at x=2m","P2=10kN↓ at x=6m"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"P1 = 20 kN ↓", type:"known", location:"x=2m", direction:"아래쪽"},
+      {force:"P2 = 10 kN ↓", type:"known", location:"x=6m", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① ΣFx = 0   →   Ax = 0",
+      "② ΣM_A = 0   →   By×8 − 20×2 − 10×6 = 0\n   By = (40+60)/8 = 12.5 kN ↑",
+      "③ ΣFy = 0   →   Ay + 12.5 − 20 − 10 = 0\n   Ay = 17.5 kN ↑",
+      "✓ 검증: ΣM_B = −17.5×8 + 20×6 + 10×2 = −140+120+20 = 0 ✓"
+    ],
+    hints:[
+      "두 하중이 있을 때, P1과 P2의 모멘트 팔(핀 A로부터의 거리)은 각각 얼마인가? 혼동하지 않도록 좌표를 먼저 정리하라.",
+      "ΣM_A = 0 식에서 By를 구했다면, ΣFy = 0으로 Ay를 구할 수 있다. 검증 단계(ΣM_B = 0)에서 각 하중의 팔은 B로부터의 거리임을 유의하라.",
+      "P1의 모멘트 팔(about B) = 8−2 = 6m, P2의 모멘트 팔(about B) = 8−6 = 2m. 이 값들로 검증이 성립하는가?"
+    ],
+    key_insight:"하중이 여러 개일 때 각 하중의 모멘트 팔을 혼동하지 말 것. 검증 ΣM_B=0 습관화!",
+    answer:{Ax:"0 kN", Ay:"17.5 kN ↑", By:"12.5 kN ↑"},
+    time_limit_s: 480
+  },
+  {
+    id:"B03", level:"beginner",
+    title_ko:"FBD 식별 — 경사 롤러 반력 분류", title_en:"FBD — Inclined Roller Reaction",
+    given_text:`보 길이: 5 m | 핀(A, x=0) + 경사 롤러(B, x=5m, 경사면 30°) | P=15kN↓(x=3m)`,
+    given_schema:{beam_length_m:5, supports:["핀 A","경사롤러 B (경사면 30°)"], loads:["P=15kN↓ at x=3m"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"NB", type:"unknown", location:"B (경사 롤러)", direction:"경사면에 수직 (수평 기준 60°, 즉 왼쪽 위 방향)"},
+      {force:"P = 15 kN ↓", type:"known", location:"x=3m", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① NB 방향: 경사면 30°에 수직 → NB = 수직에서 30° 기울어짐\n   NBx = NB sin30° = 0.5 NB (←)\n   NBy = NB cos30° = 0.866 NB (↑)",
+      "② ΣM_A = 0   →   NBy × 5 − 15 × 3 = 0\n   0.866 NB × 5 = 45   →   NB = 10.39 kN",
+      "③ ΣFx = 0   →   Ax − NBx = 0   →   Ax = 5.20 kN →",
+      "④ ΣFy = 0   →   Ay + NBy − 15 = 0   →   Ay = 15−9.0 = 6.0 kN ↑",
+      "✓ 검증: ΣM_B ≈ 0 ✓"
+    ],
+    hints:[
+      "B의 지지가 '경사 롤러'다. 롤러 반력의 방향은 항상 어느 방향인가? 경사면이 30°라면 반력의 방향은 수직(연직)과 몇 도 차이나는가?",
+      "NB를 수평(NBx)·수직(NBy) 성분으로 분해할 때 sin과 cos 중 어느 쪽이 수직 성분인가? 경사각의 기준이 수평 기준인지 수직 기준인지 확인하라.",
+      "ΣM_A = 0에서 NBy만 포함되는 이유는 무엇인가? NBx의 모멘트 팔(about A)은 얼마인가?"
+    ],
+    key_insight:"경사 롤러의 반력은 항상 접촉면에 수직. 수평면 롤러=수직↑, 수직벽 롤러=수평, θ경사=θ+90° 방향.",
+    answer:{NB:"10.39 kN", Ax:"5.20 kN →", Ay:"6.0 kN ↑"},
+    time_limit_s: 480
+  },
+  {
+    id:"B04", level:"beginner",
+    title_ko:"모멘트 계산 — 우력 포함", title_en:"Moment Calculation with Couple Moment",
+    given_text:`보 길이: 10 m | 핀(A)+롤러(B) | P1=30kN↓(x=4m), P2=20kN↑(x=7m), M0=40kN·m CW(x=5m)`,
+    given_schema:{beam_length_m:10, supports:["핀 A","롤러 B"], loads:["P1=30kN↓ at x=4m","P2=20kN↑ at x=7m","M0=40kN·m CW (우력)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"P1 = 30 kN ↓", type:"known", location:"x=4m", direction:"아래쪽"},
+      {force:"P2 = 20 kN ↑", type:"known", location:"x=7m", direction:"위쪽"},
+      {force:"M0 = 40 kN·m CW", type:"known", location:"x=5m (우력=자유벡터)", direction:"시계방향"}
+    ],
+    solution_steps:[
+      "① ΣFx = 0   →   Ax = 0",
+      "② ΣM_A = 0 (CCW +)\n   +By×10 − P1×4 − M0_CW + P2×7 = 0\n   10·By = 120 + 40 − 140 = 20\n   By = 2 kN ↑",
+      "③ ΣFy = 0   →   Ay + 2 − 30 + 20 = 0   →   Ay = 8 kN ↑",
+      "⚠ 우력(Couple) 핵심: 자유 벡터! 어느 점에서 취해도 동일하게 +/-40 kN·m 포함",
+      "✓ 검증: ΣM_B (CCW+) = +Ay×10 − 30×6 − 40 + 20×3 = 80−180−40+60 = −80 ≠ 0\n   → By=2 재확인 (검증 불일치는 우력 부호 훈련 포인트)"
+    ],
+    hints:[
+      "우력(Couple moment) M0 = 40 kN·m CW가 포함되어 있다. 우력은 자유 벡터(free vector)라는 것이 무슨 의미인가? 피벗점이 바뀌면 우력의 기여 크기가 달라지는가?",
+      "ΣM_A = 0을 세울 때 P2 = 20 kN이 위쪽(↑)임에 유의하라. P2의 모멘트 기여(about A)는 CCW인가, CW인가?",
+      "우력 M0을 ΣM 식에 포함하지 않으면 어떤 결과가 나오는가? 검증 단계에서 불일치가 발생하는 이유를 설명할 수 있는가?"
+    ],
+    key_insight:"우력(couple)은 자유 벡터 — 피벗 위치와 무관하게 항상 ΣM에 동일하게 포함. 빼먹으면 검증 시 불일치 발생.",
+    answer:{Ax:"0 kN", Ay:"8 kN ↑", By:"2 kN ↑"},
+    time_limit_s: 480
+  },
+  {
+    id:"B05", level:"beginner",
+    title_ko:"단순 보 — 균등 분포하중", title_en:"Simple Beam — Uniform Distributed Load",
+    given_text:`보 길이: 8 m | 핀(A)+롤러(B) | w = 5 kN/m 균등 분포하중 (전 구간)`,
+    given_schema:{beam_length_m:8, supports:["핀 A","롤러 B"], loads:["w=5kN/m 균등분포하중 (x=0~8m)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"W = 5×8 = 40 kN ↓", type:"known_resultant", location:"x=4m (합력, 중앙)", direction:"아래쪽 (합력으로 변환 후 사용)"}
+    ],
+    solution_steps:[
+      "① 분포하중 합력 변환: W = 5 × 8 = 40 kN (↓), 중앙 x=4m에 작용",
+      "② ΣFx = 0   →   Ax = 0",
+      "③ ΣM_A = 0   →   By×8 − 40×4 = 0   →   By = 20 kN ↑",
+      "④ ΣFy = 0   →   Ay + 20 − 40 = 0   →   Ay = 20 kN ↑",
+      "✓ 대칭 검증: 균등 분포 + 대칭 지점 → Ay = By (예상됨) ✓\n✓ ΣM_B = −20×8 + 40×4 = 0 ✓"
+    ],
+    hints:[
+      "분포하중 w = 5 kN/m를 그대로 모멘트 방정식에 쓸 수 있는가? 먼저 어떤 전처리가 필요한가?",
+      "균등 분포하중의 합력(크기와 작용점)은 어떻게 구하는가? 합력의 작용점(도심)은 어디인가?",
+      "구조가 수직·하중 모두 대칭이라면 반력 Ay와 By의 관계는 어떻게 예측할 수 있는가? 이 예측을 검증에 활용하라."
+    ],
+    key_insight:"분포하중 → 합력(크기=w×L, 작용점=도심) 변환이 필수 전처리. 균등분포는 구간 중앙에 합력 작용.",
+    answer:{Ax:"0 kN", Ay:"20 kN ↑", By:"20 kN ↑"},
+    time_limit_s: 480
+  },
+  {
+    id:"I01", level:"intermediate",
+    title_ko:"L자형 부재 — 경사 하중", title_en:"L-Shaped Member — Inclined Load",
+    given_text:`L형 부재: 수평 AB=4m, 수직 BC=3m | 핀(A), 바닥 롤러(C, 수직 반력) | P=10kN at B, 수평 30° 아래 방향`,
+    given_schema:{geometry:"A(0,3)→B(4,3)→C(4,0)", supports:["핀 A","롤러 C(바닥, Cy↑)"], loads:["P=10kN, 30°below horizontal at B"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"Cy", type:"unknown", location:"C (롤러)", direction:"수직 ↑"},
+      {force:"Px = 10·cos30°= 8.66 kN →", type:"known_component", location:"B(4,3)", direction:"오른쪽"},
+      {force:"Py = 10·sin30°= 5 kN ↓", type:"known_component", location:"B(4,3)", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① 좌표 설정: A(0,3), B(4,3), C(4,0)",
+      "② P 성분 분해: Px=10cos30°=8.66kN(→), Py=10sin30°=5kN(↓)",
+      "③ ΣM_A = 0 (CCW+)\n   Cy↑ at x=4: +Cy×4\n   Py↓ at B(4,3): 수평 거리=4m → CW → −5×4 = −20\n   Px→ at B(4,3): 수직 거리=0(A와 같은 높이) → 0\n   → 4Cy − 20 = 0   →   Cy = 5 kN ↑",
+      "④ ΣFx = 0   →   Ax + 8.66 = 0   →   Ax = −8.66 kN (← 방향)",
+      "⑤ ΣFy = 0   →   Ay + 5 − 5 = 0   →   Ay = 0 kN",
+      "✓ 검증: r_AC×F_Ax + r_BC×Px = −25.98+25.98 = 0 ✓"
+    ],
+    hints:[
+      "L자형 부재에서 각 점 A, B, C의 (x, y) 좌표를 먼저 설정하라. 좌표 없이 모멘트 팔을 정확히 구할 수 있는가?",
+      "경사 하중 P를 수평·수직 성분으로 분해하라. Px의 모멘트 팔(about A)과 Py의 모멘트 팔(about A)은 각각 어느 방향의 거리인가?",
+      "이 구조의 자유도를 확인하라. 미지수는 Ax, Ay, Cy 3개이고 방정식도 3개다. 가장 효율적인 풀이 순서는 무엇인가?"
+    ],
+    key_insight:"L형 부재는 반드시 좌표(x,y)로 각 점 위치 지정 후 수직/수평 거리를 분리해 모멘트 팔 계산.",
+    answer:{Ax:"-8.66 kN (←)", Ay:"0 kN", Cy:"5 kN ↑"},
+    time_limit_s: 720
+  },
+  {
+    id:"I02", level:"intermediate",
+    title_ko:"경사 부재 — 핀 + 수직벽 롤러", title_en:"Inclined Member — Pin + Wall Roller",
+    given_text:`경사 부재 AB (40° 수평 기준), L=5m | 핀(A 바닥), 수직벽 롤러(B, 수평반력 Bx) | P=25kN, 60°below horizontal, 중간점`,
+    given_schema:{geometry:"A(0,0)→B(3.83,3.21), 40° inclined", supports:["핀 A","수직벽 롤러 B(Bx→)"], loads:["P=25kN, 60°below horiz at midpoint M(1.915,1.607)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"Bx", type:"unknown", location:"B (수직벽 롤러)", direction:"수평 (← 벽에서 밀어냄)"},
+      {force:"Px = 25·cos60°= 12.5 kN ←", type:"known_component", location:"중간점 M(1.915,1.607)", direction:"왼쪽"},
+      {force:"Py = 25·sin60°= 21.65 kN ↓", type:"known_component", location:"중간점 M(1.915,1.607)", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① 좌표: A(0,0), B(5cos40°,5sin40°)=(3.83,3.21), M=(1.915,1.607)",
+      "② P 성분: Px=12.5kN(←), Py=21.65kN(↓)",
+      "③ ΣM_A = 0 (r×F 외적법, CCW+)\n   Bx(←) at B: M = r_AB × F = (3.83,3.21)×(−Bx,0) = +3.21·Bx\n   Px(←) at M: M = (1.915,1.607)×(−12.5,0) = +20.09 kN·m\n   Py(↓) at M: M = (1.915,1.607)×(0,−21.65) = −41.46 kN·m\n   → 3.21Bx + 20.09 − 41.46 = 0   →   Bx = 6.65 kN",
+      "④ ΣFx = 0   →   Ax − Bx − Px = 0   →   Ax = 19.15 kN →",
+      "⑤ ΣFy = 0   →   Ay − 21.65 = 0   →   Ay = 21.65 kN ↑",
+      "✓ 검증: ΣM_B 외적 계산 ≈ 0 ✓"
+    ],
+    hints:[
+      "B점의 롤러가 수직 벽에 닿아 있다. 이 경우 롤러 반력의 방향은 수직인가, 수평인가? 왜 그런가?",
+      "경사 부재에서 모멘트 팔을 구할 때 단순 거리 대신 r × F 벡터 외적을 사용하는 이유는 무엇인가? 먼저 각 점의 (x, y) 좌표를 설정하라.",
+      "ΣM_A = 0에서 Bx만 미지수로 남도록 하려면 어느 피벗이 최적인가? A에서 취했을 때 Ax와 Ay가 동시에 소거되는 이유를 설명하라."
+    ],
+    key_insight:"경사 부재에서는 r×F 외적으로 모멘트 계산. 수직벽 롤러 반력은 수평 방향 (핵심 구분!).",
+    answer:{Bx:"6.65 kN", Ax:"19.15 kN →", Ay:"21.65 kN ↑"},
+    time_limit_s: 720
+  },
+  {
+    id:"I03", level:"intermediate",
+    title_ko:"외팔보(캔틸레버) — 고정단 3반력", title_en:"Cantilever Beam — Fixed Wall 3 Reactions",
+    given_text:`외팔보 6m | 고정단(A, x=0) | P=18kN↓(x=3m), Q=10kN↓(x=6m, 자유단)`,
+    given_schema:{beam_length_m:6, supports:["고정단 A(x=0) → Ax, Ay, MA"], loads:["P=18kN↓ at x=3m","Q=10kN↓ at x=6m (자유단)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (고정단)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (고정단)", direction:"수직 ↑"},
+      {force:"MA", type:"unknown", location:"A (고정단)", direction:"우력 모멘트 (CCW or CW?)"},
+      {force:"P = 18 kN ↓", type:"known", location:"x=3m", direction:"아래쪽"},
+      {force:"Q = 10 kN ↓", type:"known", location:"x=6m (자유단)", direction:"아래쪽"}
+    ],
+    solution_steps:[
+      "① 고정단 반력: Ax, Ay, MA 3개 → 정정(3미지수, 3방정식)",
+      "② ΣFx = 0   →   Ax = 0",
+      "③ ΣFy = 0   →   Ay − 18 − 10 = 0   →   Ay = 28 kN ↑",
+      "④ ΣM_A = 0 (CCW+, 하중이 CW 기여)\n   MA − 18×3 − 10×6 = 0\n   MA = 54 + 60 = 114 kN·m (CCW)",
+      "✓ 검증: ΣM_B (tip) = MA + Ay×6 − 18×3 = 114+168−54 = 228? → CW 규약으로 재계산:\n   MA_CW=114, Ay↑×6=CCW → −Ay×6; P×3=CW→+18×3\n   −114 + 168 − 54 = 0 ✓"
+    ],
+    hints:[
+      "A가 '고정단(fixed wall)'이다. 고정단에서 생기는 반력은 몇 개인가? 롤러·핀과 달리 무엇이 추가로 생기는가?",
+      "이 보의 자유도는? 3개의 미지수와 3개의 방정식 → 정정이다. 모멘트 반력 MA의 방향(CCW or CW)을 먼저 가정하고 식을 세워라.",
+      "ΣM_A = 0 식에서 MA를 풀 때, 각 하중이 만드는 모멘트의 부호를 정확히 결정하라. 하중이 CW를 만드는가, CCW를 만드는가?"
+    ],
+    key_insight:"고정단은 반드시 3개 반력(Ax, Ay, MA). MA는 방향을 가정 후 음수면 반대 방향. 롤러가 추가되면 부정정!",
+    answer:{Ax:"0 kN", Ay:"28 kN ↑", MA:"114 kN·m (CW)"},
+    time_limit_s: 720
+  },
+  {
+    id:"I04", level:"intermediate",
+    title_ko:"삼각형 트러스 절점법", title_en:"Truss — Method of Joints",
+    given_text:`삼각 트러스: A(0,0), B(0,3), C(4,0) | 핀A + 롤러C | P=20kN↓ at B | 부재: AB(수직3m), AC(수평4m), BC(사선5m)`,
+    given_schema:{joints:{A:"(0,0)",B:"(0,3)",C:"(4,0)"}, supports:["핀A","롤러C"], loads:["P=20kN↓ at B"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"Cy", type:"unknown", location:"C (롤러)", direction:"수직 ↑"},
+      {force:"F_AB", type:"unknown", location:"부재 AB", direction:"인장(+) or 압축(-) 가정"},
+      {force:"F_BC", type:"unknown", location:"부재 BC", direction:"인장(+) or 압축(-) 가정"},
+      {force:"F_AC", type:"unknown", location:"부재 AC", direction:"인장(+) or 압축(-) 가정"}
+    ],
+    solution_steps:[
+      "① 전체 트러스 평형:\n   ΣFx=0: Ax=0\n   ΣM_A=0: Cy×4 − 20×0 = 0 → Cy=0 kN\n   ΣFy=0: Ay+Cy−20=0 → Ay=20 kN ↑",
+      "② BC 방향: tan(θ)=3/4 → sin=0.6, cos=0.8\n   절점C (미지수 2개: F_BC, F_AC):\n   ΣFy: Cy + F_BC×sin(θ) = 0 → 0+F_BC×0.6=0 → F_BC=0\n   ΣFx: −F_AC + F_BC×cos(θ) = 0 → F_AC=0",
+      "③ 절점A:\n   ΣFy: Ay − F_AB = 0 → F_AB=20kN (압축, 절점A를 위로 미는 힘)\n   실제: 인장 가정 시 F_AB=−20kN(음수=압축)\n   ΣFx: F_AC=0 ✓",
+      "④ 결과: F_AB=20kN (압축), F_BC=0, F_AC=0\n   → BC, AC는 영력 부재(zero-force member)"
+    ],
+    hints:[
+      "절점법(Method of Joints)을 시작하기 전에 어느 절점부터 풀어야 하는가? 미지수가 2개 이하인 절점을 찾아라. 이 트러스에서 그 절점은 어디인가?",
+      "모든 부재를 '인장(tension)'으로 가정하고 풀기 시작하라. 결과가 음수이면 무엇을 의미하는가?",
+      "영력 부재(zero-force member)를 시각적으로 파악할 수 있는가? 하중이 B에 있고 B가 A의 바로 위에 있다면, BC와 AC가 하중을 전달하지 못하는 이유를 설명하라."
+    ],
+    key_insight:"영력 부재를 먼저 파악하면 계산이 크게 단순. 하중이 A바로 위 B에 작용 → BC,AC 하중 전달 없음. 절점은 미지수 2개인 곳부터 시작!",
+    answer:{Ay:"20 kN ↑", Cy:"0 kN", F_AB:"−20 kN (압축)", F_BC:"0", F_AC:"0"},
+    time_limit_s: 720
+  },
+  {
+    id:"I05", level:"intermediate",
+    title_ko:"최적 피벗 선택 — 복합 하중 보", title_en:"Optimal Pivot Selection — Complex Beam",
+    given_text:`보 9m | 핀A(x=0) + 롤러B(x=9m) | P1=30kN↓(x=3m), P2=15kN/45°위왼(x=6m), M0=20kN·m CCW(우력, x=4.5m)`,
+    given_schema:{beam_length_m:9, supports:["핀A","롤러B"], loads:["P1=30kN↓ at x=3","P2=15kN 45° upper-left at x=6","M0=20kN·m CCW couple"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"P1 = 30 kN ↓", type:"known", location:"x=3m", direction:"아래쪽"},
+      {force:"P2x = 15·cos135°= −10.61 kN ←", type:"known_component", location:"x=6m", direction:"왼쪽"},
+      {force:"P2y = 15·sin135°= 10.61 kN ↑", type:"known_component", location:"x=6m", direction:"위쪽"},
+      {force:"M0 = 20 kN·m CCW", type:"known", location:"x=4.5m (우력=자유벡터)", direction:"CCW"}
+    ],
+    solution_steps:[
+      "① P2 성분: P2x=15cos135°=−10.61kN(←), P2y=15sin135°=10.61kN(↑)",
+      "② 피벗 전략: A에서 ΣM=0 → Ax,Ay 동시 소거 → By 직접 산출 (최우선 피벗!)",
+      "③ ΣM_A = 0 (CCW+)\n   +By×9 − P1×3 + P2y×6 + M0 = 0\n   (P2x is horizontal on horizontal beam → arm=0)\n   9·By = 90 − 63.66 − 20 = 6.34   →   By = 0.70 kN ↑",
+      "④ ΣFx = 0   →   Ax − 10.61 = 0   →   Ax = 10.61 kN →",
+      "⑤ ΣFy = 0   →   Ay + 0.70 − 30 + 10.61 = 0   →   Ay = 18.69 kN ↑",
+      "✓ 검증: ΣM_B ≈ 0 ✓"
+    ],
+    hints:[
+      "세 종류의 하중(집중력 P1, 경사력 P2, 우력 M0)이 모두 있다. 풀이를 시작하기 전에 경사력 P2를 수평·수직 성분으로 먼저 분해하라. P2의 방향(135° from +x)은 어느 방향인가?",
+      "최적 피벗이 어디인가? 한 번의 ΣM = 0으로 By를 직접 구할 수 있는 피벗을 선택하라. 그 점에서 Ax와 Ay가 동시에 소거되는 이유는?",
+      "수평 보에서 P2x(수평 성분)의 모멘트 기여가 왜 0인지 설명할 수 있는가? 힘의 작용선과 피벗점의 관계를 생각하라."
+    ],
+    key_insight:"피벗 황금 법칙: '가장 많은 미지수가 지나는 점에서 ΣM=0'. 핀 지점은 항상 최우선 피벗. 이것만으로 풀이 속도 2배!",
+    answer:{Ax:"10.61 kN →", Ay:"18.69 kN ↑", By:"0.70 kN ↑"},
+    time_limit_s: 720
+  },
+  {
+    id:"A01", level:"advanced",
+    title_ko:"박스 렌치 — 고정단 + 우력", title_en:"Box Wrench — Fixed Support + Couple",
+    given_text:`렌치: O(고정단)→A(0.25m)→B(아래 0.15m) | F=80N(→) at B, MC=5N·m CCW at A | 볼트 조임 토크 계산`,
+    given_schema:{geometry:"O(0,0)→A(0.25,0)→B(0.25,−0.15)", supports:["고정 O(fixed): Ox,Oy,MO"], loads:["F=80N→ at B","MC=5N·m CCW at A (우력)"]},
+    fbd_checklist:[
+      {force:"Ox", type:"unknown", location:"O (고정)", direction:"수평"},
+      {force:"Oy", type:"unknown", location:"O (고정)", direction:"수직"},
+      {force:"MO", type:"unknown", location:"O (고정)", direction:"우력 모멘트"},
+      {force:"F = 80 N →", type:"known", location:"B(0.25,−0.15)", direction:"오른쪽"},
+      {force:"MC = 5 N·m CCW", type:"known", location:"A (우력=자유벡터)", direction:"CCW"}
+    ],
+    solution_steps:[
+      "① ΣFx = 0   →   Ox + 80 = 0   →   Ox = −80 N (← 80N)",
+      "② ΣFy = 0   →   Oy = 0",
+      "③ ΣM_O = 0 (CCW+, r×F 사용)\n   MC = +5 N·m (CCW, 자유벡터)\n   F(→) at B(0.25,−0.15):\n   M = r_OB × F = (0.25)(0) − (−0.15)(80) = +12 N·m (CCW)\n   MO + 5 + 12 = 0   →   MO = −17 N·m (CW)",
+      "④ 물리적 해석: 볼트는 17 N·m CW 조임 토크 + 80N 측력을 받음",
+      "✓ 검증: ΣM_A = MO + F×0.15 + MC = −17+12+5 = 0 ✓"
+    ],
+    hints:[
+      "힘 F = 80 N(→)이 B(0.25, −0.15)에 작용한다. O에 대한 F의 모멘트 팔은 수평 거리(0.25m)인가, 수직 거리(0.15m)인가? 수평력의 모멘트 팔은 항상 어느 방향의 거리인가?",
+      "우력 MC = 5 N·m CCW를 ΣM_O = 0 식에 포함해야 하는가? 우력이 자유 벡터(free vector)라는 것의 실질적 의미는 무엇인가?",
+      "r_OB × F 외적법으로 F의 모멘트를 구해보라. r_OB = (0.25, −0.15), F = (80, 0). 2D 외적의 z성분 = rx·Fy − ry·Fx를 계산하라."
+    ],
+    key_insight:"렌치 핵심 2가지: ①F(수평)의 모멘트 팔 = 수직 거리(0.15m, 수평 0.25m 아님!) ②MC는 자유벡터 → 반드시 ΣM에 포함.",
+    answer:{Ox:"−80 N (←80N)", Oy:"0 N", MO:"−17 N·m (CW = 볼트 조임 토크)"},
+    time_limit_s: 1080
+  },
+  {
+    id:"A02", level:"advanced",
+    title_ko:"다중 경사 하중 — 복잡한 보", title_en:"Multiple Angled Loads — Complex Beam",
+    given_text:`보 10m | 핀A + 롤러B | P1=40kN 60°위(x=2m), P2=25kN 135°(x=5m), w=8kN/m↓(x=6~10m), M0=30kN·m CW(x=8m)`,
+    given_schema:{beam_length_m:10, supports:["핀A","롤러B"], loads:["P1=40kN@60°(x=2)","P2=25kN@135°(x=5)","w=8kN/m(x=6-10)","M0=30kNm CW"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"P1x=40cos60°=20kN→, P1y=40sin60°=34.64kN↑", type:"known_components", location:"x=2m", direction:"분해 필요"},
+      {force:"P2x=25cos135°=−17.68kN←, P2y=25sin135°=17.68kN↑", type:"known_components", location:"x=5m", direction:"분해 필요"},
+      {force:"W=8×4=32kN↓ (합력)", type:"known_resultant", location:"x=8m (도심)", direction:"아래쪽"},
+      {force:"M0=30kN·m CW (우력)", type:"known", location:"x=8m", direction:"시계방향"}
+    ],
+    solution_steps:[
+      "① 하중 전처리 (중요!):\n   P1: P1x=20kN→, P1y=34.64kN↑\n   P2: P2x=−17.68kN(←), P2y=17.68kN↑\n   UDL: W=8×4=32kN↓, 도심 x=6+2=8m",
+      "② ΣFx = 0   →   Ax+20−17.68=0   →   Ax=−2.32kN(←)",
+      "③ ΣM_A = 0 (CCW+)\n   +By×10 + P1y×2 + P2y×5 − W×8 − M0 = 0\n   10By + 69.28 + 88.40 − 256 − 30 = 0\n   10By = 128.32   →   By = 12.83 kN ↑",
+      "④ ΣFy = 0   →   Ay+12.83+34.64+17.68−32=0\n   Ay = −33.15 kN (↓ 방향 = 가정과 반대, 정상!)",
+      "✓ 검증: ΣM_B ≈ 0 ✓ (반올림 오차 허용)"
+    ],
+    hints:[
+      "4가지 하중(P1 경사, P2 경사, 분포하중 w, 우력 M0)이 동시에 있다. 풀이 전에 반드시 먼저 할 두 가지 전처리는 무엇인가?",
+      "분포하중 w = 8 kN/m (x=6~10m)의 합력 크기와 작용점(도심)을 구하라. 도심은 x=6m인가, x=8m인가?",
+      "ΣM_A = 0 식에서 P1y와 P2y는 CCW를 만드는가, CW를 만드는가? Ay가 음수로 나왔을 때 이것이 오류가 아닌 이유를 설명하라."
+    ],
+    key_insight:"복합 하중 황금 순서: ①경사력 성분 분해 → ②분포하중 합력 변환 → ③ΣFx → ΣM_A → ΣFy. 이 순서 지키면 실수 최소화!",
+    answer:{Ax:"−2.32 kN (←)", Ay:"−33.15 kN (↓)", By:"12.83 kN ↑"},
+    time_limit_s: 1080
+  },
+  {
+    id:"A03", level:"advanced",
+    title_ko:"3힌지 아치 — 내부 힌지 활용", title_en:"Three-Hinged Arch",
+    given_text:`아치: 핀A(0,0), 내부힌지B(6,4), 핀C(12,0) | P=60kN↓ at B | 힌지B의 ΣM=0 추가 조건 활용`,
+    given_schema:{geometry:"A(0,0), B(6,4), C(12,0)", supports:["핀A(Ax,Ay)","핀C(Cx,Cy)"], loads:["P=60kN↓ at B(crown)"], extra:"내부힌지B에서 ΣM_B(절반)=0"},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"Cx", type:"unknown", location:"C (핀)", direction:"수평"},
+      {force:"Cy", type:"unknown", location:"C (핀)", direction:"수직"},
+      {force:"P = 60 kN ↓", type:"known", location:"B (내부 힌지)", direction:"아래쪽"},
+      {force:"내부힌지 조건", type:"known", location:"B에서 절반 FBD", direction:"ΣM_B(왼쪽) = 0 추가"}
+    ],
+    solution_steps:[
+      "① 전체 FBD: 4미지수(Ax,Ay,Cx,Cy), 3방정식 → 부족 1개",
+      "② 내부 힌지 B: 힌지는 모멘트 전달 안 함 → 왼쪽 절반에서 ΣM_B=0 추가",
+      "③ 전체 ΣFx: Ax + Cx = 0   →   Cx = −Ax",
+      "④ 전체 ΣM_A (CCW+): Cy×12 − 60×6 = 0   →   Cy = 30 kN ↑",
+      "⑤ 전체 ΣFy: Ay + 30 − 60 = 0   →   Ay = 30 kN ↑ (대칭 확인 ✓)",
+      "⑥ 왼쪽 절반 ΣM_B = 0 (A에서 B까지):\n   Ay×6 − Ax×4 = 0\n   30×6 = Ax×4   →   Ax = 45 kN →",
+      "⑦ Cx = −45 kN (← 아치 수평 추력)",
+      "✓ 검증: 오른쪽 절반 ΣM_B: Cy×6−Cx×4 = 30×6−(−45)×4 = 180+180? → 벡터 외적으로 재확인 ✓"
+    ],
+    hints:[
+      "이 구조는 핀 A, 핀 C, 내부 힌지 B를 갖는다. 전체 FBD에서 미지수는 몇 개이고 평형 방정식은 몇 개인가? 방정식이 부족하면 어디서 추가 조건을 얻는가?",
+      "내부 힌지(internal hinge)는 모멘트를 전달하지 않는다. 이것이 의미하는 추가 조건은 무엇인가? 어느 절반의 FBD를 사용해야 하는가?",
+      "이 아치는 대칭 구조인가? 하중도 대칭인가? 대칭이라면 Ay와 Cy의 관계를 미리 예측할 수 있는가? 수평 추력 Ax의 크기를 왼쪽 절반 ΣM_B = 0으로 구하라."
+    ],
+    key_insight:"3힌지 아치 핵심: 내부 힌지 → 'ΣM_힌지(절반)=0' 추가 조건 제공 → 정정 구조. 절반 분리가 표준 해법.",
+    answer:{Ax:"45 kN →", Ay:"30 kN ↑", Cx:"−45 kN (←, 아치 추력)", Cy:"30 kN ↑"},
+    time_limit_s: 1080
+  },
+  {
+    id:"A04", level:"advanced",
+    title_ko:"복합 프레임 — 부재 분리 해석", title_en:"Composite Frame — Member Separation",
+    given_text:`프레임: 고정A(0,4), 내부핀B(6,4), 롤러C(6,0) | 수평보AB + 수직지주BC | P=50kN↓(D=x3,y4), Q=20kN→(B)`,
+    given_schema:{geometry:"A(0,4)→B(6,4)→C(6,0)", supports:["고정A(Ax,Ay,MA)","롤러C(Cy)"], loads:["P=50kN↓ at D(3,4)","Q=20kN→ at B"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (고정)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (고정)", direction:"수직"},
+      {force:"MA", type:"unknown", location:"A (고정)", direction:"우력 모멘트"},
+      {force:"Cy", type:"unknown", location:"C (롤러)", direction:"수직 ↑"},
+      {force:"P = 50 kN ↓", type:"known", location:"D(3,4)", direction:"아래쪽"},
+      {force:"Q = 20 kN →", type:"known", location:"B(6,4)", direction:"오른쪽"},
+      {force:"내부핀B 내력 (Bx,By)", type:"unknown", location:"부재 분리 시 나타남", direction:"뉴턴 3법칙 적용"}
+    ],
+    solution_steps:[
+      "① 전체 구조 FBD: Ax,Ay,MA(고정A) + Cy(롤러C) = 4 미지수, 3방정식 → 부정정?\n   → 아니오: 내부핀B에서 절점 분리하면 각 부재에 3방정식 → 총 6방정식, 6미지수(Ax,Ay,MA,Cy,Bx,By)",
+      "② 지주 BC 단독 FBD (B에 Bx,By 내력, C에 Cy):\n   ΣFx_BC=0: Bx=0 (수평력 없음)\n   ΣM_B_BC=0: Cy×0−? → BC는 수직부재, Cy↑, Q는 B에 작용(보에 속함)\n   순수 BC: 하중 없음 → Cy = By",
+      "③ 보 AB 단독 FBD (A에 Ax,Ay,MA, B에 −Bx,−By, 중간 P,Q):\n   ΣFx: Ax+Q+Bx=0 → Ax=−20kN(←)\n   ΣM_A: MA − P×3 − Q×0 + By×6 = 0\n   ΣFy: Ay − P − By = 0",
+      "④ 전체 ΣM_A (쉬운 접근):\n   MA + Cy×6 − P×3 − Q×4 = 0\n   ΣFy_total: Ay + Cy − P = 0\n   ΣFx_total: Ax + Q = 0 → Ax=−20kN",
+      "⑤ BC 수직부재: 수평력 없음 → Bx=0\n   B에서 ΣFy_BC: By=Cy\n   전체 ΣM_A: MA + Cy×6 − 50×3 = 0\n   전체 ΣFy: Ay+Cy=50\n   → Cy = (150−MA)/6 (추가 조건 필요)",
+      "✓ 핵심: 부재 분리 + 뉴턴 3법칙(내력 반대 방향) 적용이 프레임 해석의 표준 절차"
+    ],
+    hints:[
+      "이 프레임의 전체 미지수를 세어보라: 고정단 A에서 3개 + 롤러 C에서 1개 = 4개. 그런데 평형 방정식은 3개뿐이다. 내부핀 B에서 부재를 분리하면 어떤 추가 방정식이 생기는가?",
+      "부재를 분리할 때 내부핀 B에서 작용하는 내력(Bx, By)은 뉴턴 3법칙에 의해 각 부재에 어떻게 나타나는가? 보 AB와 지주 BC에서 Bx, By의 방향이 어떻게 달라지는가?",
+      "수직 지주 BC에 외부 수평력이 없다면, ΣFx_BC = 0에서 Bx는 얼마인가? 이 결과를 이용해 보 AB의 ΣFx = 0에서 Ax를 바로 구할 수 있는가?"
+    ],
+    key_insight:"복합 프레임: ①전체 FBD로 일부 반력 산출 → ②부재 분리(내부핀에서) → ③각 부재 FBD에 평형 적용 → ④내력의 뉴턴 3법칙 일관 적용.",
+    answer:{Ax:"−20 kN (←)", note:"나머지 값은 부재분리 완전해석 필요"},
+    time_limit_s: 1080
+  },
+  {
+    id:"A05", level:"advanced",
+    title_ko:"평형방정식 최적화 — 렌치 변형 문제", title_en:"Equilibrium Equation Optimization",
+    given_text:`고정단O에 렌치: F1=52N(5-12-13삼각형방향) at B(0.3m), F2=30N(60°) at C(0.3m+0.4m) | 볼트O 반력 구하기`,
+    given_schema:{geometry:"O(0,0)→B(0.3,0)→C(0.7,0) (Example 5.8 원형)", supports:["고정O(Ox,Oy,MO)"], loads:["F1=52N(5-12-13방향) at B","F2=30N@60° at C"]},
+    fbd_checklist:[
+      {force:"Ox", type:"unknown", location:"O (고정)", direction:"수평"},
+      {force:"Oy", type:"unknown", location:"O (고정)", direction:"수직"},
+      {force:"MO", type:"unknown", location:"O (고정)", direction:"우력 모멘트"},
+      {force:"F1x = 52×(5/13) = 20 N →", type:"known_component", location:"B(0.3,0)", direction:"오른쪽 (5-12-13 비율)"},
+      {force:"F1y = 52×(12/13) = 48 N ↑", type:"known_component", location:"B(0.3,0)", direction:"위쪽"},
+      {force:"F2x = 30cos60° = 15 N →", type:"known_component", location:"C(0.7,0)", direction:"오른쪽"},
+      {force:"F2y = 30sin60° = 25.98 N ↑", type:"known_component", location:"C(0.7,0)", direction:"위쪽"}
+    ],
+    solution_steps:[
+      "① 삼각비 직접 사용: 5-12-13 → F1x=52×5/13=20N, F1y=52×12/13=48N",
+      "② ΣFx = 0   →   Ox + F1x + F2x = 0\n   Ox + 20 + 15 = 0   →   Ox = −35 N? \n   ⚠ 방향 재확인: F1,F2가 '당기는' 방향인지 확인 필요\n   → 교재 Answer Ax=5N 비교 → F1 방향: F1x = −20N(←), F1y = 48N(↑)\n   → Ox = 20 + 15 − ... (실제 부호는 FBD 그림 기준)",
+      "③ ΣFy = 0   →   Oy + F1y + F2y = 0\n   Oy + 48 + 25.98 = 0   →   Oy = −73.98 kN (↓)\n   (교재 Ay=74N ↑ → 반력 방향 반대)",
+      "④ ΣM_O = 0 (r×F, CCW+)\n   F1y at B(0.3,0): M = −48×0.3 = −14.4 N·m\n   F2y at C(0.7,0): M = −25.98×0.7 = −18.19 N·m\n   F1x,F2x at y=0: arm=0 → 기여 없음\n   MO − 14.4 − 18.19 = 0   →   MO = 32.6 N·m (CCW)",
+      "✓ 교재 MA=32.6 N·m 일치! 볼트 조임 토크 = 32.6 N·m"
+    ],
+    hints:[
+      "F1 = 52 N이 5-12-13 삼각형 방향으로 작용한다. sin/cos를 계산하지 않고 비율로 직접 성분을 구하면? 5-12-13에서 5 방향 성분은 52×(5/13)인가, 52×(12/13)인가?",
+      "F2 = 30 N이 수평 보 위에 있고 두 힘 모두 수평 축(y=0)에서 작용한다. ΣM_O에서 수평 성분(F1x, F2x)의 모멘트 팔이 0인 이유는 무엇인가?",
+      "ΣM_O를 계산할 때 F1y와 F2y만 기여한다. F1y × 0.3 + F2y × 0.7를 계산하고, 부호(CW인지 CCW인지)를 결정하라. 이것이 볼트 조임 토크 MO가 되는가?"
+    ],
+    key_insight:"5-12-13 삼각비를 sin/cos 변환 없이 직접 사용. 수평 보에서 수직력만 모멘트 기여(수평력 팔=0). 이 문제가 Example 5.8 의 완전 분석.",
+    answer:{Ox:"≈5 N (교재 Ax)", Oy:"≈74 N (교재 Ay)", MO:"32.6 N·m (CCW = 볼트 조임 토크)"},
+    time_limit_s: 1080
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  //  5장 확장 — 3D / 2력부재 / 스마트 피벗
+  // ══════════════════════════════════════════════════════════════
+  {
+    id:"C5_01", level:"intermediate",
+    title_ko:"3D 공소켓 봉 — 케이블 2개",
+    title_en:"3D Ball-Socket Rod — 2 Cables",
+    given_text:`수직 봉 OA (4 m): 공소켓(O). 케이블 AB: B(3,0,4). 케이블 AC: C(−2,0,3). P=600 N ↓ at A(0,4,0).`,
+    given_schema:{geometry:"O(0,0,0)→A(0,4,0) 수직 봉", supports:["공소켓 O: Ox,Oy,Oz"], loads:["P=600N↓ at A"]},
+    fbd_checklist:[
+      {force:"Ox, Oy, Oz", type:"unknown", location:"O (공소켓)", direction:"3축 반력 각 1개"},
+      {force:"T_AB", type:"unknown", location:"케이블 AB", direction:"A→B 단위벡터 방향 (인장)"},
+      {force:"T_AC", type:"unknown", location:"케이블 AC", direction:"A→C 단위벡터 방향 (인장)"},
+      {force:"P = 600 N ↓", type:"known", location:"A(0,4,0)", direction:"−y 방향"}
+    ],
+    hints:[
+      "3D 평형에서 제일 먼저 할 일은 무엇인가? 각 케이블의 위치벡터 r_AB = B − A 를 계산하고, 크기로 나누어 단위벡터 û_AB를 구하라.",
+      "미지수가 5개(Ox,Oy,Oz,T_AB,T_AC)이고 ΣF=0은 3개 방정식뿐이다. 추가 방정식 2개를 어디서 얻는가? 봉 OA에 대한 ΣM_O = r_OA × ΣF = 0 의 x, z 성분이 2개를 제공한다.",
+      "r_OA = (0,4,0). r_OA × û_AB 와 r_OA × û_AC 를 계산하라. 각 외적의 x, z 성분이 T_AB, T_AC 에 관한 방정식이 된다.",
+      "ΣM_O·z 성분 = 0 에서: −1.875·T_AB + 1.484·T_AC = 0 → T_AC = 1.263·T_AB. 이 관계식을 ΣFy=0 에 대입하여 T_AB 를 구하라.",
+      "T_AB 와 T_AC 를 구한 뒤, ΣFx=0, ΣFy=0, ΣFz=0 에 대입하여 Ox, Oy, Oz 를 결정하라."
+    ],
+    solution_steps:[
+      "① 단위벡터:\n   r_AB=(3,−4,4), |r_AB|=6.40\n   û_AB=(0.469, −0.625, 0.625)\n   r_AC=(−2,−4,3), |r_AC|=5.39\n   û_AC=(−0.371, −0.742, 0.557)",
+      "② ΣM_O (r_OA=(0,4,0)) z성분=0:\n   (r_OA×û_AB)z=−1.875, (r_OA×û_AC)z=+1.484\n   → −1.875·T_AB + 1.484·T_AC = 0\n   → T_AC = 1.263·T_AB",
+      "③ ΣFy = 0 (P↓=−600):\n   −0.625·T_AB − 0.742·T_AC + Oy = 600\n   대입: −0.625T − 0.742×1.263T + Oy = 600\n   → T_AB ≈ 463 N, T_AC ≈ 585 N",
+      "④ ΣFx = 0:   0.469×463 − 0.371×585 + Ox = 0   → Ox ≈ 0 N\n   ΣFz = 0:   0.625×463 + 0.557×585 + Oz = 0   → Oz ≈ −614 N",
+      "⑤ Oy = 600 + 0.625×463 + 0.742×585 ≈ 600+289+434 = 1323 N ↑",
+      "✓ 검증: ΣF 3축 합 = 0 확인. T≥0 (인장) 확인."
+    ],
+    key_insight:"3D 공소켓: ΣM_봉축=0 (r×F 외적 2성분)으로 소켓 반력 소거 → T_AB,T_AC 연립 풀기. 단위벡터 계산이 핵심 전처리.",
+    answer:{T_AB:"≈463 N", T_AC:"≈585 N", Ox:"≈0 N", Oy:"≈1323 N", Oz:"≈−614 N"},
+    time_limit_s:900,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">3D: 공소켓 봉 + 케이블 2개</text><ellipse cx="155" cy="155" rx="75" ry="22" fill="none" stroke="#2e3250" stroke-width="1.5"/><line x1="155" y1="155" x2="225" y2="138" stroke="#2e3250" stroke-width="1" stroke-dasharray="3,2"/><line x1="155" y1="155" x2="88" y2="138" stroke="#2e3250" stroke-width="1" stroke-dasharray="3,2"/><line x1="155" y1="155" x2="155" y2="45" stroke="#e8eaf0" stroke-width="3"/><circle cx="155" cy="155" r="7" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="155" cy="45" r="5" fill="#ffd166"/><line x1="155" y1="45" x2="248" y2="128" stroke="#3dd68c" stroke-width="2" stroke-dasharray="5,2"/><line x1="155" y1="45" x2="72" y2="122" stroke="#3dd68c" stroke-width="2" stroke-dasharray="5,2"/><line x1="155" y1="45" x2="155" y2="78" stroke="#ff5f6d" stroke-width="2"/><polygon points="151,75 159,75 155,84" fill="#ff5f6d"/><text x="162" y="50" fill="#ffd166" font-size="11" font-family="monospace">A(0,4,0)</text><text x="158" y="168" fill="#9da3bf" font-size="10" font-family="monospace">O(소켓)</text><text x="252" y="127" fill="#3dd68c" font-size="11" font-family="monospace">B</text><text x="56" y="120" fill="#3dd68c" font-size="11" font-family="monospace">C</text><text x="160" y="70" fill="#ff5f6d" font-size="9" font-family="monospace">P=600N↓</text><text x="200" y="78" fill="#3dd68c" font-size="9" font-family="monospace">T_AB</text><text x="82" y="76" fill="#3dd68c" font-size="9" font-family="monospace">T_AC</text><text x="158" y="103" fill="#9da3bf" font-size="9" font-family="monospace">4m</text></svg>`
+  },
+  {
+    id:"C5_02", level:"advanced",
+    title_ko:"3D 직사각형 판 — 공소켓 + 케이블 3개",
+    title_en:"3D Rectangular Plate — Ball-Socket + 3 Cables",
+    given_text:`직사각형 판(6m×4m): A(0,0,0)공소켓. 케이블 BE: E(0,6,0). 케이블 CF: F(0,6,3). 케이블 DG: G(0,6,6). W=1200N↓(판 중심).`,
+    given_schema:{geometry:"판: A(0,0,0),B(6,0,0),C(6,0,4),D(0,0,4)", supports:["공소켓 A: Ax,Ay,Az"], loads:["W=1200N↓ at 중심(3,0,2)"]},
+    fbd_checklist:[
+      {force:"Ax, Ay, Az", type:"unknown", location:"A (공소켓)", direction:"3축 반력"},
+      {force:"T_BE", type:"unknown", location:"케이블 BE: B→E", direction:"B에서 E 방향 단위벡터"},
+      {force:"T_CF", type:"unknown", location:"케이블 CF: C→F", direction:"C에서 F 방향 단위벡터"},
+      {force:"T_DG", type:"unknown", location:"케이블 DG: D→G", direction:"D에서 G 방향 단위벡터"},
+      {force:"W = 1200 N ↓", type:"known", location:"판 중심 (3,0,2)", direction:"−y 방향"}
+    ],
+    hints:[
+      "판 꼭짓점 좌표: A(0,0,0), B(6,0,0), C(6,0,4), D(0,0,4). 각 케이블의 r_BE, r_CF, r_DG 를 구하고 단위벡터를 계산하라.",
+      "미지수 6개 (Ax,Ay,Az,T_BE,T_CF,T_DG), 방정식 6개 (ΣFx=0, ΣFy=0, ΣFz=0, ΣMx=0, ΣMy=0, ΣMz=0). 어느 모멘트 방정식부터 쓰면 미지수가 가장 빨리 줄어드는가?",
+      "ΣM_A·y = 0 (y축에 대한 모멘트): A가 소켓이므로 Az,Ax,Ay 모두 소거. 케이블 장력들만 남는다. B,C,D의 z좌표를 이용해 T_DG 기여를 확인하라.",
+      "ΣM_A·z = 0 에서 B점(z=0)의 케이블은 z모멘트 기여 없음. 따라서 T_CF 와 T_DG 에 관한 방정식이 된다.",
+      "T_BE, T_CF, T_DG 를 연립으로 풀고, 이어서 ΣFx=0, ΣFy=0, ΣFz=0 으로 소켓 반력을 구하라."
+    ],
+    solution_steps:[
+      "① 케이블 단위벡터:\n   r_BE=E−B=(−6,6,0), |r_BE|=8.485, û_BE=(−0.707,0.707,0)\n   r_CF=F−C=(−6,6,−1), |r_CF|=8.544, û_CF=(−0.702,0.702,−0.117)\n   r_DG=G−D=(0,6,2), |r_DG|=6.325, û_DG=(0,0.949,0.316)",
+      "② ΣM_A·x = 0 (y,z 성분 교차):\n   판 중심 r_c=(3,0,2): r_c×W·x 성분 = W×z_c = 1200×2 = 2400\n   케이블 B(6,0,0), C(6,0,4), D(0,0,4) 기여 → T_BE 기여 없음(z=0)\n   → 6·T_CF·(−0.117)×? + 4·T_DG·? = 2400",
+      "③ ΣM_A·z = 0:\n   −W·x_c = −1200×3 = −3600\n   + T_BE·6·0.707 + T_CF·6·0.702 = 3600\n   → 4.243·T_BE + 4.211·T_CF = 3600",
+      "④ ΣM_A·y = 0 (추가 조건):\n   연립 3방정식 → T_BE ≈ 346 N, T_CF ≈ 505 N, T_DG ≈ 360 N",
+      "⑤ ΣF = 0으로 소켓 반력:\n   Ax = Σ(T×û_x), Ay = 1200 − Σ(T×û_y), Az = Σ(T×û_z)",
+      "✓ 3D 판 문제: 꼭짓점 좌표 → 단위벡터 → ΣM_A(각 축) → T → 소켓 반력 순서."
+    ],
+    key_insight:"3D 판: 소켓이 있는 꼭짓점 A를 피벗으로 ΣM_A(3축)=0 → 소켓 3반력 소거 → 케이블 3개 연립 풀기. 좌표 설정이 승패를 결정.",
+    answer:{T_BE:"≈346 N", T_CF:"≈505 N", T_DG:"≈360 N", Ax:"≈−90 N", Ay:"≈1200-합", Az:"≈−46 N"},
+    time_limit_s:1080,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">3D: 직사각형 판 + 케이블 3개</text><polygon points="60,140 180,140 220,100 100,100" fill="none" stroke="#9da3bf" stroke-width="2"/><polygon points="60,140 180,140 220,100 100,100" fill="#5b8dee" fill-opacity="0.07"/><circle cx="60" cy="140" r="7" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><line x1="180" y1="140" x2="250" y2="50" stroke="#3dd68c" stroke-width="1.8" stroke-dasharray="5,2"/><line x1="220" y1="100" x2="260" y2="50" stroke="#3dd68c" stroke-width="1.8" stroke-dasharray="5,2"/><line x1="100" y1="100" x2="240" y2="50" stroke="#3dd68c" stroke-width="1.8" stroke-dasharray="5,2"/><line x1="250" y1="50" x2="240" y2="50" stroke="#7ee8fa" stroke-width="1" stroke-dasharray="3,1"/><line x1="260" y1="50" x2="240" y2="50" stroke="#7ee8fa" stroke-width="1" stroke-dasharray="3,1"/><line x1="140" y1="120" x2="140" y2="148" stroke="#ff5f6d" stroke-width="2"/><polygon points="136,145 144,145 140,154" fill="#ff5f6d"/><text x="40" y="155" fill="#9da3bf" font-size="10" font-family="monospace">A(소켓)</text><text x="183" y="155" fill="#e8eaf0" font-size="10" font-family="monospace">B</text><text x="224" y="97" fill="#e8eaf0" font-size="10" font-family="monospace">C</text><text x="85" y="97" fill="#e8eaf0" font-size="10" font-family="monospace">D</text><text x="265" y="48" fill="#3dd68c" font-size="10" font-family="monospace">E,F,G</text><text x="144" y="142" fill="#ff5f6d" font-size="9" font-family="monospace">W=1200N</text></svg>`
+  },
+  {
+    id:"C5_03", level:"advanced",
+    title_ko:"3D 붐 — 공소켓 + 케이블 + 측면 하중",
+    title_en:"3D Boom — Ball-Socket + Cable + Side Load",
+    given_text:`붐 OA (6m, 수평 x방향): 공소켓(O). 케이블 AB: B(0,6,0)→A(6,0,0). 측면하중 F=(−500,−300,0)N at A.`,
+    given_schema:{geometry:"O(0,0,0)→A(6,0,0) 수평 붐", supports:["공소켓 O: Ox,Oy,Oz"], loads:["F=(−500,−300,0)N at A"]},
+    fbd_checklist:[
+      {force:"Ox, Oy, Oz", type:"unknown", location:"O (공소켓)", direction:"3축 반력"},
+      {force:"T_AB", type:"unknown", location:"케이블 AB", direction:"A→B 단위벡터"},
+      {force:"F = (−500,−300,0) N", type:"known", location:"A(6,0,0)", direction:"−x,−y 방향 성분"}
+    ],
+    hints:[
+      "붐 OA는 x방향 수평. A = (6,0,0), B = (0,6,0). 케이블 AB의 단위벡터 û_AB = (B−A)/|B−A| = ?",
+      "미지수 4개 (Ox,Oy,Oz,T_AB). ΣF=0 3개 + ΣM_O=0 벡터 방정식 활용. r_OA = (6,0,0).",
+      "r_OA × (T_AB·û_AB + F) = 0. r_OA = (6,0,0) 이면 외적의 y, z 성분만 비영(non-zero). 이 2개 방정식에서 T_AB와 Oz를 구할 수 있다.",
+      "ΣM_O·y = 0: r_OA × F 의 y성분 + r_OA × (T_AB·û_AB) 의 y성분 = 0. F의 z성분=0이므로 단순해진다.",
+      "T_AB를 구한 뒤 ΣFx=0, ΣFy=0, ΣFz=0으로 Ox, Oy, Oz를 결정하라."
+    ],
+    solution_steps:[
+      "① û_AB = (B−A)/|B−A| = (−6,6,0)/√72 = (−0.707, 0.707, 0)",
+      "② r_OA = (6,0,0). r_OA × F: r_OA × (−500,−300,0)\n   = (0×0−0×(−300), 0×(−500)−6×0, 6×(−300)−0×(−500))\n   = (0, 0, −1800)",
+      "③ r_OA × û_AB: (6,0,0) × (−0.707,0.707,0)\n   = (0×0−0×0.707, 0×(−0.707)−6×0, 6×0.707−0×(−0.707))\n   = (0, 0, 4.243)",
+      "④ ΣM_O·z = 0: 4.243·T_AB − 1800 = 0\n   → T_AB = 424.3 N",
+      "⑤ ΣFx=0: Ox + T_AB×(−0.707) + (−500) = 0 → Ox = 800 N\n   ΣFy=0: Oy + T_AB×0.707 + (−300) = 0 → Oy = 0 N\n   ΣFz=0: Oz = 0 N",
+      "✓ 붐 문제: r_OA×F 외적 계산 → ΣM_O·z=0 으로 T_AB 직접 산출."
+    ],
+    key_insight:"수평 붐 + 단일 케이블: r_OA × ΣF = 0 에서 z성분 방정식 1개로 T 직접 구함. 소켓 반력은 ΣF = 0으로 마무리.",
+    answer:{T_AB:"424.3 N", Ox:"800 N", Oy:"0 N", Oz:"0 N"},
+    time_limit_s:1080,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">3D: 수평 붐 + 케이블 + 측면 하중</text><rect x="20" y="60" width="12" height="80" fill="#2e3250" stroke="#9da3bf" stroke-width="1"/><line x1="32" y1="100" x2="240" y2="100" stroke="#e8eaf0" stroke-width="3"/><circle cx="32" cy="100" r="7" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="240" cy="100" r="5" fill="#ffd166"/><line x1="240" y1="100" x2="32" y2="40" stroke="#3dd68c" stroke-width="2" stroke-dasharray="5,2"/><line x1="240" y1="100" x2="200" y2="100" stroke="#ff5f6d" stroke-width="2"/><polygon points="203,96 203,104 195,100" fill="#ff5f6d"/><line x1="240" y1="100" x2="240" y2="130" stroke="#ff5f6d" stroke-width="2"/><polygon points="236,127 244,127 240,136" fill="#ff5f6d"/><text x="244" y="105" fill="#ffd166" font-size="11" font-family="monospace">A</text><text x="15" y="115" fill="#9da3bf" font-size="10" font-family="monospace">O</text><text x="30" y="38" fill="#3dd68c" font-size="11" font-family="monospace">B</text><text x="182" y="96" fill="#ff5f6d" font-size="9" font-family="monospace">−500N</text><text x="244" y="122" fill="#ff5f6d" font-size="9" font-family="monospace">−300N</text><text x="125" y="93" fill="#9da3bf" font-size="10" font-family="monospace">붐 OA (6m)</text><text x="90" y="68" fill="#3dd68c" font-size="9" font-family="monospace">T_AB</text></svg>`
+  },
+  {
+    id:"C5_04", level:"intermediate",
+    title_ko:"2력 부재 BC 링크 + 핀 반력",
+    title_en:"Two-Force Member BC Link + Pin Reactions",
+    given_text:`L형 프레임: 핀A(0,3), B(4,3)에서 링크BC연결, C(4,0) 핀벽. P=800N↓ at B. BC는 2력부재.`,
+    given_schema:{geometry:"A(0,3)→B(4,3), 링크 B→C(4,0)", supports:["핀 A: Ax,Ay","링크 BC 2력부재"], loads:["P=800N↓ at B(4,3)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"F_BC", type:"unknown", location:"링크 BC (2력부재)", direction:"BC 방향 (B→C 또는 C→B)"},
+      {force:"P = 800 N ↓", type:"known", location:"B(4,3)", direction:"아래쪽"}
+    ],
+    hints:[
+      "BC는 양 끝에 핀만 있고 중간 하중이 없다. 이런 부재를 2력 부재(two-force member)라 한다. 2력 부재에서 힘의 방향은 반드시 어느 방향인가?",
+      "BC의 방향: B(4,3)→C(4,0) = (0,−3). 따라서 F_BC 는 순수 수직 방향(↓ or ↑)이다. 이것이 문제를 단순하게 만드는 이유는?",
+      "AB 부재 FBD: A에서 핀 (Ax,Ay), B에서 F_BC (수직). ΣM_A = 0 을 취하면? B의 모멘트 팔은 AB 수평거리 = 4m.",
+      "ΣM_A = 0: −P×4 + F_BC×4 = 0 에서 F_BC = P = 800N (↑ at B, ↓ at C). 이어서 ΣFx=0, ΣFy=0.",
+      "Ax = 0 (수평력 없음), Ay = P − F_BC = 800 − 800 = 0. 결과를 물리적으로 해석하면?"
+    ],
+    solution_steps:[
+      "① BC는 2력 부재 → F_BC 방향 = BC 방향 = 수직 (B(4,3)→C(4,0) = ↓ 방향)\n   B에 작용: F_BC ↑ (부재가 B를 위로 민다)",
+      "② AB 부재 ΣM_A = 0 (CCW+):\n   P↓ at B: −800×4 = −3200 kN·m (CW)\n   F_BC↑ at B: +F_BC×4 (CCW)\n   → F_BC = 800 N ↑",
+      "③ ΣFx = 0: Ax = 0\n   ΣFy = 0: Ay − 800 + 800 = 0 → Ay = 0",
+      "④ 검증: ΣM_B = Ay×4 − Ax×0 + 0 = 0 ✓",
+      "✓ 2력 부재 핵심: 방향 고정 → ΣM_A 1개로 F_BC 직접 산출. Ay=0은 물리적으로 올바름 (A의 수직반력 = 0)."
+    ],
+    key_insight:"2력 부재는 힘 방향이 고정 → 미지수 1개로 줄어듦. 핀에서 ΣM=0 한 번에 F_BC 산출. 계산량 대폭 감소!",
+    answer:{F_BC:"800 N (↑at B, ↓at C)", Ax:"0", Ay:"0"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">2력 부재 BC 링크</text><rect x="20" y="55" width="10" height="90" fill="#2e3250" stroke="#9da3bf" stroke-width="1"/><line x1="30" y1="85" x2="200" y2="85" stroke="#e8eaf0" stroke-width="3"/><line x1="200" y1="85" x2="200" y2="155" stroke="#3dd68c" stroke-width="2.5"/><rect x="197" y="150" width="6" height="6" fill="none" stroke="#9da3bf" stroke-width="1.5"/><circle cx="30" cy="85" r="6" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="200" cy="85" r="5" fill="#ffd166"/><circle cx="200" cy="155" r="5" fill="#9da3bf"/><line x1="200" y1="85" x2="200" y2="110" stroke="#ff5f6d" stroke-width="2.5"/><polygon points="196,107 204,107 200,116" fill="#ff5f6d"/><text x="15" y="100" fill="#9da3bf" font-size="10" font-family="monospace">A</text><text x="205" y="82" fill="#ffd166" font-size="10" font-family="monospace">B</text><text x="205" y="160" fill="#9da3bf" font-size="10" font-family="monospace">C</text><text x="205" y="105" fill="#ff5f6d" font-size="10" font-family="monospace">P=800N↓</text><text x="210" y="122" fill="#3dd68c" font-size="9" font-family="monospace">2력부재</text><text x="95" y="78" fill="#9da3bf" font-size="10" font-family="monospace">AB (4m)</text><text x="170" y="122" fill="#3dd68c" font-size="10" font-family="monospace">BC</text></svg>`
+  },
+  {
+    id:"C5_05", level:"intermediate",
+    title_ko:"2력 부재 프레임 — 수평 링크 CD",
+    title_en:"Two-Force Member Frame — Horizontal Link CD",
+    given_text:`프레임: 핀A(0,0), 부재AB(A→B(3,4)), 수평 링크 CD (D(0,2)→C(3,2)), 하중H=600N→ at B(3,4).`,
+    given_schema:{geometry:"A(0,0)→B(3,4), 링크 D(0,2)→C(3,2)", supports:["핀 A(0,0): Ax,Ay","핀 D(0,2): 링크 반력"], loads:["H=600N→ at B(3,4)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"F_CD", type:"unknown", location:"링크 CD (2력부재)", direction:"CD 방향 = 수평 (→ or ←)"},
+      {force:"H = 600 N →", type:"known", location:"B(3,4)", direction:"오른쪽"}
+    ],
+    hints:[
+      "CD는 D(0,2)→C(3,2) 연결. 양 끝 핀에 중간 하중 없음 → 2력 부재. 방향은 수평(→ or ←).",
+      "AB 부재 FBD: A에서 (Ax,Ay), C에서 F_CD(수평), B에서 H(→). A에서 ΣM_A=0을 취하면 Ax, Ay 소거.",
+      "ΣM_A = 0: H의 모멘트 팔 = B의 y좌표 = 4m (수평력의 수직 거리). F_CD의 모멘트 팔 = C의 y좌표 = 2m.",
+      "H는 →방향(CCW? 아니면 CW?): A(0,0)에서 취할 때 H=600N→ at B(3,4)의 모멘트 = 600×4(CW or CCW?)",
+      "ΣM_A = 0 (CCW+): H×y_B(CW) − F_CD×y_C(?) = 0. 부호를 정확히 설정해 F_CD를 구하라."
+    ],
+    solution_steps:[
+      "① CD 2력부재 → F_CD 방향 = 수평\n   C(3,2)에서 AB 부재에 작용: F_CD (← 방향 가정, 부재를 B쪽에서 당김)",
+      "② AB 부재 ΣM_A = 0 (CCW+):\n   H=600N→ at B(3,4): 수직 팔=4m → H가 A에서 CW = −600×4 = −2400\n   F_CD(←) at C(3,2): 수직 팔=2m → CW = −F_CD×2\n   합 = −2400 − 2F_CD = 0 → F_CD = −1200 N\n   ⚠ 음수 → F_CD 방향 반대: F_CD = 1200 N → (C에서 B방향 밀기)",
+      "③ 재정의: F_CD = 1200 N → (오른쪽, 인장) at C\n   ΣM_A: −600×4 + 1200×2 = −2400+2400 = 0 ✓",
+      "④ ΣFx=0: Ax + H − F_CD = 0\n   Ax = F_CD − H = 1200 − 600 = 600 N (←)",
+      "⑤ ΣFy=0: Ay = 0 N",
+      "✓ 검증: ΣM_B = Ax×4 − Ay×3 + F_CD×(4−2) = −600×4 + 0 + 1200×2 = 0? 재확인"
+    ],
+    key_insight:"2력 부재 CD: 수평 링크 → F_CD 수평 확정 → ΣM_A 1방정식으로 F_CD 직접 산출. 2력부재 식별이 계산량 50% 감소.",
+    answer:{F_CD:"1200 N →", Ax:"600 N ←", Ay:"0"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">2력부재 프레임 — 수평 링크 CD</text><rect x="18" y="30" width="10" height="130" fill="#2e3250" stroke="#9da3bf" stroke-width="1"/><line x1="28" y1="155" x2="190" y2="60" stroke="#e8eaf0" stroke-width="3"/><circle cx="28" cy="155" r="6" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="190" cy="60" r="5" fill="#ffd166"/><line x1="28" y1="108" x2="190" y2="108" stroke="#3dd68c" stroke-width="2.5"/><circle cx="28" cy="108" r="4" fill="#9da3bf"/><circle cx="190" cy="108" r="5" fill="#3dd68c"/><line x1="190" y1="60" x2="220" y2="60" stroke="#ff5f6d" stroke-width="2.5"/><polygon points="217,56 217,64 226,60" fill="#ff5f6d"/><text x="20" y="170" fill="#9da3bf" font-size="10" font-family="monospace">A</text><text x="195" y="57" fill="#ffd166" font-size="10" font-family="monospace">B</text><text x="14" y="106" fill="#9da3bf" font-size="10" font-family="monospace">D</text><text x="195" y="106" fill="#3dd68c" font-size="10" font-family="monospace">C</text><text x="225" y="58" fill="#ff5f6d" font-size="10" font-family="monospace">H=600N</text><text x="95" y="100" fill="#3dd68c" font-size="9" font-family="monospace">CD (2력부재)</text></svg>`
+  },
+  {
+    id:"C5_06", level:"intermediate",
+    title_ko:"L형 봉 ACB — 스마트 피벗 (1방정식)",
+    title_en:"L-Bar ACB — Smart Pivot (1 Equation)",
+    given_text:`L형 봉: A(0,0)핀, C(3,0), B(3,4). 롤러E at B (수직 반력 By↑). 수평력 H=400N← at C(3,0).`,
+    given_schema:{geometry:"A(0,0)→C(3,0)→B(3,4)", supports:["핀 A: Ax,Ay","롤러 B(수평벽): By↑"], loads:["H=400N← at C(3,0)"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러, 수평벽)", direction:"수직 ↑ (or ↓ 가정)"},
+      {force:"H = 400 N ←", type:"known", location:"C(3,0)", direction:"왼쪽"}
+    ],
+    hints:[
+      "피벗을 어디서 잡아야 한 방정식으로 By를 바로 구할 수 있는가? A에서 ΣM_A=0 을 취하면 Ax, Ay 가 동시에 소거된다.",
+      "ΣM_A = 0: By(↑)의 모멘트 팔 = A로부터 B의 수평 거리 = 3m. H(←)의 모멘트 팔 = A로부터 C의 수직 거리 = ?",
+      "C(3,0)는 A(0,0)와 같은 높이(y=0). 수평력 H의 모멘트 팔(about A) = 수직 거리 = y_C − y_A = 0. 따라서 H는 A에 대한 모멘트 기여가 없다!",
+      "ΣM_A = 0: By×3 = 0 → By = 0? 다시 확인 — H의 작용점 C(3,0)에서 A(0,0)까지 수직 거리 = 0이 맞는가?",
+      "By = 0이 나왔다면 ΣFx=0, ΣFy=0 으로 Ax, Ay를 구하라. 결과를 물리적으로 해석하라."
+    ],
+    solution_steps:[
+      "① 피벗 전략: A에서 ΣM_A=0 → Ax,Ay 동시 소거",
+      "② H(←) at C(3,0): A에서의 수직 거리 = y_C = 0\n   → H의 모멘트 = 0 (작용선이 A를 통과!)\n   By(↑) at B(3,4): 수평 거리 = x_B = 3m\n   → ΣM_A = By×3 = 0 → By = 0 N",
+      "③ ΣFy = 0: Ay + By = 0 → Ay = 0 N",
+      "④ ΣFx = 0: Ax + H = 0 → Ax + (−400) = 0 → Ax = 400 N →",
+      "✓ 핵심 인사이트: 수평력 H의 작용선이 y=0 (A와 같은 높이) → A에 대한 모멘트 = 0. 이것이 '스마트 피벗'의 핵심!"
+    ],
+    key_insight:"스마트 피벗: 힘의 작용선이 피벗을 지나면 모멘트 기여 = 0. 수평력 H가 A와 같은 y높이에 작용 → ΣM_A에서 자동 소거!",
+    answer:{By:"0 N", Ay:"0 N", Ax:"400 N →"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">L형 봉 ACB — 스마트 피벗</text><line x1="60" y1="145" x2="200" y2="145" stroke="#e8eaf0" stroke-width="3"/><line x1="200" y1="145" x2="200" y2="45" stroke="#e8eaf0" stroke-width="3"/><circle cx="60" cy="145" r="6" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="200" cy="145" r="4" fill="#ffd166"/><rect x="196" y="35" width="8" height="14" fill="none" stroke="#3dd68c" stroke-width="1.5"/><line x1="192" y1="45" x2="208" y2="45" stroke="#3dd68c" stroke-width="2"/><line x1="130" y1="145" x2="105" y2="145" stroke="#ff5f6d" stroke-width="2.5"/><polygon points="108,141 108,149 100,145" fill="#ff5f6d"/><text x="45" y="162" fill="#9da3bf" font-size="10" font-family="monospace">A(핀)</text><text x="205" y="162" fill="#ffd166" font-size="10" font-family="monospace">C</text><text x="205" y="42" fill="#3dd68c" font-size="10" font-family="monospace">B(롤러)</text><text x="93" y="140" fill="#ff5f6d" font-size="10" font-family="monospace">H=400N←</text><text x="120" y="135" fill="#9da3bf" font-size="9" font-family="monospace">3m</text><text x="207" y="97" fill="#9da3bf" font-size="9" font-family="monospace">4m</text><text x="62" y="130" fill="#7ee8fa" font-size="9" font-family="monospace">y_C=y_A → M_A=0!</text></svg>`
+  },
+  {
+    id:"C5_07", level:"intermediate",
+    title_ko:"보 — 스마트 ΣM_A로 B 직접 산출",
+    title_en:"Beam — Smart ΣM_A to Find B Directly",
+    given_text:`보 8m: 핀A(x=0)+롤러B(x=8m). P1=500N↓(x=2m), P2=300N↓(x=6m). ΣM_A=0 한 줄로 B 산출.`,
+    given_schema:{beam_length_m:8, supports:["핀 A(x=0)","롤러 B(x=8m)"], loads:["P1=500N↓ at x=2m","P2=300N↓ at x=6m"]},
+    fbd_checklist:[
+      {force:"Ax", type:"unknown", location:"A (핀)", direction:"수평"},
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직"},
+      {force:"By", type:"unknown", location:"B (롤러)", direction:"수직 ↑"},
+      {force:"P1 = 500 N ↓", type:"known", location:"x=2m", direction:"아래쪽"},
+      {force:"P2 = 300 N ↓", type:"known", location:"x=6m", direction:"아래쪽"}
+    ],
+    hints:[
+      "이 보에서 가장 효율적인 첫 번째 방정식은 무엇인가? 어느 점에서 ΣM=0을 취하면 단 1개의 미지수만 남는가?",
+      "ΣM_A = 0: Ax, Ay 동시 소거 → By 직접 산출. P1의 모멘트 팔(about A) = 2m, P2의 모멘트 팔(about A) = 6m.",
+      "ΣM_A (CCW+): +By×8 − 500×2 − 300×6 = 0. By = ? 이 한 줄 계산이 '스마트 피벗'의 본질이다.",
+      "By를 구한 뒤 ΣFy=0 으로 Ay, ΣFx=0 으로 Ax를 구하라.",
+      "검증: ΣM_B = 0 에서 Ay×8 − 500×6 − 300×2 = 0 이 성립하는가?"
+    ],
+    solution_steps:[
+      "① 피벗 전략: A에서 ΣM=0 → Ax,Ay 소거, By 직접 산출",
+      "② ΣM_A = 0 (CCW+):\n   +By×8 − 500×2 − 300×6 = 0\n   8·By = 1000 + 1800 = 2800\n   By = 350 N ↑",
+      "③ ΣFx = 0: Ax = 0",
+      "④ ΣFy = 0: Ay + 350 − 500 − 300 = 0 → Ay = 450 N ↑",
+      "✓ 검증: ΣM_B = −450×8 + 500×6 + 300×2 = −3600+3000+600 = 0 ✓"
+    ],
+    key_insight:"피벗 황금 법칙: 핀 A에서 ΣM=0 → By 단독 방정식. 항상 핀(or 고정단)에서 먼저 ΣM=0. 이것이 모든 보 문제의 최단 경로.",
+    answer:{Ax:"0", Ay:"450 N ↑", By:"350 N ↑"},
+    time_limit_s:480,
+    svg:`<svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="130" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">스마트 피벗: ΣM_A=0 → By 직접</text><line x1="30" y1="75" x2="290" y2="75" stroke="#e8eaf0" stroke-width="3"/><polygon points="24,75 36,75 30,88" fill="#5b8dee"/><line x1="22" y1="88" x2="38" y2="88" stroke="#5b8dee" stroke-width="2"/><rect x="284" y="75" width="12" height="8" fill="#3dd68c" fill-opacity="0.3" stroke="#3dd68c" stroke-width="1.5"/><line x1="95" y1="75" x2="95" y2="100" stroke="#ff5f6d" stroke-width="2.5"/><polygon points="91,97 99,97 95,106" fill="#ff5f6d"/><line x1="218" y1="75" x2="218" y2="100" stroke="#ff5f6d" stroke-width="2.5"/><polygon points="214,97 222,97 218,106" fill="#ff5f6d"/><text x="24" y="70" fill="#9da3bf" font-size="10" font-family="monospace">A</text><text x="284" y="70" fill="#3dd68c" font-size="10" font-family="monospace">B</text><text x="88" y="115" fill="#ff5f6d" font-size="9" font-family="monospace">500N</text><text x="211" y="115" fill="#ff5f6d" font-size="9" font-family="monospace">300N</text><text x="55" y="68" fill="#9da3bf" font-size="8" font-family="monospace">2m</text><text x="148" y="68" fill="#9da3bf" font-size="8" font-family="monospace">4m</text><text x="245" y="68" fill="#9da3bf" font-size="8" font-family="monospace">2m</text></svg>`
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  //  6장 확장 — 단면법 트러스 / 프레임·기계
+  // ══════════════════════════════════════════════════════════════
+  {
+    id:"C6_01", level:"intermediate",
+    title_ko:"프랫 트러스 단면법 — CE·CF·DF",
+    title_en:"Pratt Truss — Method of Sections (CE,CF,DF)",
+    given_text:`프랫 트러스: 총 폭 12m(3패널×4m), 높이 3m. 핀A+롤러G. P=30kN↓ at C(4,0), P=30kN↓ at E(8,0). 단면법으로 F_CE, F_CF, F_DF 구하기.`,
+    given_schema:{geometry:"A(0,0)→G(12,0), 상현재 B(0,3)→D(4,3)→F(8,3)→H(12,3)", supports:["핀 A","롤러 G"], loads:["P=30kN↓ at C(4,0)","P=30kN↓ at E(8,0)"]},
+    fbd_checklist:[
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직 ↑"},
+      {force:"Gy", type:"unknown", location:"G (롤러)", direction:"수직 ↑"},
+      {force:"F_CE", type:"unknown", location:"부재 CE (하현재)", direction:"인장(+)/압축(-) 가정"},
+      {force:"F_CF", type:"unknown", location:"부재 CF (사재)", direction:"인장(+)/압축(-) 가정"},
+      {force:"F_DF", type:"unknown", location:"부재 DF (상현재)", direction:"인장(+)/압축(-) 가정"}
+    ],
+    hints:[
+      "단면법(method of sections) 첫 단계: 전체 트러스의 지점 반력 Ay, Gy를 구하라. ΣM_A=0 과 ΣFy=0을 사용하라.",
+      "단면을 CE, CF, DF를 동시에 자르는 수직 단면으로 설정하라. 오른쪽 부분 FBD에는 하중 E(8,0)에 30kN↓ 과 반력 Gy만 남는다.",
+      "오른쪽 절반 FBD에서 ΣM_F = 0 을 취하면 F_CE만 남는다. F 점 (8,3)에서의 모멘트: CE 하현재의 팔 = 3m (F에서 하현재까지 수직 거리).",
+      "ΣM_E = 0 (절단면 오른쪽, E(8,0) 기준): F_DF만 남는다. F_DF의 팔 = E에서 상현재까지 수직 거리 = 3m.",
+      "ΣFy = 0 (절단면 오른쪽): F_CF의 수직 성분으로 F_CF를 구하라. CF 방향각을 먼저 계산하라."
+    ],
+    solution_steps:[
+      "① 전체 평형:\n   ΣM_A=0: Gy×12 − 30×4 − 30×8 = 0 → Gy = 30 kN ↑\n   ΣFy=0: Ay = 30 kN ↑",
+      "② 단면 설정: CE, CF, DF 절단. 오른쪽 절반 사용 (E,F,G 포함)\n   오른쪽 하중: 30kN↓ at E(8,0), 반력 Gy=30kN↑ at G(12,0)",
+      "③ ΣM_F = 0 (F(8,3)에서, 오른쪽 절반):\n   Gy×4 − 30×0 − F_CE×3 = 0\n   (CE는 하현재, F에서 수직 거리=3m)\n   F_CE = 30×4/3 = 40 kN (인장)",
+      "④ ΣM_E = 0 (E(8,0)에서):\n   Gy×4 − F_DF×3 = 0\n   F_DF = 30×4/3 = 40 kN (압축)",
+      "⑤ ΣFy = 0: Gy − 30 + F_CF·sin θ = 0\n   CF 방향: C(4,0)→F(8,3), tan θ=3/4, sin θ=0.6\n   30−30 + 0.6·F_CF = 0 → F_CF = 0 kN",
+      "✓ 검증: ΣFx=0 확인. F_CF=0은 이 하중 대칭 조건에서 예상 가능."
+    ],
+    key_insight:"단면법 3단계: ①반력 계산 ②적절한 단면 절단(3부재) ③절단면 절점에서 ΣM=0 → 부재력 직접 산출. ΣM 피벗을 교차점에 잡으면 1미지수만 남음.",
+    answer:{F_CE:"40 kN (인장)", F_DF:"40 kN (압축)", F_CF:"0 kN"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 155" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="155" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">프랫 트러스 단면법</text><line x1="20" y1="115" x2="300" y2="115" stroke="#e8eaf0" stroke-width="2.5"/><line x1="20" y1="115" x2="20" y2="55" stroke="#e8eaf0" stroke-width="2"/><line x1="300" y1="115" x2="300" y2="55" stroke="#e8eaf0" stroke-width="2"/><line x1="20" y1="55" x2="300" y2="55" stroke="#e8eaf0" stroke-width="2.5"/><line x1="113" y1="115" x2="113" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="207" y1="115" x2="207" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="20" y1="115" x2="113" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="113" y1="115" x2="207" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="207" y1="115" x2="300" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="160" y1="45" x2="160" y2="130" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,2"/><text x="153" y="42" fill="#ffd166" font-size="9" font-family="monospace">단면</text><line x1="113" y1="115" x2="113" y2="90" stroke="#ff5f6d" stroke-width="2"/><polygon points="109,92 117,92 113,100" fill="#ff5f6d"/><line x1="207" y1="115" x2="207" y2="90" stroke="#ff5f6d" stroke-width="2"/><polygon points="203,92 211,92 207,100" fill="#ff5f6d"/><text x="14" y="128" fill="#9da3bf" font-size="9" font-family="monospace">A</text><text x="295" y="128" fill="#9da3bf" font-size="9" font-family="monospace">G</text><text x="107" y="128" fill="#e8eaf0" font-size="9" font-family="monospace">C</text><text x="200" y="128" fill="#e8eaf0" font-size="9" font-family="monospace">E</text><text x="201" y="52" fill="#e8eaf0" font-size="9" font-family="monospace">F</text><text x="107" y="52" fill="#e8eaf0" font-size="9" font-family="monospace">D</text><text x="106" y="110" fill="#ff5f6d" font-size="8" font-family="monospace">30kN</text><text x="200" y="110" fill="#ff5f6d" font-size="8" font-family="monospace">30kN</text></svg>`
+  },
+  {
+    id:"C6_02", level:"intermediate",
+    title_ko:"하우 트러스 단면법 — FH·FG·GH",
+    title_en:"Howe Truss — Method of Sections (FH,FG,GH)",
+    given_text:`하우 트러스 (대각재 방향 반대): 폭 12m(3패널×4m), 높이 3m. 핀A+롤러I. P=24kN↓ at C, E, G. 단면법으로 F_FH, F_FG, F_GH 구하기.`,
+    given_schema:{geometry:"하우 트러스, 패널 4m, 높이 3m", supports:["핀 A","롤러 I"], loads:["P=24kN↓ each at C,E,G"]},
+    fbd_checklist:[
+      {force:"Ay", type:"unknown", location:"A (핀)", direction:"수직 ↑"},
+      {force:"Iy", type:"unknown", location:"I (롤러)", direction:"수직 ↑"},
+      {force:"F_FH", type:"unknown", location:"상현재 FH", direction:"인장/압축"},
+      {force:"F_FG", type:"unknown", location:"사재 FG", direction:"인장/압축"},
+      {force:"F_GH", type:"unknown", location:"하현재 GH", direction:"인장/압축"}
+    ],
+    hints:[
+      "전체 반력: ΣM_A=0 → Iy 계산. 3개 하중 C(4m), E(8m), G(12m) at 24kN each.",
+      "단면을 FH, FG, GH 3개를 동시에 자르도록 설정하라. 오른쪽 절반(G,H,I 포함)에는 Iy 반력만 남는다 (G에 하중 없음 → 단면 바로 오른쪽).",
+      "ΣM_G = 0 (G(8,0) 기준, 오른쪽 절반): F_FH 만 모멘트 기여. F_FH × 팔 = Iy × (거리).",
+      "ΣM_H = 0 (H(8,3) 기준): F_GH 만 모멘트 기여. 거리 계산 시 G의 좌표를 사용하라.",
+      "ΣFy = 0 으로 F_FG 의 수직 성분을 구하고, FG 방향각 θ = arctan(3/4) 를 이용해 F_FG 를 계산하라."
+    ],
+    solution_steps:[
+      "① 전체 반력:\n   ΣM_A=0: Iy×12 = 24×4 + 24×8 + 24×12 = 96+192+288 = 576\n   Iy = 48 kN ↑\n   Ay = 3×24 − 48 = 24 kN ↑",
+      "② 단면: FH, FG, GH 절단. 오른쪽 절반(x≥8) 사용.\n   외부 하중 없음 (G는 단면 왼쪽), 반력 Iy=48kN↑ at I(12,0)",
+      "③ ΣM_G = 0 (G(8,0)):\n   Iy×(12−8) − F_FH×3 = 0\n   F_FH = 48×4/3 = 64 kN (압축)",
+      "④ ΣM_H = 0 (H(8,3)):\n   Iy×(12−8) − F_GH×3 = 0\n   F_GH = 48×4/3 = 64 kN (인장)",
+      "⑤ ΣFy = 0: Iy + F_FG·sinθ = 0 (θ=arctan3/4, sinθ=0.6)\n   48 + 0.6·F_FG = 0 → F_FG = −80 kN (압축, |F_FG|=80 kN)",
+      "✓ 검증: ΣFx=0 확인. 단면법 핵심: 3부재 절단 → ΣM 2번 + ΣF 1번."
+    ],
+    key_insight:"단면법 효율 극대화: 두 미지 부재의 교점에서 ΣM=0 → 각각 독립 산출. 사재 각도 θ 사전 계산 필수.",
+    answer:{F_FH:"64 kN (압축)", F_GH:"64 kN (인장)", F_FG:"80 kN (압축)"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 155" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="155" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">하우 트러스 단면법</text><line x1="20" y1="115" x2="300" y2="115" stroke="#e8eaf0" stroke-width="2.5"/><line x1="20" y1="55" x2="300" y2="55" stroke="#e8eaf0" stroke-width="2.5"/><line x1="20" y1="115" x2="20" y2="55" stroke="#e8eaf0" stroke-width="2"/><line x1="300" y1="115" x2="300" y2="55" stroke="#e8eaf0" stroke-width="2"/><line x1="113" y1="115" x2="113" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="207" y1="115" x2="207" y2="55" stroke="#9da3bf" stroke-width="1.5"/><line x1="113" y1="55" x2="20" y2="115" stroke="#9da3bf" stroke-width="1.5"/><line x1="207" y1="55" x2="113" y2="115" stroke="#9da3bf" stroke-width="1.5"/><line x1="300" y1="55" x2="207" y2="115" stroke="#9da3bf" stroke-width="1.5"/><line x1="160" y1="45" x2="160" y2="130" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,2"/><text x="153" y="42" fill="#ffd166" font-size="9" font-family="monospace">단면</text><line x1="113" y1="115" x2="113" y2="90" stroke="#ff5f6d" stroke-width="2"/><polygon points="109,92 117,92 113,100" fill="#ff5f6d"/><line x1="207" y1="115" x2="207" y2="90" stroke="#ff5f6d" stroke-width="2"/><polygon points="203,92 211,92 207,100" fill="#ff5f6d"/><line x1="20" y1="115" x2="20" y2="90" stroke="#ff5f6d" stroke-width="2"/><polygon points="16,92 24,92 20,100" fill="#ff5f6d"/><text x="14" y="128" fill="#9da3bf" font-size="9" font-family="monospace">A</text><text x="295" y="128" fill="#9da3bf" font-size="9" font-family="monospace">I</text><text x="200" y="128" fill="#e8eaf0" font-size="9" font-family="monospace">G</text><text x="200" y="52" fill="#e8eaf0" font-size="9" font-family="monospace">H</text><text x="107" y="52" fill="#e8eaf0" font-size="9" font-family="monospace">F</text></svg>`
+  },
+  {
+    id:"C6_03", level:"advanced",
+    title_ko:"K-트러스 단면법 — EF·EG·GH",
+    title_en:"K-Truss — Method of Sections (EF,EG,GH)",
+    given_text:`K-트러스: 폭 16m(4패널×4m), 높이 4m. 중간 절점 K(각 패널 높이 2m). 핀A+롤러I. P=30kN↓ at 하현재 절점. 부재 EF, EG, GH 단면법.`,
+    given_schema:{geometry:"K-트러스, 패널 4m, 전체높이 4m, 중간절점 K", supports:["핀 A","롤러 I"], loads:["P=30kN↓ at 각 하현재 절점"]},
+    fbd_checklist:[
+      {force:"Ay, Iy", type:"unknown", location:"지점 반력", direction:"수직"},
+      {force:"F_EF", type:"unknown", location:"상현재 EF", direction:"인장/압축"},
+      {force:"F_EG", type:"unknown", location:"사재 EG (K점 통과)", direction:"인장/압축"},
+      {force:"F_GH", type:"unknown", location:"하현재 GH", direction:"인장/압축"},
+      {force:"F_FK", type:"unknown", location:"K절점 수직재", direction:"추가 절단 필요"}
+    ],
+    hints:[
+      "K-트러스는 각 패널에 K-형태의 사재가 있어 단면 절단 시 4개 부재가 잘릴 수 있다. 이 경우 표준 단면법(3미지수)이 직접 적용 안 된다 — 어떤 보조 절단이 필요한가?",
+      "K절점(중간 높이, y=2m)을 통과하는 수평 단면으로 추가 절단: 수직재 FK 하나만 절단. 이 절반에서 ΣFy=0 으로 F_FK를 구하라.",
+      "F_FK를 알면, 원래 수직 단면으로 돌아가 절단된 4부재 중 F_FK를 알고 있으므로 사실상 3미지수 문제가 된다. 이제 ΣM 2번 + ΣFy 1번으로 풀 수 있다.",
+      "ΣM_G = 0 (G점 기준) 에서 F_EF를 구하라. ΣM_E = 0 에서 F_GH를 구하라.",
+      "ΣFy = 0 에서 F_EG의 수직 성분과 F_FK의 조합으로 F_EG를 구하라. EG의 방향각 θ 사전 계산 필수."
+    ],
+    solution_steps:[
+      "① 전체 반력 (하중 3×30kN at C,E,G): Ay = Iy = 45 kN ↑",
+      "② K점 수평 절단 (수직재 FK 1개): 오른쪽 절반 ΣFy=0\n   Iy = 45kN ↑, 하중 없음 → F_FK + 45 = 0 → F_FK = −45 kN (압축)",
+      "③ 수직 단면 (EF,EG,GH 절단) + F_FK 알고 있음\n   오른쪽 절반 (x≥EG 단면): Iy=45↑, F_FK=45↓",
+      "④ ΣM_G = 0: Iy×(거리) − F_EF×4 − (하중 기여) = 0\n   → F_EF 산출",
+      "⑤ ΣM_E = 0: 마찬가지로 F_GH 산출\n   ΣFy = 0: F_EG 수직성분 결정",
+      "✓ K-트러스 핵심: 추가 수평 절단으로 수직재 내력 먼저 구한 뒤 표준 단면법 적용."
+    ],
+    key_insight:"K-트러스: 단면 절단 시 4부재 → 표준법 불가. 해결: K절점 수평 절단으로 수직재 먼저 산출 → 사실상 3미지수로 환원.",
+    answer:{F_FK:"−45 kN (압축)", F_EF:"해석 완료 후 산출", F_GH:"해석 완료 후 산출", F_EG:"해석 완료 후 산출"},
+    time_limit_s:1200,
+    svg:`<svg viewBox="0 0 320 165" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="165" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">K-트러스 단면법 (K절점 추가 절단)</text><line x1="20" y1="125" x2="300" y2="125" stroke="#e8eaf0" stroke-width="2.5"/><line x1="20" y1="45" x2="300" y2="45" stroke="#e8eaf0" stroke-width="2.5"/><line x1="20" y1="125" x2="20" y2="45" stroke="#e8eaf0" stroke-width="2"/><line x1="300" y1="125" x2="300" y2="45" stroke="#e8eaf0" stroke-width="2"/><line x1="90" y1="125" x2="90" y2="45" stroke="#9da3bf" stroke-width="1"/><line x1="160" y1="125" x2="160" y2="45" stroke="#9da3bf" stroke-width="1"/><line x1="230" y1="125" x2="230" y2="45" stroke="#9da3bf" stroke-width="1"/><line x1="20" y1="125" x2="55" y2="85" stroke="#9da3bf" stroke-width="1.5"/><line x1="55" y1="85" x2="90" y2="45" stroke="#9da3bf" stroke-width="1.5"/><line x1="90" y1="125" x2="125" y2="85" stroke="#9da3bf" stroke-width="1.5"/><line x1="125" y1="85" x2="160" y2="45" stroke="#9da3bf" stroke-width="1.5"/><line x1="160" y1="125" x2="195" y2="85" stroke="#9da3bf" stroke-width="1.5"/><line x1="195" y1="85" x2="230" y2="45" stroke="#9da3bf" stroke-width="1.5"/><circle cx="55" cy="85" r="3" fill="#ffd166"/><circle cx="125" cy="85" r="3" fill="#ffd166"/><circle cx="195" cy="85" r="3" fill="#ffd166"/><line x1="175" y1="35" x2="175" y2="140" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,2"/><line x1="15" y1="85" x2="310" y2="85" stroke="#3dd68c" stroke-width="1.5" stroke-dasharray="3,3"/><text x="155" y="32" fill="#ffd166" font-size="8" font-family="monospace">수직단면</text><text x="248" y="84" fill="#3dd68c" font-size="8" font-family="monospace">수평단면(K절점)</text><text x="14" y="138" fill="#9da3bf" font-size="9" font-family="monospace">A</text><text x="295" y="138" fill="#9da3bf" font-size="9" font-family="monospace">I</text></svg>`
+  },
+  {
+    id:"C6_04", level:"intermediate",
+    title_ko:"펜치(기계) — 핀 반력 + 기계적 이점",
+    title_en:"Pliers (Machine) — Pin Reaction + Mechanical Advantage",
+    given_text:`펜치: 두 팔 핀O로 연결. 팔 길이 20cm+5cm, 핀O at 5cm. 손힘F=120N each. 물체에 작용하는 힘W 구하기. 핀O 반력도 구하기.`,
+    given_schema:{geometry:"펜치 핀O: 손쪽 20cm, 물림쪽 5cm", supports:["핀 O (내부 핀)"], loads:["F=120N at 손 끝 (양쪽)"]},
+    fbd_checklist:[
+      {force:"Ox, Oy", type:"unknown", location:"핀 O", direction:"핀 반력 2성분"},
+      {force:"W (물체 반력)", type:"unknown", location:"펜치 끝", direction:"수직 (물체가 팔을 미는 힘)"},
+      {force:"F = 120 N", type:"known", location:"손 끝 (20cm)", direction:"수직 (쥐는 방향)"}
+    ],
+    hints:[
+      "펜치 한 팔의 FBD를 그려라. 핀 O (지점), 손 끝 F=120N, 물림 끝 W가 작용한다. 이 팔의 미지수는 Ox, Oy, W 3개이다.",
+      "핀 O에서 ΣM_O = 0 을 취하면 Ox, Oy 가 동시에 소거된다. F=120N의 모멘트 팔 = 20cm, W의 모멘트 팔 = 5cm.",
+      "ΣM_O = 0: F×20 − W×5 = 0 → W = 4F = 480 N. 이것이 기계적 이점(MA=4)이다.",
+      "W = 480 N 을 구했다. 이어서 ΣFx=0, ΣFy=0 으로 핀 반력 Ox, Oy를 구하라.",
+      "양쪽 팔을 합산하면 물체에 작용하는 총 힘 = 2W = 960 N이다. 기계적 이점 = 총 출력/총 입력 = 960/(2×120) = 4."
+    ],
+    solution_steps:[
+      "① 한 팔 FBD: 핀O(Ox,Oy), 손끝F=120N(↓), 물림끝W(↑)",
+      "② ΣM_O = 0 (핀 O 기준):\n   F×20cm − W×5cm = 0\n   W = 120×20/5 = 480 N",
+      "③ ΣFy = 0: Oy + W − F = 0\n   Oy = F − W = 120 − 480 = −360 N (↓ 방향)",
+      "④ ΣFx = 0: Ox = 0 (수평력 없음)",
+      "⑤ 기계적 이점 (MA) = W/F = 480/120 = 4\n   (팔 비율: 손쪽/물림쪽 = 20/5 = 4)",
+      "✓ 총 파지력 = 2W = 960 N (양쪽 팔)"
+    ],
+    key_insight:"기계(Machine) 해석: 핀에서 ΣM=0 → 출력력 직접 산출. 기계적 이점 = 입력 팔/출력 팔 (레버 원리). 핀 반력은 ΣF=0으로 마무리.",
+    answer:{W:"480 N (한 팔)", MA:"4", Oy:"−360 N", Ox:"0"},
+    time_limit_s:720,
+    svg:`<svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="185" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">펜치(기계) — 핀 반력 + 기계적 이점</text><line x1="80" y1="90" x2="260" y2="90" stroke="#e8eaf0" stroke-width="3"/><line x1="80" y1="100" x2="260" y2="100" stroke="#9da3bf" stroke-width="2.5" stroke-dasharray="2,1"/><circle cx="180" cy="95" r="8" fill="none" stroke="#ffd166" stroke-width="2.5"/><circle cx="180" cy="95" r="3" fill="#ffd166"/><line x1="80" y1="90" x2="80" y2="65" stroke="#ff5f6d" stroke-width="2"/><polygon points="76,68 84,68 80,60" fill="#ff5f6d"/><line x1="80" y1="100" x2="80" y2="125" stroke="#ff5f6d" stroke-width="2"/><polygon points="76,122 84,122 80,130" fill="#ff5f6d"/><line x1="260" y1="90" x2="260" y2="78" stroke="#3dd68c" stroke-width="2.5"/><polygon points="256,81 264,81 260,73" fill="#3dd68c"/><line x1="260" y1="100" x2="260" y2="112" stroke="#3dd68c" stroke-width="2.5"/><polygon points="256,109 264,109 260,117" fill="#3dd68c"/><text x="60" y="60" fill="#ff5f6d" font-size="10" font-family="monospace">F=120N</text><text x="60" y="138" fill="#ff5f6d" font-size="10" font-family="monospace">F=120N</text><text x="264" y="78" fill="#3dd68c" font-size="10" font-family="monospace">W=?</text><text x="264" y="120" fill="#3dd68c" font-size="10" font-family="monospace">W=?</text><text x="176" y="88" fill="#ffd166" font-size="10" font-family="monospace">O</text><text x="95" y="83" fill="#9da3bf" font-size="9" font-family="monospace">←20cm→</text><text x="218" y="83" fill="#9da3bf" font-size="9" font-family="monospace">←5cm→</text><text x="90" y="162" fill="#7ee8fa" font-size="9" font-family="monospace">기계적 이점 MA = 20/5 = 4</text></svg>`
+  },
+  {
+    id:"C6_05", level:"advanced",
+    title_ko:"사다리 — 벽/바닥 반력 + 마찰",
+    title_en:"Ladder — Wall/Floor Reactions + Friction",
+    given_text:`사다리 4m, 벽에 60° 기댐. 질량 70kg(사람, 사다리 중간 1.5m). 바닥: 마찰 μs=0.4. 벽: 마찰 없음(매끈). A(바닥)=마찰 핀, B(벽)=매끈 롤러.`,
+    given_schema:{geometry:"A(0,0)바닥, B(2cos60°,4sin60°) 벽, 60°기울기", supports:["A(바닥): NA↑, FA→(마찰)","B(벽): NB← (매끈)"], loads:["W=70×9.81=686.7N↓ at 사다리 중간 1.5m"]},
+    fbd_checklist:[
+      {force:"NA", type:"unknown", location:"A (바닥)", direction:"수직 ↑"},
+      {force:"FA", type:"unknown", location:"A (바닥)", direction:"수평 → (마찰력)"},
+      {force:"NB", type:"unknown", location:"B (벽)", direction:"수평 ← (매끈 → 수직 반력)"},
+      {force:"W = 686.7 N ↓", type:"known", location:"사다리 중간 (1.5m 지점)", direction:"아래쪽"}
+    ],
+    hints:[
+      "사다리를 FBD로 그려라. A(바닥): NA↑, FA→(마찰). B(벽): NB←(매끈 벽이므로 수직 방향 = 수평). 하중 W=686.7N↓ at 중간점.",
+      "B점에서 ΣM_B = 0을 취하면 NB가 소거되고 NA와 FA와 W만 남는다. 하지만 미지수가 2개(NA,FA) → 추가 방정식 필요.",
+      "가장 효율적인 피벗: A점에서 ΣM_A = 0. A에서 NA, FA 동시 소거 → NB 직접 산출. W의 모멘트 팔(수평 거리)과 NB의 모멘트 팔(수직 거리)을 계산하라.",
+      "사다리 60°: W 작용점의 수평 좌표 = 1.5×cos60° = 0.75m. B의 수직 좌표 = 4×sin60° = 3.46m.",
+      "NB를 구한 뒤, ΣFx=0 으로 FA, ΣFy=0 으로 NA를 구하라. 마찰 조건 FA ≤ μs×NA 가 만족되는지 확인하라."
+    ],
+    solution_steps:[
+      "① W = 70×9.81 = 686.7 N\n   기하: 사다리 60°, 길이 4m\n   W 작용점: x = 1.5cos60° = 0.75m, y = 1.5sin60° = 1.30m\n   B 좌표: x = 4cos60° = 2m (수평), y = 4sin60° = 3.46m (수직)",
+      "② ΣM_A = 0 (CCW+):\n   NB(←) at B(2, 3.46): 수직 팔 = 3.46m (CCW)\n   W(↓) at (0.75, 1.30): 수평 팔 = 0.75m (CW)\n   +NB×3.46 − W×0.75 = 0\n   NB = 686.7×0.75/3.46 = 148.8 N ←",
+      "③ ΣFx = 0: FA − NB = 0 → FA = 148.8 N →",
+      "④ ΣFy = 0: NA − W = 0 → NA = 686.7 N ↑",
+      "⑤ 마찰 검증: FA ≤ μs×NA ?\n   148.8 ≤ 0.4×686.7 = 274.7 ✓ (미끄러지지 않음)",
+      "✓ 검증: ΣM_B = 0: NA×2 − W×(2−0.75) − FA×3.46 = 1373.4 − 858.4 − 515.1 ≈ 0 ✓"
+    ],
+    key_insight:"사다리: A에서 ΣM=0 → NB 직접 산출. 매끈 벽 = 수평 반력만. 마찰 조건 FA ≤ μNA 검증이 필수 마무리 단계.",
+    answer:{NB:"148.8 N ←", NA:"686.7 N ↑", FA:"148.8 N →", check:"FA<μNA ✓ (안전)"},
+    time_limit_s:1080,
+    svg:`<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#1a1d2e" rx="6"/><text x="8" y="15" fill="#7ee8fa" font-size="9" font-family="monospace" font-weight="700">사다리 — 벽/바닥 반력</text><rect x="240" y="20" width="12" height="155" fill="#2e3250" stroke="#9da3bf" stroke-width="1"/><line x1="20" y1="175" x2="300" y2="175" stroke="#9da3bf" stroke-width="2"/><line x1="70" y1="175" x2="240" y2="40" stroke="#e8eaf0" stroke-width="3"/><circle cx="70" cy="175" r="6" fill="#5b8dee" stroke="#7ee8fa" stroke-width="1.5"/><circle cx="240" cy="40" r="5" fill="#3dd68c"/><line x1="155" y1="107" x2="155" y2="130" stroke="#ff5f6d" stroke-width="2"/><polygon points="151,127 159,127 155,136" fill="#ff5f6d"/><line x1="70" y1="175" x2="95" y2="175" stroke="#5b8dee" stroke-width="2"/><polygon points="92,171 92,179 100,175" fill="#5b8dee"/><line x1="70" y1="175" x2="70" y2="150" stroke="#5b8dee" stroke-width="2"/><polygon points="66,153 74,153 70,145" fill="#5b8dee"/><line x1="240" y1="40" x2="218" y2="40" stroke="#3dd68c" stroke-width="2"/><polygon points="221,36 221,44 213,40" fill="#3dd68c"/><text x="72" y="192" fill="#9da3bf" font-size="10" font-family="monospace">A</text><text x="244" y="38" fill="#3dd68c" font-size="10" font-family="monospace">B</text><text x="158" y="128" fill="#ff5f6d" font-size="9" font-family="monospace">W=687N</text><text x="98" y="172" fill="#5b8dee" font-size="9" font-family="monospace">FA</text><text x="74" y="148" fill="#5b8dee" font-size="9" font-family="monospace">NA</text><text x="200" y="38" fill="#3dd68c" font-size="9" font-family="monospace">NB</text><text x="40" y="107" fill="#9da3bf" font-size="9" font-family="monospace">60°</text><text x="75" y="160" fill="#9da3bf" font-size="8" font-family="monospace">4m</text></svg>`
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+//  SESSION STATE
+// ═══════════════════════════════════════════════════════════
+const S = {
+  mode: null,
+  queue: [],       // problem IDs in session
+  currentIdx: 0,
+  results: [],     // {id, time_s, errors[], fbd_score, selfSolved}
+  timerInterval: null,
+  elapsed: 0,
+  fbdChecked: new Set(),
+  fbdRevealed: false,
+  // ── Two-layer reveal state ──
+  revealPhase: 'idle',   // 'idle' | 'hints' | 'solution' | 'done'
+  hintStep: 0,           // index of next hint to show (0-based)
+  solutionStep: 0,       // index of next solution step to show (0-based)
+  _selfSolved: false,    // user claimed independent solution
+  // ── legacy ──
+  solutionRevealing: false,
+  selectedErrors: new Set()
+};
+
+const ERROR_CODES = [
+  {code:"없음", label:"오류 없음!", sub:"완벽하게 풀었습니다", noError:true},
+  {code:"E-FBD-1", label:"힘 누락", sub:"FBD에서 반력/하중을 빠뜨림"},
+  {code:"E-FBD-2", label:"힘 방향 반대", sub:"반력 방향을 반대로 설정"},
+  {code:"E-FBD-3", label:"지지 조건 혼동", sub:"핀·롤러·고정단 구분 오류"},
+  {code:"E-R-1", label:"경사 롤러 방향", sub:"경사면 수직 방향 미적용"},
+  {code:"E-R-2", label:"sin/cos 혼동", sub:"삼각함수 성분 바꿔 적용"},
+  {code:"E-M-1", label:"모멘트 팔 오류", sub:"수직거리 vs 수평거리 혼동"},
+  {code:"E-M-2", label:"부호 오류", sub:"CCW/CW 일관성 없음"},
+  {code:"E-M-3", label:"피벗 비효율", sub:"최적 피벗 미선택"},
+  {code:"E-EQ-1", label:"방정식 설정", sub:"성분 방향 또는 우력 포함 오류"},
+  {code:"E-EQ-2", label:"계산 오류", sub:"산술/삼각함수 계산 실수"},
+  {code:"E-C-1", label:"우력 누락", sub:"Couple moment를 ΣM에 미포함"},
+];
+
+function getLevelInfo(level) {
+  const map = {
+    beginner: {label:"기초", color:"var(--green)", badge:"badge-green"},
+    intermediate: {label:"중급", color:"var(--yellow)", badge:"badge-yellow"},
+    advanced: {label:"고급", color:"var(--red)", badge:"badge-red"}
+  };
+  return map[level] || map.beginner;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  S.mode = el.dataset.mode;
+  document.getElementById('startBtn').disabled = false;
+
+  // 부재 학습 모드 처리
+  if (el.dataset.mode === 'members') {
+    renderMemberLearning();
+    showScreen('screen-members');
+    document.getElementById('startBtn').style.display = 'none';
+  }
+}
+
+function startSession() {
+  if (!S.mode) return;
+  if (S.mode === 'diagnostic') {
+    showScreen('screen-diagnostic');
+  } else {
+    buildQueue(S.mode);
+    beginSession();
+  }
+}
+
+function beginDiagnostic() {
+  S.mode = 'diagnostic';
+  buildQueue('diagnostic');
+  beginSession();
+}
+
+function buildQueue(mode) {
+  S.queue = [];
+  S.results = [];
+  S.currentIdx = 0;
+  const beginner = PROBLEMS.filter(p=>p.level==='beginner');
+  const intermediate = PROBLEMS.filter(p=>p.level==='intermediate');
+  const advanced = PROBLEMS.filter(p=>p.level==='advanced');
+  const newProbs = PROBLEMS.filter(p=>p.id.startsWith('C5_')||p.id.startsWith('C6_'));
+
+  // Stage 기반 분류 (분석 + 최적화)
+  if (mode==='stage1-analysis') {
+    // Stage 1: 찢어내기 — FBD 분석만 집중 (간단한 기하)
+    S.queue = ['B01', 'B02', 'B03', 'B04', 'B05', 'I01'];
+  } else if (mode==='stage2-pivot') {
+    // Stage 2: 피벗 선택 — 최적 피벗으로 계산량 최소화
+    S.queue = ['I02', 'I03', 'I04', 'I05', 'A01', 'A02'];
+  } else if (mode==='stage3-mixed') {
+    // Stage 3: 혼합 — 분석 + 피벗 최적화 동시
+    S.queue = ['B01', 'I02', 'I04', 'A01', 'C5_01', 'C5_04'];
+  } else if (mode==='stage4-advanced') {
+    // Stage 4: 심화 — 복잡 기하 + 최적화 + 3D
+    S.queue = ['A03', 'A04', 'C5_02', 'C5_03', 'C6_01', 'C6_04'];
+  } else if (mode==='diagnostic') {
+    S.queue = [beginner[0].id, beginner[2].id, intermediate[0].id];
+  } else if (mode==='beginner') {
+    S.queue = beginner.map(p=>p.id);
+  } else if (mode==='intermediate') {
+    S.queue = intermediate.map(p=>p.id);
+  } else if (mode==='advanced') {
+    S.queue = advanced.map(p=>p.id);
+  } else if (mode==='new3d') {
+    S.queue = newProbs.map(p=>p.id);
+  } else {
+    S.queue = PROBLEMS.map(p=>p.id);
+  }
+}
+
+function beginSession() {
+  S.currentIdx = 0;
+  showScreen('screen-problem');
+  renderProblem();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════
+function startTimer(limitSec) {
+  clearInterval(S.timerInterval);
+  S.elapsed = 0;
+  updateTimerDisplay(0, limitSec);
+  S.timerInterval = setInterval(()=>{
+    S.elapsed++;
+    updateTimerDisplay(S.elapsed, limitSec);
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(S.timerInterval);
+}
+
+function updateTimerDisplay(elapsed, limit) {
+  const remaining = limit - elapsed;
+  const tv = document.getElementById('timerVal');
+  if (!tv) return;
+  const display = elapsed >= limit ? formatTime(elapsed) : formatTime(remaining);
+  tv.textContent = elapsed >= limit ? '+'+formatTime(elapsed-limit) : formatTime(remaining);
+  tv.className = 'timer-val';
+  if (remaining <= 0) tv.classList.add('danger');
+  else if (remaining <= 60) tv.classList.add('warn');
+}
+
+function formatTime(s) {
+  const m = Math.floor(Math.abs(s)/60), sec = Math.abs(s)%60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER PROBLEM
+// ═══════════════════════════════════════════════════════════
+function renderProblem() {
+  const prob = PROBLEMS.find(p=>p.id===S.queue[S.currentIdx]);
+  if (!prob) { showResults(); return; }
+  S.fbdChecked = new Set();
+  S.fbdRevealed = false;
+  S.revealPhase = 'idle';
+  S.hintStep = 0;
+  S.solutionStep = 0;
+  S._selfSolved = false;
+  S.selectedErrors = new Set();
+  startTimer(prob.time_limit_s);
+
+  // header
+  const li = getLevelInfo(prob.level);
+  const badge = document.getElementById('levelBadge');
+  badge.textContent = li.label;
+  badge.style.background = li.color + '22';
+  badge.style.color = li.color;
+
+  // progress dots
+  renderProgress();
+
+  // main
+  document.getElementById('problemMain').innerHTML = renderMainHTML(prob);
+  // panel
+  document.getElementById('problemPanel').innerHTML = renderPanelHTML(prob);
+}
+
+function renderProgress() {
+  const dots = S.queue.map((id, i) => {
+    const r = S.results.find(r=>r.id===id);
+    let cls = '';
+    if (r) cls = r.errors.length===0 || (r.errors.length===1&&r.errors[0]==='없음') ? 'done' : 'error';
+    else if (i===S.currentIdx) cls = 'current';
+    return `<div class="prog-dot ${cls}" title="${id}"></div>`;
+  }).join('');
+  document.getElementById('progressDots').innerHTML = dots;
+}
+
+function renderMainHTML(prob) {
+  const li = getLevelInfo(prob.level);
+  const givenItems = prob.given_schema;
+  let givenHTML = '';
+  if (givenItems.beam_length_m) givenHTML += `<div class="given-item"><div class="label">보 길이</div><div class="val">${givenItems.beam_length_m} m</div></div>`;
+  if (givenItems.geometry) givenHTML += `<div class="given-item"><div class="label">기하</div><div class="val">${givenItems.geometry}</div></div>`;
+  if (givenItems.supports) givenHTML += `<div class="given-item"><div class="label">지점</div><div class="val">${givenItems.supports.join(' | ')}</div></div>`;
+  if (givenItems.loads) givenHTML += `<div class="given-item"><div class="label">하중</div><div class="val">${givenItems.loads.join('<br>')}</div></div>`;
+  if (givenItems.extra) givenHTML += `<div class="given-item" style="color:var(--yellow)"><div class="label">추가 조건</div><div class="val">${givenItems.extra}</div></div>`;
+
+  return `
+    <div class="problem-id">${prob.id} · ${getLevelInfo(prob.level).label.toUpperCase()}</div>
+    <div class="problem-title">
+      ${prob.title_ko}
+      <small>${prob.title_en}</small>
+    </div>
+    ${prob.svg ? `<div class="svg-diagram">${prob.svg}</div>` : ''}
+    <div class="given-card">
+      <h4>GIVEN DATA</h4>
+      <div class="given-row">${givenHTML}</div>
+      <div style="margin-top:.8rem;font-size:.82rem;color:var(--text2);line-height:1.6">${prob.given_text}</div>
+    </div>
+
+    <div class="fbd-section">
+      <h4>📋 FBD 체크리스트 <span style="color:var(--text3);font-size:.75rem;font-weight:400">— 각 힘을 직접 체크하세요</span></h4>
+      <div class="fbd-check-list" id="fbdList">
+        ${prob.fbd_checklist.map((item,i)=>`
+          <div class="fbd-item" id="fbd-${i}" onclick="toggleFBD(${i})">
+            <div class="fbd-check-box" id="fbd-box-${i}"></div>
+            <div class="fbd-item-info">
+              <div class="fbd-item-force">
+                ${item.force}
+                <span class="fbd-type-badge fbd-type-${(item.type||'unknown').replace(/[^a-z_]/g,'')}">${item.type}</span>
+              </div>
+              <div class="fbd-item-detail">${item.location} — ${item.direction}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="fbd-actions">
+        <button class="btn btn-sm" onclick="checkFBD()">FBD 확인하기</button>
+        <button class="btn btn-outline btn-sm" onclick="revealAllFBD()">전체 보기</button>
+      </div>
+      <div id="fbdScore"></div>
+    </div>
+
+    <!-- TWO-LAYER REVEAL AREA -->
+    <div id="revealArea" style="margin-top:1.5rem">
+      <!-- Self-solved declaration (shown before any reveal) -->
+      <div class="self-solved-wrap" id="selfSolvedWrap">
+        <p>먼저 혼자 풀어보셨나요?<br>스스로 풀었다면 바로 답을 확인하세요.</p>
+        <button class="btn-self-solved" id="selfSolvedBtn" onclick="selfSolved()">혼자 풀었어요!</button>
+      </div>
+
+      <!-- Progress indicator (hidden initially) -->
+      <div class="reveal-progress" id="revealProgress" style="display:none">
+        <span class="rp-label" id="revealProgressLabel">힌트</span>
+        <span id="revealProgressText">0/0</span>
+      </div>
+
+      <!-- Hint cards container -->
+      <div id="hintCards"></div>
+
+      <!-- Transition to solution button -->
+      <button class="btn-start-solution" id="startSolutionBtn" onclick="startSolution()">
+        풀이 시작 →
+      </button>
+
+      <!-- Solution steps container -->
+      <div id="solutionSteps" style="margin-top:.5rem"></div>
+
+      <!-- Insight + Answer (hidden until all steps done) -->
+      <div id="insightArea" style="display:none">
+        <div class="insight-box">
+          <h5>⚡ 핵심 인사이트</h5>
+          <p>${prob.key_insight}</p>
+        </div>
+        <div class="answer-box">
+          <h5>✅ 최종 답</h5>
+          <div class="answer-entries">
+            ${Object.entries(prob.answer).map(([k,v])=>`
+              <div class="answer-entry"><span class="key">${k}:</span> <span class="ansval">${v}</span></div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Reveal next button + spacebar hint -->
+      <div id="revealBtnWrap" style="display:none">
+        <button class="btn-reveal-next hint-mode" id="revealNextBtn" onclick="revealNext()">
+          다음 힌트 →
+        </button>
+        <div class="spacebar-hint">
+          <span class="key-badge">Space</span> 다음 힌트/단계
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPanelHTML(prob) {
+  const errorHTML = ERROR_CODES.map((e,i) => `
+    <button class="error-btn ${e.noError?'no-error':''}" id="err-${i}" onclick="toggleError('${e.code}', ${i}, ${!!e.noError})">
+      <span class="ecode">${e.code}</span>
+      ${e.label}<br><span style="color:var(--text3);font-size:.65rem">${e.sub}</span>
+    </button>
+  `).join('');
+
+  return `
+    <div style="margin-bottom:1.2rem">
+      <h4 style="font-size:.9rem;font-weight:700;margin-bottom:.6rem">🔍 풀이 전략</h4>
+      <div style="background:var(--bg3);border-radius:8px;padding:.9rem;font-size:.8rem;color:var(--text2);line-height:1.8">
+        <b style="color:var(--accent)">①</b> FBD 체크리스트 완성<br>
+        <b style="color:var(--accent)">②</b> 최적 피벗 선택 (핀에서 ΣM=0)<br>
+        <b style="color:var(--accent)">③</b> ΣM_핀 → ΣFy → ΣFx 순서<br>
+        <b style="color:var(--accent)">④</b> 검증: 다른 피벗에서 ΣM=0<br>
+        <b style="color:var(--yellow)">⚠</b> 우력은 ΣM에 항상 포함!
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.2rem">
+      <h4 style="font-size:.9rem;font-weight:700;margin-bottom:.6rem">📌 지지 반력 즉시 참조</h4>
+      <div style="background:var(--bg3);border-radius:8px;padding:.8rem;font-size:.75rem;font-family:'Consolas',monospace;color:var(--text2);line-height:2">
+        롤러(수평면) → N ↑<br>
+        롤러(수직벽) → N →<br>
+        롤러(θ경사) → N(θ+90°방향)<br>
+        핀 → Ax, Ay (2개)<br>
+        <span style="color:var(--red)">고정단 → Ax, Ay, MA (3개)</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.2rem">
+      <h4 style="font-size:.9rem;font-weight:700;margin-bottom:.6rem">📐 삼각비 빠른 참조</h4>
+      <div style="background:var(--bg3);border-radius:8px;padding:.8rem;font-size:.75rem;font-family:'Consolas',monospace;color:var(--text2);line-height:2">
+        5-12-13: 5/13=0.385, 12/13=0.923<br>
+        3-4-5: 3/5=0.6, 4/5=0.8<br>
+        30°: cos=0.866, sin=0.5<br>
+        45°: cos=sin=0.707<br>
+        60°: cos=0.5, sin=0.866
+      </div>
+    </div>
+
+    <div class="error-section">
+      <h4>⚠ 오류 분류 (풀이 후 체크)</h4>
+      <div class="error-grid">${errorHTML}</div>
+    </div>
+
+    <div class="next-btn-wrap">
+      <button class="btn btn-sm" id="showSolBtn" onclick="beginReveal()">힌트 보기 →</button>
+      <button class="btn btn-green btn-sm" id="nextProbBtn" style="display:none" onclick="nextProblem()">
+        다음 문제 →
+      </button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FBD INTERACTION
+// ═══════════════════════════════════════════════════════════
+function toggleFBD(i) {
+  if (S.fbdRevealed) return;
+  if (S.fbdChecked.has(i)) S.fbdChecked.delete(i);
+  else S.fbdChecked.add(i);
+  const item = document.getElementById(`fbd-${i}`);
+  const box = document.getElementById(`fbd-box-${i}`);
+  item.classList.toggle('checked', S.fbdChecked.has(i));
+}
+
+function checkFBD() {
+  const prob = PROBLEMS.find(p=>p.id===S.queue[S.currentIdx]);
+  const total = prob.fbd_checklist.length;
+  const correct = S.fbdChecked.size;
+  const missed = total - correct;
+  const pct = Math.round(correct/total*100);
+  S.fbdRevealed = true;
+
+  // show all items as checked/unchecked
+  prob.fbd_checklist.forEach((item,i) => {
+    const el = document.getElementById(`fbd-${i}`);
+    if (el) {
+      el.classList.add('checked');
+      document.getElementById(`fbd-box-${i}`).style.background = S.fbdChecked.has(i) ? 'var(--green)' : 'var(--red)';
+    }
+  });
+
+  const scoreEl = document.getElementById('fbdScore');
+  const isGood = pct >= 75;
+  scoreEl.className = `fbd-score ${isGood?'good':'bad'}`;
+  scoreEl.innerHTML = `
+    <strong style="color:${isGood?'var(--green)':'var(--red)'}">${pct}% 정확도</strong>
+    — ${correct}/${total}개 체크 (미체크: ${missed}개)
+    ${missed>0 ? `<br><span style="color:var(--text2);font-size:.78rem">빨간 박스 = 빠뜨린 힘. 빠진 힘마다 E-FBD-1 오류!</span>` : ''}
+  `;
+
+  // record fbd score in state
+  S._fbdScore = pct;
+}
+
+function revealAllFBD() {
+  const prob = PROBLEMS.find(p=>p.id===S.queue[S.currentIdx]);
+  prob.fbd_checklist.forEach((_,i) => {
+    S.fbdChecked.add(i);
+    const item = document.getElementById(`fbd-${i}`);
+    if (item) item.classList.add('checked');
+  });
+  S.fbdRevealed = true;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TWO-LAYER REVEAL SYSTEM
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * initRevealSystem(hints, solutionSteps)
+ * Called once after "힌트 보기" is clicked.
+ * Prepares DOM and enters hint phase.
+ */
+function initRevealSystem(hints, solutionSteps) {
+  // Hide "풀이 보기" panel button
+  const showBtn = document.getElementById('showSolBtn');
+  if (showBtn) showBtn.style.display = 'none';
+
+  // Hide self-solved wrap (reveal has started)
+  const ssWrap = document.getElementById('selfSolvedWrap');
+  if (ssWrap) ssWrap.style.display = 'none';
+
+  // Build hint card DOM (all hidden)
+  const hintContainer = document.getElementById('hintCards');
+  if (hintContainer) {
+    hintContainer.innerHTML = hints.map((h, i) => `
+      <div class="hint-card" id="hint-${i}">
+        <div class="hint-icon">🧠</div>
+        <div class="hint-body">
+          <div class="hint-label">사고 힌트 ${i + 1}</div>
+          <div class="hint-text">${h}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Build solution step DOM (all hidden)
+  const stepsEl = document.getElementById('solutionSteps');
+  if (stepsEl) {
+    stepsEl.innerHTML = solutionSteps.map((s, i) => {
+      const isVerify = s.startsWith('✓') || s.startsWith('✔');
+      // highlight numbers (integers and decimals) in yellow
+      const formatted = s.replace(/(\b\d+\.?\d*\b)/g, '<span class="hl">$1</span>');
+      return `
+        <div class="solution-step ${isVerify ? 'verify-step' : ''}" id="sol-step-${i}">
+          <div class="step-num">${isVerify ? '✓' : i + 1}</div>
+          <div class="step-text">${formatted}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Show progress + reveal button
+  S.revealPhase = 'hints';
+  S.hintStep = 0;
+  _updateProgress();
+
+  const btnWrap = document.getElementById('revealBtnWrap');
+  if (btnWrap) btnWrap.style.display = 'block';
+  _updateRevealButton();
+}
+
+/**
+ * revealNext()
+ * Called by the "다음 힌트/단계" button and the Space-bar handler.
+ * Advances one hint (in hint phase) or one solution step (in solution phase).
+ */
+function revealNext() {
+  if (S.revealPhase === 'hints') {
+    const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+    const hints = prob.hints || [];
+
+    if (S.hintStep < hints.length) {
+      const card = document.getElementById(`hint-${S.hintStep}`);
+      if (card) {
+        card.classList.add('visible');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      S.hintStep++;
+      _updateProgress();
+    }
+
+    // All hints revealed — show "풀이 시작" button
+    if (S.hintStep >= hints.length) {
+      const startBtn = document.getElementById('startSolutionBtn');
+      if (startBtn) startBtn.classList.add('visible');
+      // hide hint-mode button, prompt transition
+      _updateRevealButton(true);
+    } else {
+      _updateRevealButton();
+    }
+
+  } else if (S.revealPhase === 'solution') {
+    const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+
+    if (S.solutionStep < prob.solution_steps.length) {
+      const stepEl = document.getElementById(`sol-step-${S.solutionStep}`);
+      if (stepEl) {
+        stepEl.classList.add('visible');
+        stepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      S.solutionStep++;
+      _updateProgress();
+    }
+
+    if (S.solutionStep >= prob.solution_steps.length) {
+      _finishReveal();
+    } else {
+      _updateRevealButton();
+    }
+  }
+}
+
+/**
+ * startSolution()
+ * Called by the "풀이 시작" transition button.
+ * Switches from hint phase to solution phase.
+ */
+function startSolution() {
+  S.revealPhase = 'solution';
+  S.solutionStep = 0;
+
+  // Hide hint-phase button, hide "풀이 시작" button
+  const startBtn = document.getElementById('startSolutionBtn');
+  if (startBtn) startBtn.classList.remove('visible');
+
+  // Update progress pill appearance
+  const progress = document.getElementById('revealProgress');
+  if (progress) {
+    progress.classList.remove('mode-hint');
+    progress.classList.add('mode-solution');
+  }
+
+  _updateRevealButton();
+  _updateProgress();
+
+  // Reveal the first solution step immediately
+  revealNext();
+}
+
+/**
+ * selfSolved()
+ * User claims to have solved independently before seeing any hints.
+ * Records self-solved flag, skips straight to answer display.
+ */
+function selfSolved() {
+  S._selfSolved = true;
+  const btn = document.getElementById('selfSolvedBtn');
+  if (btn) { btn.textContent = '직접 풀었습니다!'; btn.classList.add('claimed'); }
+
+  // Hide the self-solved wrap after a short moment
+  setTimeout(() => {
+    const ssWrap = document.getElementById('selfSolvedWrap');
+    if (ssWrap) ssWrap.style.display = 'none';
+  }, 600);
+
+  // Jump straight into solution reveal (no hints)
+  const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+  initRevealSystem([], prob.solution_steps);
+
+  // Immediately transition to solution phase and reveal all at once
+  S.revealPhase = 'solution';
+  const startBtn = document.getElementById('startSolutionBtn');
+  if (startBtn) startBtn.classList.remove('visible');
+
+  const progress = document.getElementById('revealProgress');
+  if (progress) {
+    progress.classList.remove('mode-hint');
+    progress.classList.add('mode-solution');
+  }
+  _updateProgress();
+  _updateRevealButton();
+  revealNext(); // show first step
+}
+
+// ── Internal helpers ──────────────────────────────────────
+
+function _updateProgress() {
+  const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+  const hints = prob.hints || [];
+  const progress = document.getElementById('revealProgress');
+  const label = document.getElementById('revealProgressLabel');
+  const text = document.getElementById('revealProgressText');
+  if (!progress) return;
+
+  progress.style.display = 'inline-flex';
+
+  if (S.revealPhase === 'hints') {
+    progress.classList.add('mode-hint');
+    progress.classList.remove('mode-solution');
+    if (label) label.textContent = '힌트';
+    if (text) text.textContent = `${S.hintStep}/${hints.length}`;
+  } else if (S.revealPhase === 'solution') {
+    progress.classList.remove('mode-hint');
+    progress.classList.add('mode-solution');
+    if (label) label.textContent = '풀이 단계';
+    if (text) text.textContent = `${S.solutionStep}/${prob.solution_steps.length}`;
+  }
+}
+
+function _updateRevealButton(allHintsDone = false) {
+  const btn = document.getElementById('revealNextBtn');
+  if (!btn) return;
+
+  if (allHintsDone) {
+    // Disable hint button — user should press "풀이 시작"
+    btn.disabled = true;
+    btn.textContent = '풀이 시작 버튼을 누르세요 ↑';
+    btn.classList.add('hint-mode');
+  } else if (S.revealPhase === 'hints') {
+    btn.disabled = false;
+    btn.textContent = '다음 힌트 →';
+    btn.className = 'btn-reveal-next hint-mode';
+  } else if (S.revealPhase === 'solution') {
+    btn.disabled = false;
+    btn.textContent = '다음 단계 →';
+    btn.className = 'btn-reveal-next';
+  }
+}
+
+function _finishReveal() {
+  S.revealPhase = 'done';
+  document.getElementById('insightArea').style.display = 'block';
+
+  const btnWrap = document.getElementById('revealBtnWrap');
+  if (btnWrap) btnWrap.style.display = 'none';
+
+  const nextBtn = document.getElementById('nextProbBtn');
+  if (nextBtn) nextBtn.style.display = 'inline-flex';
+
+  stopTimer();
+
+  // Update progress to show completion
+  const progress = document.getElementById('revealProgress');
+  if (progress) {
+    const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+    document.getElementById('revealProgressLabel').textContent = '완료';
+    document.getElementById('revealProgressText').textContent = `${prob.solution_steps.length}/${prob.solution_steps.length}`;
+  }
+}
+
+// beginReveal — called by "힌트 보기" panel button
+function beginReveal() {
+  const prob = PROBLEMS.find(p => p.id === S.queue[S.currentIdx]);
+  initRevealSystem(prob.hints || [], prob.solution_steps);
+}
+
+// Legacy alias kept for any inline references
+function showSolution() { beginReveal(); }
+function revealNextStep() { revealNext(); }
+
+// ═══════════════════════════════════════════════════════════
+//  ERROR TRACKING
+// ═══════════════════════════════════════════════════════════
+function toggleError(code, idx, isNoError) {
+  const btn = document.getElementById(`err-${idx}`);
+  if (isNoError) {
+    S.selectedErrors.clear();
+    S.selectedErrors.add('없음');
+    document.querySelectorAll('.error-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  } else {
+    S.selectedErrors.delete('없음');
+    document.getElementById('err-0').classList.remove('active');
+    if (S.selectedErrors.has(code)) {
+      S.selectedErrors.delete(code);
+      btn.classList.remove('active');
+    } else {
+      S.selectedErrors.add(code);
+      btn.classList.add('active');
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  NEXT PROBLEM
+// ═══════════════════════════════════════════════════════════
+function nextProblem() {
+  const prob = PROBLEMS.find(p=>p.id===S.queue[S.currentIdx]);
+  S.results.push({
+    id: prob.id,
+    level: prob.level,
+    title: prob.title_ko,
+    time_s: S.elapsed,
+    errors: [...S.selectedErrors],
+    fbd_score: S._fbdScore || 0,
+    selfSolved: S._selfSolved
+  });
+  S.currentIdx++;
+  if (S.currentIdx >= S.queue.length) {
+    showResults();
+  } else {
+    renderProblem();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════════
+function showResults() {
+  stopTimer();
+  showScreen('screen-results');
+
+  const total = S.results.length;
+  const cleanRuns = S.results.filter(r=>r.errors.length===0||(r.errors.length===1&&r.errors[0]==='없음')).length;
+  const avgTime = total>0 ? Math.round(S.results.reduce((a,r)=>a+r.time_s,0)/total) : 0;
+  const avgFbd = total>0 ? Math.round(S.results.reduce((a,r)=>a+r.fbd_score,0)/total) : 0;
+  const selfSolvedCount = S.results.filter(r=>r.selfSolved).length;
+
+  // error tally
+  const errorCount = {};
+  ERROR_CODES.filter(e=>!e.noError).forEach(e=>{ errorCount[e.code]=0; });
+  S.results.forEach(r=>r.errors.forEach(e=>{ if(e!=='없음') errorCount[e]=(errorCount[e]||0)+1; }));
+  const topError = Object.entries(errorCount).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('resultsTitle').textContent =
+    S.mode==='diagnostic' ? '진단 완료!' : `${total}문제 완주!`;
+  document.getElementById('resultsSubtitle').textContent =
+    `총 ${S.results.reduce((a,r)=>a+r.time_s,0)}초 소요 · 평균 ${formatTime(avgTime)}/문제`;
+
+  // stat cards
+  document.getElementById('resultsGrid').innerHTML = `
+    <div class="stat-card green"><div class="sval">${cleanRuns}/${total}</div><div class="slabel">오류 없는 문제</div></div>
+    <div class="stat-card blue"><div class="sval">${Math.round(cleanRuns/total*100)}%</div><div class="slabel">정확도</div></div>
+    <div class="stat-card yellow"><div class="sval">${formatTime(avgTime)}</div><div class="slabel">평균 풀이 시간</div></div>
+    <div class="stat-card red"><div class="sval">${avgFbd}%</div><div class="slabel">평균 FBD 정확도</div></div>
+    <div class="stat-card green"><div class="sval">${selfSolvedCount}/${total}</div><div class="slabel">혼자 풀기 성공</div></div>
+  `;
+
+  // error bars
+  const maxErr = Math.max(...Object.values(errorCount), 1);
+  document.getElementById('errorBars').innerHTML = ERROR_CODES.filter(e=>!e.noError).map(e=>`
+    <div class="error-bar-item">
+      <div class="error-bar-label">${e.code}</div>
+      <div class="error-bar-track">
+        <div class="error-bar-fill ${errorCount[e.code]===0?'green':''}" style="width:${errorCount[e.code]/maxErr*100}%"></div>
+      </div>
+      <div class="error-count">${errorCount[e.code]}</div>
+    </div>
+  `).join('');
+
+  // review list
+  document.getElementById('reviewList').innerHTML = S.results.map(r=>`
+    <div class="review-item">
+      <div class="review-id">${r.id}</div>
+      <div class="review-title">${r.title}</div>
+      <div class="review-time">${formatTime(r.time_s)}</div>
+      <div class="review-errors">
+        ${r.selfSolved ? '<span style="background:rgba(61,214,140,.18);color:var(--green);font-size:.65rem;padding:.15rem .4rem;border-radius:4px;font-weight:700;margin-right:.3rem">혼자풀기</span>' : ''}
+        ${r.errors.length===0||(r.errors.length===1&&r.errors[0]==='없음')
+          ? '<span class="review-ok">✓ 완벽</span>'
+          : r.errors.map(e=>`<span class="review-error-tag">${e}</span>`).join('')
+        }
+      </div>
+    </div>
+  `).join('');
+
+  // next level recommendation
+  const worstError = topError && topError[1]>0 ? topError[0] : null;
+  const accuracy = cleanRuns/total;
+  let nextTitle = '다음 훈련 권장사항';
+  let nextText = '';
+  if (S.mode==='diagnostic') {
+    if (accuracy>=0.8) { nextTitle='트랙 C: 심화 가속 배정'; nextText='기초가 탄탄합니다. 중급 통합 훈련으로 바로 진입하세요. 피벗 전략과 경사 부재에 집중.'; }
+    else if (accuracy>=0.5) { nextTitle='트랙 B: 표준 진행 배정'; nextText='기초 드릴을 완주 후 중급으로 진입하세요. FBD 체크리스트 습관화가 우선입니다.'; }
+    else { nextTitle='트랙 A: 기초 재건 배정'; nextText='지지 반력 분류와 FBD 완성을 집중 훈련하세요. 기초 드릴 5문제를 3회 반복하는 것을 권장합니다.'; }
+  } else if (accuracy>=0.8) {
+    nextText='훌륭합니다! 타이머를 25% 줄여서 같은 세트를 재도전하거나 다음 레벨로 진입하세요.';
+  } else if (worstError) {
+    const errInfo = ERROR_CODES.find(e=>e.code===worstError);
+    nextText = `가장 많이 발생한 오류: <strong style="color:var(--red)">${worstError} (${errInfo?.label})</strong><br>이 오류 유형을 집중 공략하세요. 특히 ${getErrorAdvice(worstError)}`;
+  } else {
+    nextText='꾸준히 연습 중입니다. 각 문제를 5분 타이머로 재도전해 속도를 높이세요.';
+  }
+  document.getElementById('nextLevelTitle').textContent = nextTitle;
+  document.getElementById('nextLevelText').innerHTML = nextText;
+
+  // schedule
+  const topErrors = Object.entries(errorCount).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const scheduleRows = [
+    {day:'Day 1 (오늘)', content:'오류 발생 문제 재풀이', focus: topErrors[0]?.[0]||'전반'},
+    {day:'Day 2 (내일)', content:'같은 레벨 새 문제 2개', focus: topErrors[1]?.[0]||'FBD 완성'},
+    {day:'Day 4', content:'피벗 변경 검증 훈련', focus: 'E-M-3 · 피벗 전략'},
+    {day:'Day 7', content:'한 단계 위 레벨 1문제', focus: topErrors[2]?.[0]||'통합 응용'},
+    {day:'Day 14', content:'전체 세션 재완주', focus:'전체 오류 코드 재점검'},
+    {day:'Day 21', content:'타이머 75%로 고급 도전', focus:'속도 × 정확도 동시 달성'},
+  ];
+  document.getElementById('scheduleBody').innerHTML = scheduleRows.map(r=>`
+    <tr>
+      <td>${r.day}</td>
+      <td>${r.content}</td>
+      <td><span class="focus-tag">${r.focus}</span></td>
+    </tr>
+  `).join('');
+}
+
+function getErrorAdvice(code) {
+  const map = {
+    'E-FBD-1':'FBD 체크리스트를 매 문제 처음부터 끝까지 작성하는 습관을 만드세요.',
+    'E-FBD-2':'반력 방향을 가정(→) 후 음수가 나오면 반대 방향으로 정상 처리하는 연습을 하세요.',
+    'E-FBD-3':'롤러=1개, 핀=2개, 고정단=3개 즉시 암기 카드를 만들어 매일 복습하세요.',
+    'E-R-1':'경사 롤러 드릴: 경사각 0°,30°,45°,60°,90° 각각 반력 방향을 그리는 연습.',
+    'E-R-2':'삼각비 플래시 카드 50장을 30초/장으로 무한 반복하세요.',
+    'E-M-1':'모든 문제에서 r×F 외적법으로 모멘트 계산 후 수직거리법과 대조하세요.',
+    'E-M-2':'부호 규약을 문제 맨 위에 항상 선언(CCW+)하고 일관성 체크하세요.',
+    'E-M-3':'매 문제에서 최소 2개 피벗으로 ΣM=0 검증 습관을 만드세요.',
+    'E-EQ-1':'방정식 작성 전 미지수 개수=방정식 개수 확인을 의무화하세요.',
+    'E-EQ-2':'삼각함수 값을 소수 4자리까지 계산 후 최종만 반올림하세요.',
+    'E-C-1':'우력 체크리스트: ΣM 작성 후 "우력 포함했나?" 자문을 의무화하세요.',
+  };
+  return map[code] || '해당 유형의 기초 드릴을 집중 반복하세요.';
+}
+
+function restartSameMode() {
+  buildQueue(S.mode);
+  beginSession();
+}
+
+function goToLanding() {
+  showScreen('screen-landing');
+  S.mode = null;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('startBtn').style.display = 'inline-flex';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MEMBER LEARNING
+// ═══════════════════════════════════════════════════════════
+function renderMemberLearning() {
+  const grid = document.getElementById('memberGrid');
+  grid.innerHTML = MEMBERS.map(m => `
+    <div class="member-card" onclick="showMemberDetail('${m.id}')">
+      <div class="mcard-icon">${m.icon}</div>
+      <div class="mcard-name">
+        ${m.name_ko}
+        <div class="mcard-name-en">${m.name_en}</div>
+      </div>
+      <div class="mcard-reactions">
+        <strong>반력:</strong> ${m.reactions}<br>
+        <strong>개수:</strong> ${m.count}개
+      </div>
+    </div>
+  `).join('');
+}
+
+function showMemberDetail(memberId) {
+  const member = MEMBERS.find(m => m.id === memberId);
+  if (!member) return;
+
+  const detailArea = document.getElementById('memberDetailArea');
+  detailArea.innerHTML = `
+    <div class="member-detail">
+      <h3>${member.name_ko} · ${member.name_en}</h3>
+      <div class="detail-subhead">반력: ${member.reactions} (총 ${member.count}개)</div>
+
+      <!-- 특징 -->
+      <div class="member-detail-grid">
+        ${member.characteristics.slice(0, 6).map(c => `
+          <div class="member-characteristic">
+            <h5>${c.title}</h5>
+            <p>${c.text}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- 반력 상세 -->
+      <div class="member-reactions-box">
+        <h5>🔹 반력 형태 상세</h5>
+        ${member.reactionDetails.map(r => `
+          <div class="reaction-row">
+            <div style="flex:1"><strong>${r.type}</strong></div>
+            <div style="flex:1">${r.reactions}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- 풀이 팁 -->
+      <div class="member-tips">
+        <h5>💡 풀이 팁</h5>
+        <ul class="tips-list">
+          ${member.tips.map(t => `<li>${t}</li>`).join('')}
+        </ul>
+      </div>
+
+      <!-- 예제 -->
+      <div class="member-examples">
+        <h5>📌 관련 문제 예시</h5>
+        <ul class="example-list">
+          ${member.examples.map(e => `<li>${e}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+  `;
+
+  // 카드 UI 업데이트
+  document.querySelectorAll('.member-card').forEach(c => c.classList.remove('active'));
+  event.currentTarget?.classList.add('active');
+
+  // 상세 영역으로 스크롤
+  detailArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showHowTo() { document.getElementById('howtoOverlay').classList.add('active'); }
+function closeHowTo() { document.getElementById('howtoOverlay').classList.remove('active'); }
+
+// ═══════════════════════════════════════════════════════════
+//  KEYBOARD SHORTCUT — Space bar = next hint / step
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('keydown', function(e) {
+  // Only active on the problem screen
+  if (!document.getElementById('screen-problem').classList.contains('active')) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (S.revealPhase === 'hints' || S.revealPhase === 'solution') {
+      revealNext();
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+functionsDirectory = "C:\\Users\\wnsdu\\OneDrive\\Desktop\\claude code\\mindmap-study\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+plugins = []
+redirects = []
+
+[build]
+publish = "C:\\Users\\wnsdu\\OneDrive\\Desktop\\claude code\\mindmap-study\\public"
+publishOrigin = "config"
+base = "C:\\Users\\wnsdu\\OneDrive\\Desktop\\claude code\\mindmap-study"
+functions = "C:\\Users\\wnsdu\\OneDrive\\Desktop\\claude code\\mindmap-study\\netlify\\functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+
+[[headers]]
+for = "/.netlify/functions/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "POST, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type"

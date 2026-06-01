@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindFlow — PDF 학습 자동화</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.0/dist/browser/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.0/dist/browser/index.js"></script>
+<style>
+:root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--border:#2a2a38;--accent:#6c63ff;--accent2:#a78bfa;--accent3:#22d3ee;--text:#e8e8f0;--text2:#9999bb;--success:#10b981;--warn:#f59e0b;--danger:#ef4444;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+.sidebar{width:240px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{padding:22px 20px 14px;font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-bottom:1px solid var(--border);}
+.logo span{font-size:11px;color:var(--text2);-webkit-text-fill-color:var(--text2);display:block;margin-top:2px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:var(--text2);cursor:pointer;font-size:14px;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:rgba(108,99,255,.1);color:var(--accent2);border-left-color:var(--accent);}
+.nav-section{padding:14px 20px 5px;font-size:10px;color:#444466;text-transform:uppercase;letter-spacing:1px;}
+.sidebar-footer{margin-top:auto;padding:14px;}
+.api-badge{padding:10px 14px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;font-size:12px;color:var(--success);cursor:pointer;}
+.api-badge.off{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--danger);}
+.main{flex:1;overflow-y:auto;min-height:100vh;}
+.view{display:none;padding:32px;}
+.view.active{display:block;}
+.page-title{font-size:26px;font-weight:700;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text2);margin-bottom:28px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px;}
+.card-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+.card-sub{font-size:13px;color:var(--text2);margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.upload-zone{border:2px dashed var(--border);border-radius:16px;padding:52px 40px;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg3);}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:rgba(108,99,255,.05);}
+.upload-zone input{display:none;}
+.upload-icon{font-size:44px;margin-bottom:12px;}
+.upload-title{font-size:17px;font-weight:600;margin-bottom:6px;}
+.upload-sub{font-size:13px;color:var(--text2);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;font-family:inherit;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#5b52e0;transform:translateY(-1px);box-shadow:0 4px 20px rgba(108,99,255,.4);}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--accent2);color:var(--accent2);}
+.btn-ghost{background:transparent;color:var(--text2);padding:6px 12px;}
+.btn-ghost:hover{color:var(--text);}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.2);}
+.btn-sm{padding:6px 14px;font-size:13px;border-radius:8px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+.form-group{margin-bottom:14px;}
+.form-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.form-input{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--accent2);}
+.session-item{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.session-item:hover{background:var(--bg3);}
+.session-item:last-child{border-bottom:none;}
+.s-thumb{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.s-info{flex:1;}
+.s-name{font-size:14px;font-weight:600;margin-bottom:2px;}
+.s-meta{font-size:12px;color:var(--text2);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge-done{background:rgba(16,185,129,.15);color:var(--success);}
+.badge-analyzing{background:rgba(245,158,11,.15);color:var(--warn);}
+.badge-error{background:rgba(239,68,68,.15);color:var(--danger);}
+.badge-pending{background:rgba(108,99,255,.15);color:var(--accent2);}
+.mindmap-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.mm-toolbar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;}
+.mm-toolbar-title{font-size:14px;font-weight:600;flex:1;}
+#mm-svg-wrap{width:100%;height:580px;}
+#mm-svg-wrap svg{width:100%;height:100%;}
+.markdown-editor{width:100%;min-height:260px;padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;font-family:'Courier New',monospace;resize:vertical;outline:none;line-height:1.6;}
+.markdown-editor:focus{border-color:var(--accent2);}
+
+/* 4-역할 시스템 */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+.role-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.role-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.role-name{font-size:14px;font-weight:700;}
+.role-body{padding:14px 16px;min-height:100px;font-size:13px;line-height:1.7;color:var(--text2);white-space:pre-wrap;}
+.role-body.loaded{color:var(--text);}
+.role-body.loading{display:flex;align-items:center;gap:10px;}
+.role-colors{devil:"rgba(239,68,68,.08)";sustainer:"rgba(16,185,129,.08)";coach:"rgba(108,99,255,.08)";mirror:"rgba(245,158,11,.08)";}
+
+/* 스킬 */
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.skill-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.skill-card-header{padding:13px 17px;border-bottom:1px solid var(--border);}
+.skill-cat{font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.skill-title{font-size:15px;font-weight:700;margin-top:2px;}
+.skill-goal{font-size:12px;color:var(--text2);margin-top:2px;}
+.skill-body{padding:13px 17px;}
+.skill-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.skill-item:last-child{border-bottom:none;}
+.skill-num{width:21px;height:21px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent2);flex-shrink:0;}
+.skill-item-text{flex:1;font-size:13px;}
+.skill-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.skill-check.done{background:var(--success);border-color:var(--success);}
+.skill-check.done::after{content:'✓';color:#fff;font-size:11px;font-weight:700;}
+.skill-item.done .skill-item-text{text-decoration:line-through;color:var(--text2);}
+.skill-tip{margin:10px 0 0;padding:9px 12px;background:rgba(245,158,11,.08);border-radius:7px;border-left:3px solid var(--warn);font-size:12px;color:var(--warn);line-height:1.5;}
+.add-card-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:32px;background:var(--bg3);border:2px dashed var(--border);border-radius:16px;color:var(--text2);cursor:pointer;font-size:14px;transition:all .2s;}
+.add-card-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* 모달 */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:30px;max-width:540px;width:92%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.modal-title{font-size:20px;font-weight:700;margin-bottom:6px;}
+.modal-sub{font-size:14px;color:var(--text2);margin-bottom:22px;}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+
+/* 토스트 */
+.toast-container{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;min-width:260px;box-shadow:0 4px 24px rgba(0,0,0,.4);animation:slideIn .3s ease;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:56px 40px;color:var(--text2);}
+.empty-icon{font-size:52px;margin-bottom:12px;opacity:.5;}
+.empty-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.progress-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:10px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:3px;transition:width .5s;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.stat-val{font-size:28px;font-weight:700;color:var(--accent2);}
+.stat-label{font-size:12px;color:var(--text2);}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="logo">MindFlow <span>Groq AI · 완전 무료</span></div>
+  <div class="nav-section">학습</div>
+  <div class="nav-item active" data-view="home">🏠 홈</div>
+  <div class="nav-item" data-view="upload">📄 PDF 업로드</div>
+  <div class="nav-item" data-view="mindmaps">🧠 마인드맵</div>
+  <div class="nav-section">훈련 시스템</div>
+  <div class="nav-item" data-view="practice">⚡ 오늘의 훈련</div>
+  <div class="nav-item" data-view="skills">🎯 스킬 쪼개기</div>
+  <div class="nav-item" data-view="roles">🧪 4-역할 분석</div>
+  <div class="nav-section">설정</div>
+  <div class="nav-item" onclick="openSettings()">⚙️ Groq API 설정</div>
+  <div class="sidebar-footer">
+    <div class="api-badge off" id="api-badge" onclick="openSettings()">⚠️ API 키 미설정</div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- HOME -->
+<div class="view active" id="view-home">
+  <div class="page-title">안녕하세요 👋</div>
+  <div class="page-sub" id="home-date"></div>
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="card" style="text-align:center"><div class="stat-val" id="stat-sess">0</div><div class="stat-label">세션</div></div>
+    <div class="card" style="text-align:center"><div class="stat-val" id="stat-skills">0</div><div class="stat-label">스킬 카드</div></div>
+    <div class="card" style="text-align:center"><div class="stat-val" id="stat-done">0%</div><div class="stat-label">오늘 완료</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🧠 최근 세션</div>
+      <div class="card-sub">AI가 생성한 마인드맵</div>
+      <div id="home-sessions"></div>
+      <button class="btn btn-primary btn-sm" onclick="nav('upload')" style="margin-top:12px">+ PDF 업로드</button>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ 오늘의 훈련</div>
+      <div id="home-practice"></div>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD -->
+<div class="view" id="view-upload">
+  <div class="page-title">📄 PDF 업로드</div>
+  <div class="page-sub">PDF → Groq AI 분석 → 마인드맵 자동 생성 (API 추가 비용 없음)</div>
+  <div class="card">
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-input').click()">
+      <input type="file" id="pdf-input" accept=".pdf" onchange="onFile(event)">
+      <div class="upload-icon">📥</div>
+      <div class="upload-title">PDF 드래그 또는 클릭해서 업로드</div>
+      <div class="upload-sub">Groq AI (Llama 3.3 70B) · 완전 무료</div>
+    </div>
+  </div>
+  <div class="card" id="upload-cfg" style="display:none">
+    <div class="card-title">🎯 분석 설정</div>
+    <div class="form-group"><label class="form-label">세션 이름</label><input class="form-input" id="sess-name"></div>
+    <div class="form-group"><label class="form-label">학습 목표</label><input class="form-input" id="sess-goal" placeholder="예: 핵심 개념 정리"></div>
+    <div class="form-group"><label class="form-label">분석 방향 (선택)</label><input class="form-input" id="sess-focus" placeholder="예: 시험 출제 빈도 위주"></div>
+    <div id="pdf-info" style="display:none;margin:12px 0;padding:10px 14px;background:var(--bg3);border-radius:10px;font-size:13px;color:var(--text2)">
+      📄 <strong style="color:var(--text)" id="pdf-fname"></strong> · <span id="pdf-size"></span>
+    </div>
+    <button class="btn btn-primary" onclick="doUpload()" id="upload-btn">
+      <span id="upload-btn-text">🧠 마인드맵 생성</span>
+    </button>
+  </div>
+</div>
+
+<!-- MINDMAPS -->
+<div class="view" id="view-mindmaps">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+    <div><div class="page-title">🧠 마인드맵</div><div class="page-sub" style="margin-bottom:0">저장된 마인드맵 · 매일 AI가 확장</div></div>
+    <button class="btn btn-secondary" onclick="nav('upload')">+ 새 세션</button>
+  </div>
+  <div id="mm-list"></div>
+  <div id="mm-viewer" style="display:none;margin-top:20px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="mindmap-wrap">
+        <div class="mm-toolbar">
+          <div class="mm-toolbar-title" id="mm-title"></div>
+          <button class="btn btn-secondary btn-sm" onclick="openExpand()">📝 오늘 내용 추가</button>
+          <button class="btn btn-secondary btn-sm" onclick="doAutoExpand()">🤖 AI 자동 확장</button>
+          <button class="btn btn-ghost btn-sm" onclick="closeViewer()">✕</button>
+        </div>
+        <div id="mm-svg-wrap"><svg id="mm-svg"></svg></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📝 마크다운 소스</div>
+      <textarea class="markdown-editor" id="mm-src" readonly></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn btn-secondary btn-sm" onclick="toggleEdit()">✏️ 직접 편집</button>
+        <button class="btn btn-primary btn-sm" onclick="saveAndRender()">💾 저장 & 렌더</button>
+      </div>
+    </div>
+    <!-- 학습 히스토리 -->
+    <div class="card">
+      <div class="card-title">📅 수정 히스토리</div>
+      <div id="mm-history" style="font-size:13px;color:var(--text2)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div class="view" id="view-practice">
+  <div class="page-title">⚡ 오늘의 훈련</div>
+  <div class="page-sub" id="practice-date"></div>
+  <div class="card" style="margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:20px">
+      <div style="font-size:40px;font-weight:700;color:var(--accent2)" id="pct-label">0%</div>
+      <div style="flex:1">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px" id="done-label">0개 완료</div>
+        <div class="progress-bar"><div class="progress-fill" id="pct-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="practice-cards"></div>
+</div>
+
+<!-- SKILLS -->
+<div class="view" id="view-skills">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+    <div><div class="page-title">🎯 스킬 쪼개기</div><div class="page-sub" style="margin-bottom:0">목표 → 서브스킬 분해 → 매일 반복</div></div>
+    <button class="btn btn-primary" onclick="openSkillModal()">+ 추가</button>
+  </div>
+  <div class="skill-grid" id="skill-grid"></div>
+</div>
+
+<!-- 4-역할 분석 -->
+<div class="view" id="view-roles">
+  <div class="page-title">🧪 4-역할 분석 시스템</div>
+  <div class="page-sub">AI 4개 역할이 학습 계획을 다각도로 분석합니다</div>
+
+  <div class="card">
+    <div class="card-title">📋 분석할 학습 계획 입력</div>
+    <div class="card-sub">현재 학습 계획 또는 고민을 자유롭게 적어주세요</div>
+    <div class="form-group">
+      <textarea class="form-input" id="plan-input" style="min-height:160px" placeholder="예: C언어 1단원부터 9단원까지 2주 안에 끝내고 싶음. 매일 2시간씩 공부할 계획인데 의지력이 부족해서 걱정됨..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="runAllRoles()">🚀 4개 역할 전체 분석</button>
+      <button class="btn btn-secondary btn-sm" onclick="runRole('devil')">😈 Devil's Advocate</button>
+      <button class="btn btn-secondary btn-sm" onclick="runRole('sustainer')">🌱 Sustainer</button>
+      <button class="btn btn-secondary btn-sm" onclick="runRole('coach')">🎯 Coach</button>
+      <button class="btn btn-secondary btn-sm" onclick="runRole('mirror')">🪞 Mirror</button>
+    </div>
+  </div>
+
+  <div class="role-grid" id="role-results">
+    <div class="role-card" id="role-devil">
+      <div class="role-header" style="background:rgba(239,68,68,.08)">
+        <div class="role-name">😈 Devil's Advocate</div>
+        <span style="font-size:11px;color:var(--text2)">현실 검증관</span>
+      </div>
+      <div class="role-body" id="body-devil">구체적인 실패 시나리오를 제시합니다</div>
+    </div>
+    <div class="role-card" id="role-sustainer">
+      <div class="role-header" style="background:rgba(16,185,129,.08)">
+        <div class="role-name">🌱 Sustainer</div>
+        <span style="font-size:11px;color:var(--text2)">지속가능성 설계자</span>
+      </div>
+      <div class="role-body" id="body-sustainer">의지력 0 가정하에 시스템 설계안을 제시합니다</div>
+    </div>
+    <div class="role-card" id="role-coach">
+      <div class="role-header" style="background:rgba(108,99,255,.08)">
+        <div class="role-name">🎯 Coach</div>
+        <span style="font-size:11px;color:var(--text2)">수렴 중재자</span>
+      </div>
+      <div class="role-body" id="body-coach">오늘 할 것 3가지로 압축합니다</div>
+    </div>
+    <div class="role-card" id="role-mirror">
+      <div class="role-header" style="background:rgba(245,158,11,.08)">
+        <div class="role-name">🪞 Mirror</div>
+        <span style="font-size:11px;color:var(--text2)">반복 오류 감지기</span>
+      </div>
+      <div class="role-body" id="body-mirror">반복되는 실패 패턴만 출력합니다</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-title">⚙️ Groq API 설정</div>
+    <div class="modal-sub">Groq는 완전 무료입니다 (하루 14,400회) — console.groq.com에서 발급</div>
+    <div class="form-group">
+      <label class="form-label">Groq API Key</label>
+      <input type="password" class="form-input" id="groq-key-input" placeholder="gsk_...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">모델</label>
+      <select class="form-input" id="model-select">
+        <option value="llama-3.3-70b-versatile">Llama 3.3 70B (권장 · 최고 품질)</option>
+        <option value="llama-3.1-8b-instant">Llama 3.1 8B (빠름)</option>
+        <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+      </select>
+    </div>
+    <div style="padding:12px 16px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:10px;font-size:13px;color:var(--accent3);margin-bottom:16px">
+      💡 발급 방법: <strong>console.groq.com</strong> → 로그인 → API Keys → Create API Key
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('settings-modal')">취소</button>
+      <button class="btn btn-secondary" onclick="testGroq()">🔑 테스트</button>
+      <button class="btn btn-primary" onclick="saveSettings()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPAND MODAL -->
+<div class="modal-overlay" id="expand-modal">
+  <div class="modal">
+    <div class="modal-title">📝 오늘 학습 추가</div>
+    <div class="modal-sub">오늘 새로 배운 내용을 적으면 AI가 마인드맵에 통합합니다</div>
+    <div class="form-group">
+      <textarea class="form-input" id="expand-input" style="min-height:130px" placeholder="오늘 배운 개념, 새로 발견한 연결점, 아직 모르는 것 등을 자유롭게..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('expand-modal')">취소</button>
+      <button class="btn btn-primary" onclick="submitExpand()">🧠 AI로 통합</button>
+    </div>
+  </div>
+</div>
+
+<!-- SKILL MODAL -->
+<div class="modal-overlay" id="skill-modal">
+  <div class="modal">
+    <div class="modal-title">🎯 스킬 카드</div>
+    <div class="modal-sub">목표를 서브스킬로 쪼개서 매일 훈련하세요</div>
+    <div class="form-group"><label class="form-label">카테고리</label><input class="form-input" id="sk-cat" placeholder="예: C언어, 격투게임, 악기"></div>
+    <div class="form-group"><label class="form-label">스킬 제목</label><input class="form-input" id="sk-title"></div>
+    <div class="form-group"><label class="form-label">목표</label><input class="form-input" id="sk-goal"></div>
+    <div class="form-group"><label class="form-label">핵심 팁 (선택)</label><input class="form-input" id="sk-tip" placeholder="실패 구간만 집중하는 것이 5배 빠름"></div>
+    <div class="form-group">
+      <label class="form-label">서브스킬 (단계별로)</label>
+      <div id="sk-items"></div>
+      <button class="btn btn-secondary btn-sm" onclick="addSkItem()" style="margin-top:8px">+ 서브스킬 추가</button>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('skill-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveSkill()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<script>
+const API = 'http://localhost:5050/api';
+let activeSid = null;
+let skills = JSON.parse(localStorage.getItem('mf_skills2') || '[]');
+let todayChecks = JSON.parse(localStorage.getItem('mf_checks_' + today()) || '{}');
+let roleResults = {};
+
+function today(){ return new Date().toISOString().slice(0,10); }
+function saveSkills(){ localStorage.setItem('mf_skills2', JSON.stringify(skills)); }
+function saveChecks(){ localStorage.setItem('mf_checks_'+today(), JSON.stringify(todayChecks)); }
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item[data-view]').forEach(el=>{
+  el.addEventListener('click', ()=>nav(el.dataset.view));
+});
+
+function nav(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-view]').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelector(`.nav-item[data-view="${view}"]`)?.classList.add('active');
+  if(view==='home') renderHome();
+  if(view==='mindmaps') renderMmList();
+  if(view==='practice') renderPractice();
+  if(view==='skills') renderSkills();
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+async function openSettings(){
+  try{
+    const r=await fetch(API+'/config'); const cfg=await r.json();
+    document.getElementById('groq-key-input').value='';
+    document.getElementById('model-select').value=cfg.model||'llama-3.3-70b-versatile';
+  }catch(e){}
+  openModal('settings-modal');
+}
+
+async function saveSettings(){
+  const key=document.getElementById('groq-key-input').value.trim();
+  const model=document.getElementById('model-select').value;
+  await fetch(API+'/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({groq_key:key,model})});
+  updateApiBadge(!!key);
+  closeModal('settings-modal');
+  toast('설정 저장됨','success');
+}
+
+async function testGroq(){
+  const key=document.getElementById('groq-key-input').value.trim();
+  if(!key){toast('키를 입력하세요','error');return;}
+  // 임시 저장 후 테스트
+  await fetch(API+'/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({groq_key:key})});
+  try{
+    const r=await fetch(API+'/sessions');
+    if(r.ok) toast('서버 연결 OK — 이제 저장하세요','success');
+  }catch(e){ toast('서버 연결 실패','error'); }
+}
+
+function updateApiBadge(hasKey){
+  const b=document.getElementById('api-badge');
+  if(hasKey){b.textContent='✅ Groq API 연결됨';b.className='api-badge';}
+  else{b.textContent='⚠️ API 키 미설정';b.className='api-badge off';}
+}
+
+// ── HOME ─────────────────────────────────────────────────────────────────────
+async function renderHome(){
+  document.getElementById('home-date').textContent=
+    new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  const sessions=await fetchSessions();
+  document.getElementById('stat-sess').textContent=sessions.length;
+  document.getElementById('stat-skills').textContent=skills.length;
+  let tot=0,dn=0;
+  skills.forEach(sk=>sk.items.forEach((_,i)=>{tot++;if(todayChecks[sk.id+'_'+i])dn++;}));
+  document.getElementById('stat-done').textContent=tot?Math.round(dn/tot*100)+'%':'0%';
+
+  const el=document.getElementById('home-sessions');
+  if(!sessions.length){el.innerHTML='<div style="color:var(--text2);font-size:13px;padding:8px 0">세션 없음</div>';}
+  else el.innerHTML=sessions.slice(0,3).map(s=>`
+    <div class="session-item" onclick="nav('mindmaps');openMm('${s.id}')">
+      <div class="s-thumb">🧠</div>
+      <div class="s-info"><div class="s-name">${s.name}</div><div class="s-meta">${s.created} · ${statusText(s.status)}</div></div>
+    </div>`).join('');
+
+  const hp=document.getElementById('home-practice');
+  if(!skills.length){hp.innerHTML='<div style="color:var(--text2);font-size:13px">스킬 카드 없음</div>';}
+  else hp.innerHTML=`<div style="font-size:28px;font-weight:700;color:var(--accent2)">${dn}/${tot}</div>
+    <div style="font-size:13px;color:var(--text2);margin:4px 0">오늘 완료</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${tot?dn/tot*100:0}%"></div></div>
+    <button class="btn btn-secondary btn-sm" onclick="nav('practice')" style="margin-top:12px">훈련 시작 →</button>`;
+}
+
+// ── UPLOAD ───────────────────────────────────────────────────────────────────
+const dz=document.getElementById('upload-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');if(e.dataTransfer.files[0])setFile(e.dataTransfer.files[0]);});
+function onFile(e){setFile(e.target.files[0]);}
+function setFile(f){
+  window._f=f;
+  document.getElementById('upload-cfg').style.display='block';
+  document.getElementById('pdf-info').style.display='block';
+  document.getElementById('pdf-fname').textContent=f.name;
+  document.getElementById('pdf-size').textContent=(f.size/1024/1024).toFixed(1)+' MB';
+  document.getElementById('sess-name').value=f.name.replace('.pdf','');
+}
+
+async function doUpload(){
+  if(!window._f){toast('PDF를 선택하세요','error');return;}
+  const fd=new FormData();
+  fd.append('file',window._f);
+  fd.append('name',document.getElementById('sess-name').value||window._f.name);
+  fd.append('goal',document.getElementById('sess-goal').value);
+  fd.append('focus',document.getElementById('sess-focus').value);
+  const btn=document.getElementById('upload-btn');
+  btn.disabled=true;
+  document.getElementById('upload-btn-text').innerHTML='<div class="spinner" style="display:inline-block"></div> 분석 중...';
+  try{
+    const r=await fetch(API+'/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error);
+    toast('분석 시작! 마인드맵 탭에서 확인하세요','success');
+    nav('mindmaps');
+    pollStatus(d.session_id);
+  }catch(e){toast('오류: '+e.message,'error');}
+  finally{btn.disabled=false;document.getElementById('upload-btn-text').textContent='🧠 마인드맵 생성';}
+}
+
+async function pollStatus(sid){
+  for(let i=0;i<40;i++){
+    await sleep(4000);
+    try{const r=await fetch(API+'/sessions/'+sid+'/status');const d=await r.json();
+      if(d.status==='done'){toast('✅ 마인드맵 생성 완료!','success');renderMmList();return;}
+      if(d.status==='error'){toast('❌ '+d.error,'error');renderMmList();return;}
+    }catch(e){break;}
+  }
+}
+
+// ── MINDMAP ───────────────────────────────────────────────────────────────────
+async function fetchSessions(){
+  try{const r=await fetch(API+'/sessions');return r.ok?r.json():[];}catch{return [];}
+}
+function statusText(s){return{done:'✅',analyzing:'⏳',pending:'⏳',error:'❌'}[s]||s;}
+function statusClass(s){return{done:'done',analyzing:'analyzing',error:'error',pending:'pending'}[s]||'pending';}
+
+async function renderMmList(){
+  const sessions=await fetchSessions();
+  const el=document.getElementById('mm-list');
+  if(!sessions.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🧠</div><div class="empty-title">마인드맵 없음</div><p>PDF를 업로드하면 여기에 나타납니다</p></div>`;
+    return;
+  }
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden">`+
+    sessions.map(s=>`
+      <div class="session-item" onclick="openMm('${s.id}')">
+        <div class="s-thumb">🧠</div>
+        <div class="s-info"><div class="s-name">${s.name}</div><div class="s-meta">${s.created} · 수정 ${(s.history||[]).length}회</div></div>
+        <span class="badge badge-${statusClass(s.status)}">${statusText(s.status)} ${s.status}</span>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();delSession('${s.id}')">삭제</button>
+      </div>`).join('')+`</div>`;
+}
+
+async function openMm(sid){
+  const r=await fetch(API+'/sessions/'+sid);
+  if(!r.ok){toast('로드 실패','error');return;}
+  const s=await r.json();
+  activeSid=sid;
+  document.getElementById('mm-title').textContent=s.name;
+  document.getElementById('mm-src').value=s.mindmap||'';
+  // 히스토리
+  const hist=document.getElementById('mm-history');
+  if(s.history?.length){
+    hist.innerHTML=s.history.slice(-5).reverse().map(h=>`
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:12px">
+        <span style="color:var(--text2);flex-shrink:0">${h.date}</span>
+        <span>${h.note}</span>
+      </div>`).join('');
+  } else hist.innerHTML='<div style="color:var(--text2)">기록 없음</div>';
+  document.getElementById('mm-viewer').style.display='block';
+  document.getElementById('mm-viewer').scrollIntoView({behavior:'smooth'});
+  if(s.mindmap) renderMm(s.mindmap);
+}
+
+async function renderMm(md){
+  try{
+    const {Transformer}=markmap;
+    const {Markmap}=window['markmap-view'];
+    const svg=document.getElementById('mm-svg');
+    svg.innerHTML='';
+    const t=new Transformer();
+    const {root}=t.transform(md);
+    const mm=Markmap.create(svg,{color:['#6c63ff','#22d3ee','#a78bfa','#f59e0b','#10b981'],duration:400});
+    mm.setData(root);
+    setTimeout(()=>mm.fit(),200);
+  }catch(e){toast('렌더링 오류: '+e.message,'error');}
+}
+
+function closeViewer(){document.getElementById('mm-viewer').style.display='none';activeSid=null;}
+function toggleEdit(){const ta=document.getElementById('mm-src');ta.readOnly=!ta.readOnly;ta.style.borderColor=ta.readOnly?'':'var(--accent2)';}
+async function saveAndRender(){
+  if(!activeSid)return;
+  const md=document.getElementById('mm-src').value;
+  await fetch(API+'/sessions/'+activeSid+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mindmap:md})});
+  await renderMm(md);
+  toast('저장됨','success');
+}
+async function delSession(sid){
+  if(!confirm('삭제하시겠습니까?'))return;
+  await fetch(API+'/sessions/'+sid,{method:'DELETE'});
+  renderMmList();closeViewer();toast('삭제됨','info');
+}
+function openExpand(){document.getElementById('expand-input').value='';openModal('expand-modal');}
+async function submitExpand(){
+  if(!activeSid)return;
+  const content=document.getElementById('expand-input').value.trim();
+  if(!content){toast('내용을 입력하세요','error');return;}
+  await fetch(API+'/sessions/'+activeSid+'/expand',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})});
+  closeModal('expand-modal');
+  toast('AI가 확장 중... 20초 후 자동 업데이트','info');
+  setTimeout(()=>openMm(activeSid),20000);
+}
+async function doAutoExpand(){
+  if(!activeSid)return;
+  await fetch(API+'/sessions/'+activeSid+'/expand',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+  toast('AI 자동 확장 중... 20초 후 업데이트됩니다','info');
+  setTimeout(()=>openMm(activeSid),20000);
+}
+
+// ── PRACTICE ─────────────────────────────────────────────────────────────────
+function renderPractice(){
+  document.getElementById('practice-date').textContent=
+    new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  let tot=0,dn=0;
+  skills.forEach(sk=>sk.items.forEach((_,i)=>{tot++;if(todayChecks[sk.id+'_'+i])dn++;}));
+  const pct=tot?Math.round(dn/tot*100):0;
+  document.getElementById('pct-label').textContent=pct+'%';
+  document.getElementById('done-label').textContent=`${dn}/${tot}개 완료`;
+  document.getElementById('pct-bar').style.width=pct+'%';
+  const el=document.getElementById('practice-cards');
+  if(!skills.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">⚡</div><div class="empty-title">스킬 카드 없음</div></div>`;return;}
+  el.innerHTML=`<div class="skill-grid">${skills.map(sk=>skillCardHTML(sk)).join('')}</div>`;
+}
+
+// ── SKILLS ────────────────────────────────────────────────────────────────────
+function renderSkills(){
+  const el=document.getElementById('skill-grid');
+  el.innerHTML=skills.map(sk=>skillCardHTML(sk)).join('')+
+    `<div class="add-card-btn" onclick="openSkillModal()"><span style="font-size:22px">+</span> 스킬 카드 추가</div>`;
+}
+function skillCardHTML(sk){
+  const dn=sk.items.filter((_,i)=>todayChecks[sk.id+'_'+i]).length;
+  return `<div class="skill-card">
+    <div class="skill-card-header">
+      <div class="skill-cat">${sk.cat||'스킬'}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:4px">
+        <div><div class="skill-title">${sk.title}</div><div class="skill-goal">${sk.goal||''}</div></div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <span style="font-size:12px;color:var(--accent2);font-weight:700">${dn}/${sk.items.length}</span>
+          <button class="btn btn-ghost btn-sm" onclick="openSkillModal(${sk.id})" style="padding:2px 6px">✏️</button>
+          <button class="btn btn-ghost btn-sm" onclick="delSkill(${sk.id})" style="padding:2px 6px">🗑️</button>
+        </div>
+      </div>
+    </div>
+    <div class="skill-body">
+      ${sk.items.map((item,i)=>{const d=todayChecks[sk.id+'_'+i];return`
+        <div class="skill-item ${d?'done':''}">
+          <div class="skill-num">${i+1}</div>
+          <div class="skill-item-text">${item}</div>
+          <div class="skill-check ${d?'done':''}" onclick="toggleCheck(${sk.id},${i})"></div>
+        </div>`;}).join('')}
+      ${sk.tip?`<div class="skill-tip">💡 ${sk.tip}</div>`:''}
+    </div>
+  </div>`;
+}
+function toggleCheck(sid,idx){const k=sid+'_'+idx;todayChecks[k]=!todayChecks[k];saveChecks();renderSkills();renderPractice();}
+function openSkillModal(editId=null){
+  const sk=editId?skills.find(s=>s.id===editId):null;
+  ['cat','title','goal','tip'].forEach(f=>document.getElementById('sk-'+f).value=sk?.[f]||'');
+  const list=document.getElementById('sk-items');list.innerHTML='';
+  (sk?.items||['','','','']).forEach(v=>addSkItem(v));
+  document.getElementById('skill-modal').dataset.edit=editId||'';
+  openModal('skill-modal');
+}
+function addSkItem(val=''){
+  const list=document.getElementById('sk-items');
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;gap:8px;margin-bottom:8px;align-items:center';
+  div.innerHTML=`<span style="width:18px;color:var(--text2);font-size:12px">${list.children.length+1}</span>
+    <input class="form-input" value="${val}" style="flex:1" placeholder="서브스킬">
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:16px">✕</button>`;
+  list.appendChild(div);
+}
+function saveSkill(){
+  const eid=document.getElementById('skill-modal').dataset.edit;
+  const items=[...document.querySelectorAll('#sk-items input')].map(i=>i.value.trim()).filter(Boolean);
+  const sk={id:eid?parseInt(eid):Date.now(),cat:document.getElementById('sk-cat').value.trim(),title:document.getElementById('sk-title').value.trim(),goal:document.getElementById('sk-goal').value.trim(),tip:document.getElementById('sk-tip').value.trim(),items};
+  if(!sk.title){toast('제목 입력','error');return;}
+  if(eid)skills=skills.map(s=>s.id===parseInt(eid)?sk:s);else skills.push(sk);
+  saveSkills();closeModal('skill-modal');renderSkills();toast('저장됨','success');
+}
+function delSkill(id){if(!confirm('삭제?'))return;skills=skills.filter(s=>s.id!==id);saveSkills();renderSkills();toast('삭제됨','info');}
+
+// ── 4-역할 분석 ──────────────────────────────────────────────────────────────
+const ROLE_KEYS = ['devil','sustainer','coach','mirror'];
+
+async function runRole(roleKey){
+  const plan=document.getElementById('plan-input').value.trim();
+  if(!plan){toast('학습 계획을 입력하세요','error');return;}
+  const bodyEl=document.getElementById('body-'+roleKey);
+  bodyEl.className='role-body loading';
+  bodyEl.innerHTML='<div class="spinner"></div> AI 분석 중...';
+
+  try{
+    const r=await fetch(API+'/sessions/standalone/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({role:roleKey, plan})
+    });
+    if(!r.ok) throw new Error((await r.json()).error||'오류');
+    const d=await r.json();
+    bodyEl.className='role-body loaded';
+    bodyEl.textContent=d.result;
+  }catch(e){
+    bodyEl.className='role-body';
+    bodyEl.textContent='❌ 오류: '+e.message;
+  }
+}
+
+async function runAllRoles(){
+  const plan=document.getElementById('plan-input').value.trim();
+  if(!plan){toast('학습 계획을 입력하세요','error');return;}
+  // 순서대로 실행 (devil → sustainer(devil 결과 포함) → coach(전체) → mirror)
+  await runRole('devil');
+  const devilResult=document.getElementById('body-devil').textContent;
+  // Sustainer는 devil 결과를 입력으로
+  await runRoleWithPlan('sustainer', `원본 계획:\n${plan}\n\nDevil's Advocate 문제 제기:\n${devilResult}`);
+  const sustainResult=document.getElementById('body-sustainer').textContent;
+  // Coach는 전체
+  await runRoleWithPlan('coach', `원본 계획:\n${plan}\n\nDevil:\n${devilResult}\n\nSustainer:\n${sustainResult}`);
+  // Mirror는 원본 계획 기반
+  await runRole('mirror');
+}
+
+async function runRoleWithPlan(roleKey, plan){
+  const bodyEl=document.getElementById('body-'+roleKey);
+  bodyEl.className='role-body loading';
+  bodyEl.innerHTML='<div class="spinner"></div> AI 분석 중...';
+  try{
+    const r=await fetch(API+'/sessions/standalone/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({role:roleKey, plan})
+    });
+    if(!r.ok) throw new Error((await r.json()).error||'오류');
+    const d=await r.json();
+    bodyEl.className='role-body loaded';
+    bodyEl.textContent=d.result;
+  }catch(e){
+    bodyEl.className='role-body';
+    bodyEl.textContent='❌ 오류: '+e.message;
+  }
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function toast(msg,type='info'){
+  const icons={success:'✅',error:'❌',info:'ℹ️'};
+  const el=document.createElement('div');el.className=`toast ${type}`;
+  el.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.remove(),4000);
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(async()=>{
+  try{const r=await fetch(API+'/config');const cfg=await r.json();updateApiBadge(cfg.groq_key==='***'||!!cfg.groq_key);}catch(e){}
+  renderHome();
+})();
+</script>
+</body>
+</html>

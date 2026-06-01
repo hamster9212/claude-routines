@@ -1,0 +1,18 @@
+[build]
+  command = ""
+  publish = "."
+
+[dev]
+  command = "python -m http.server 8000"
+  port = 8000
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "development" }

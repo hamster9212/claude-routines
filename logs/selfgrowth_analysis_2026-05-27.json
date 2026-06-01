@@ -1,0 +1,93 @@
+{
+  "agent_a": {
+    "period": "2026-05-20 ~ 2026-05-27",
+    "total_runs": 5,
+    "success_count": 5,
+    "fail_count": 10,
+    "daily_results": [
+      {
+        "date": "2026-05-22",
+        "result": "SUCCESS"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "FAIL",
+        "detail": "[2026-05-22 23:23:43] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "FAIL",
+        "detail": "[2026-05-22 23:24:18] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "SUCCESS"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "FAIL",
+        "detail": "[2026-05-22 23:32:46] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "FAIL",
+        "detail": "[2026-05-22 23:33:07] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "FAIL",
+        "detail": "[2026-05-22 23:34:15] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-22",
+        "result": "SUCCESS"
+      },
+      {
+        "date": "2026-05-23",
+        "result": "FAIL",
+        "detail": "[2026-05-23 00:41:24] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-23",
+        "result": "SUCCESS"
+      },
+      {
+        "date": "2026-05-27",
+        "result": "FAIL",
+        "detail": "[2026-05-27 00:09:23] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-27",
+        "result": "FAIL",
+        "detail": "[2026-05-27 00:52:50] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-27",
+        "result": "FAIL",
+        "detail": "[2026-05-27 00:53:04] [CRITICAL] 필수 환경변수 누락: NOTION_TOKEN, BEEMINDER_TOKEN"
+      },
+      {
+        "date": "2026-05-27",
+        "result": "FAIL",
+        "detail": "[2026-05-27 00:53:28] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY"
+      },
+      {
+        "date": "2026-05-27",
+        "result": "SUCCESS"
+      }
+    ],
+    "log_files_found": 1,
+    "log_sample": "=== C:\\Users\\wnsdu\\.claude\\notion_beeminder.log ===\n조건0] 대기중 할일=0개\n[2026-05-22 23:06:30] [조건1] 회사 미완료=0개 / 기타 미완료=0개\n[2026-05-22 23:06:32] [BEEMINDER OK] goal=notion-daily, value=1.0, comment=할일 완료 - 회사:0 기타:0\n[2026-05-22 23:06:32] [조건1 PASS] notion-daily value=1 전송\n[2026-05-22 23:06:32] [조건2 SKIP] 오늘 패키지 키워드 없음\n[2026-05-22 23:06:33] [NOTION UPDATE] 오늘 기록 없음 (아직 사진 안 올림)\n[2026-05-22 23:06:33] [카카오톡 예정 메시지] 오늘 미션 완료! Beeminder 안전\n[2026-05-22 23:06:33] END: 자동화 완료\n[2026-05-22 23:06:33] ============================================================\n\n[2026-05-22 23:23:43] ============================================================\n[2026-05-22 23:23:43] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:23:43] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY\n[2026-05-22 23:23:43] [ERROR] 환경변수 검증 실패\n[2026-05-22 23:24:08] ============================================================\n[2026-05-22 23:24:08] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:24:08] [ERROR] JSON 파싱 실패: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\n[2026-05-22 23:24:18] ============================================================\n[2026-05-22 23:24:18] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:24:18] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY\n[2026-05-22 23:24:18] [ERROR] 환경변수 검증 실패\n[2026-05-22 23:24:30] ============================================================\n[2026-05-22 23:24:30] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:24:30] [ERROR] JSON 파싱 실패: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)\n[2026-05-22 23:24:40] ============================================================\n[2026-05-22 23:24:40] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:24:40] [조건0] 대기중 할일=0개\n[2026-05-22 23:24:40] [조건1] 회사 미완료=0개 / 기타 미완료=0개\n[2026-05-22 23:24:42] [BEEMINDER OK] goal=notion-daily, value=1.0, comment=할일 완료 - 회사:0 기타:0\n[2026-05-22 23:24:42] [조건1 PASS] notion-daily value=1 전송\n[2026-05-22 23:24:42] [조건2 SKIP] 오늘 패키지 키워드 없음\n[2026-05-22 23:24:43] [NOTION UPDATE] 오늘 기록 없음 (아직 사진 안 올림)\n[2026-05-22 23:24:43] [카카오톡 예정 메시지] 오늘 미션 완료! Beeminder 안전\n[2026-05-22 23:24:43] END: 자동화 완료\n[2026-05-22 23:24:43] ============================================================\n\n[2026-05-22 23:32:46] ============================================================\n[2026-05-22 23:32:46] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:32:46] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY\n[2026-05-22 23:32:46] [ERROR] 환경변수 검증 실패\n[2026-05-22 23:33:07] ============================================================\n[2026-05-22 23:33:07] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:33:07] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY\n[2026-05-22 23:33:07] [ERROR] 환경변수 검증 실패\n[2026-05-22 23:34:15] ============================================================\n[2026-05-22 23:34:15] START: Notion-Beeminder 자동화 시스템\n[2026-05-22 23:34:15] [CRITICAL] 필수 환경변수 누락: ANTHROPIC_API_KEY\n[2026-05-22 23:34:15] [ERROR] 환경변수 검증 실패\n[2026-05-22 23:34:59] ========================================================="
+  },
+  "agent_b": {
+    "analysis_date": "2026-05-27",
+    "health_score": 50,
+    "weaknesses": [
+      "API 오류: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your cred"
+    ],
+    "strengths": [],
+    "repeated_errors": [],
+    "recommended_rules": [],
+    "summary": "분석 오류: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', '"
+  }
+}

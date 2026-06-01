@@ -1,0 +1,1523 @@
+<section id="sec-mnemonic" class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">💡 연상기억법</div>
+      <div class="section-subtitle">3과 단어 43개를 재미있는 이야기로 외우기</div>
+    </div>
+  </div>
+
+  <div class="mnemonic-container">
+    <!-- family -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">👨‍👩‍👧‍👦 가족</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">кто</td><td>누가, 누구</td><td>크토 - 크 큭! 누가 그러냐고 물어본다</td></tr>
+        <tr><td class="ru">что</td><td>무엇이, 무엇</td><td>슈토 - 슈가 들리면 '뭐 하냐?'</td></tr>
+        <tr><td class="ru">ма́ма</td><td>엄마</td><td>마마 - 엄마 '마'자 두 번</td></tr>
+        <tr><td class="ru">па́па</td><td>아빠</td><td>파파 - 아빠 '빠'자 두 번</td></tr>
+        <tr><td class="ru">мать</td><td>어머니</td><td>마트 - 엄마를 마트(mart)처럼 정중히 '어머니'</td></tr>
+        <tr><td class="ru">оте́ц</td><td>아버지</td><td>오테츠 - 오! 테스트 통과한 아버지</td></tr>
+        <tr><td class="ru">сын</td><td>아들</td><td>씬 - 씬나게 뛰어다니는 아들</td></tr>
+        <tr><td class="ru">дочь</td><td>딸</td><td>도치 - 도치(돌고래)처럼 귀여운 딸</td></tr>
+        <tr><td class="ru">брат</td><td>형제, 남자형제</td><td>브랏 - 브라더(brother) = 형제</td></tr>
+        <tr><td class="ru">сестра́</td><td>자매, 여자형제</td><td>씨스뜨라 - 씨씨(여친) 여자형제</td></tr>
+        <tr><td class="ru">муж</td><td>남편</td><td>무쉬 - 무쉬무쉬한 남편</td></tr>
+        <tr><td class="ru">жена́</td><td>아내</td><td>지나 - 지나간 시간 아내 곁에</td></tr>
+        <tr><td class="ru">де́душка</td><td>할아버지</td><td>데두슈까 - 데데데 웃는 할아버지</td></tr>
+        <tr><td class="ru">ба́бушка</td><td>할머니</td><td>바부슈까 - 바-바 하면서 손주 안아주는 할머니</td></tr>
+        <tr><td class="ru">мужчи́на</td><td>남자</td><td>무쉬치나 - 무쉬무쉬 강한 남자</td></tr>
+        <tr><td class="ru">же́нщина</td><td>여자</td><td>진시나 - 진 여신처럼 예쁜 여자</td></tr>
+        <tr><td class="ru">студе́нт</td><td>대학생(남자)</td><td>스투데는뜨 - 스튜던트(student) = 학생</td></tr>
+        <tr><td class="ru">студе́нтка</td><td>대학생(여자)</td><td>스투데는까 - 여자 학생</td></tr>
+        <tr><td class="ru">учи́тель</td><td>남자선생님(초중고)</td><td>우치텔 - 우! 치네, 선생님이 우치넷</td></tr>
+        <tr><td class="ru">учи́тельница</td><td>여자선생님(초중고)</td><td>우치텔니짜 - 여자 선생님</td></tr>
+        <tr><td class="ru">профе́ссор</td><td>교수</td><td>쁘로페쏘르 - 프로페셔널한 교수</td></tr>
+        <tr><td class="ru">преподава́тель</td><td>선생님(대학, 연구소)</td><td>쁘레뽀다바텔 - 준비해서 알려주는 선생님</td></tr>
+        <tr><td class="ru">ма́льчик</td><td>남자아이</td><td>말치크 - 말 같이 뛰어다니는 아이</td></tr>
+        <tr><td class="ru">де́вочка</td><td>여자아이</td><td>데보치까 - 데브(dev) 같이 영리한 여자아이</td></tr>
+        <tr><td class="ru">де́вушка</td><td>아가씨, 젊은 여자</td><td>데부슈까 - 데뷔하는 아가씨</td></tr>
+        <tr><td class="ru">молодо́й челове́к</td><td>젊은이, 젊은 남자</td><td>몰로도이 - 모로로(젊게) 빠르게</td></tr>
+        <tr><td class="ru">де́ти</td><td>아이들</td><td>데띠 - 데데데 하는 아이들</td></tr>
+      </table>
+    </div>
+
+    <!-- places -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🏛️ 장소·시설</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">шко́ла</td><td>학교(초중고)</td><td>슐라 - 슐 ~ 랑~ 학교 종</td></tr>
+        <tr><td class="ru">университе́т</td><td>대학교</td><td>우니베르씨떼뜨 - 유니버시티 = 대학</td></tr>
+        <tr><td class="ru">институ́т</td><td>연구소, 대학</td><td>인스띠뚜뜨 - 인스티튜션 = 연구소</td></tr>
+        <tr><td class="ru">журна́л</td><td>잡지</td><td>주르날 - 저널(journal) = 잡지</td></tr>
+        <tr><td class="ru">музе́й</td><td>박물관</td><td>무제이 - 뮤지움(museum) = 박물관</td></tr>
+        <tr><td class="ru">кафе́</td><td>카페</td><td>까페 - 카페 = 카페</td></tr>
+        <tr><td class="ru">стол</td><td>탁자, 테이블, 식탁</td><td>스똘 - 스탤(stall) 탁자</td></tr>
+        <tr><td class="ru">стул</td><td>의자</td><td>스툴 - 스툴(stool) = 의자</td></tr>
+        <tr><td class="ru">портфе́ль</td><td>서류가방</td><td>뽀르뜨펠 - 포트폴리오 가방</td></tr>
+        <tr><td class="ru">до́ма</td><td>집에서</td><td>도마 - 도마, 우리 집에서</td></tr>
+        <tr><td class="ru">здесь</td><td>여기</td><td>즈데스' - 즉(여기) 여기</td></tr>
+      </table>
+    </div>
+
+    <!-- objects -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">📚 사물·물건</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">кни́га</td><td>책</td><td>끼니가 - 끼니 먹으며 책 읽는다</td></tr>
+        <tr><td class="ru">газе́та</td><td>신문</td><td>가제따 - 가재(신문처럼 펼쳐짐) = 신문</td></tr>
+        <tr><td class="ru">письмо́</td><td>편지</td><td>핏스모 - 핏(pit) 깊은 마음의 편지</td></tr>
+        <tr><td class="ru">ру́чка</td><td>볼펜, 손잡이</td><td>루치까 - 루(손가락) 같은 손잡이</td></tr>
+        <tr><td class="ru">слова́рь</td><td>사전</td><td>슬로바리 - 슬로우(slow)해도 사전으로 찾아</td></tr>
+        <tr><td class="ru">тетра́дь</td><td>공책</td><td>떼뜨라디 - 떼떼떼 쓰는 공책</td></tr>
+        <tr><td class="ru">ра́дио</td><td>라디오</td><td>라디오 - 라디오 = 라디오</td></tr>
+        <tr><td class="ru">пе́сня</td><td>노래</td><td>펜냐 - 펜펜 그으면 노래 나온다</td></tr>
+        <tr><td class="ru">му́зыка</td><td>음악</td><td>무즈까 - 뮤직(music) = 음악</td></tr>
+        <tr><td class="ru">каранда́ш</td><td>연필</td><td>까란다시 - 까만 색 다시 그리는 연필</td></tr>
+        <tr><td class="ru">ле́кция</td><td>강의</td><td>렉씨야 - 렉쳐(lecture) = 강의</td></tr>
+        <tr><td class="ru">вре́мя</td><td>시간, 시각</td><td>브레미야 - 브라보! 미-니 시간이</td></tr>
+        <tr><td class="ru">и́мя</td><td>이름</td><td>이미야 - 이미 야? (이름이 뭐야?)</td></tr>
+      </table>
+    </div>
+
+    <!-- animals_nature -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🌳 동물·자연</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">ко́шка</td><td>고양이</td><td>코슈까 - 코슈(귀)로 쫑긋한 고양이</td></tr>
+        <tr><td class="ru">мо́ре</td><td>바다</td><td>모레 - 모레(내일) 바다 가자</td></tr>
+        <tr><td class="ru">ночь</td><td>밤</td><td>노치 - 노-하지만 밤이 온다</td></tr>
+        <tr><td class="ru">сейча́с</td><td>지금, 이제</td><td>쎄이차스 - 쎄이! 차스(지금) 해야지</td></tr>
+        <tr><td class="ru">там</td><td>저기</td><td>따아 엠 - 따앗 저기(멀리)</td></tr>
+        <tr><td class="ru">э́то</td><td>이것은, 이것이</td><td>에따 - 에! 따따(이것)</td></tr>
+        <tr><td class="ru">сигаре́ты</td><td>담배</td><td>씨가레띠 - 씨가 레끼(담배 담금)</td></tr>
+        <tr><td class="ru">стихи́</td><td>시</td><td>스띠흐 - 스티 흐르는 감정 = 시</td></tr>
+        <tr><td class="ru">чита́ть</td><td>읽다</td><td>치따찌 - 치 차 뜨(읽는 소리)</td></tr>
+        <tr><td class="ru">слу́шать</td><td>듣다</td><td>슬루샤뜨 - 슬루 살펴 듣다</td></tr>
+        <tr><td class="ru">де́лать</td><td>하다</td><td>델라뜨 - 델리버(deliver) 하다</td></tr>
+      </table>
+    </div>
+
+    <!-- pronouns -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🎯 인칭대명사</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">я</td><td>나 (1인칭 단수)</td><td>야 - 야! 나다!</td></tr>
+        <tr><td class="ru">ты</td><td>너 (2인칭 단수)</td><td>뜨이 - 뜨이(너) ~이야</td></tr>
+        <tr><td class="ru">он</td><td>그(남자)</td><td>온 - 온(~이 온) 그 남자</td></tr>
+        <tr><td class="ru">она́</td><td>그녀(여자)</td><td>아나 - 아! 나!(그녀가 나다)</td></tr>
+        <tr><td class="ru">оно́</td><td>그것(사물)</td><td>아노 - 아! 노!(그것)</td></tr>
+        <tr><td class="ru">мы</td><td>우리</td><td>미 - 미(미키) 우리</td></tr>
+        <tr><td class="ru">вы</td><td>너희, 당신(존댓말)</td><td>비 - 비(존댓말)</td></tr>
+        <tr><td class="ru">они́</td><td>그들</td><td>아니 - 아! 니(그들)</td></tr>
+      </table>
+    </div>
+
+    <!-- professions_lesson2 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">👔 직업 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">дя́дя</td><td>아저씨, 삼촌</td><td>댸댸 - 댸대(아저씨) 어이</td></tr>
+        <tr><td class="ru">тётя</td><td>아줌마, 이모, 고모</td><td>떼따 - 떼떼따(아줌마)</td></tr>
+        <tr><td class="ru">врач</td><td>의사</td><td>브라치 - 별나게 잘 고쳐주는 의사</td></tr>
+        <tr><td class="ru">друг</td><td>친구(남자)</td><td>드룩 - 드럭처럼 친한 친구</td></tr>
+        <tr><td class="ru">подру́га</td><td>여자친구</td><td>뽀드루가 - 뽀-드러(결국) 여자친구</td></tr>
+        <tr><td class="ru">сосе́д</td><td>이웃남자</td><td>싸씨드 - 싸우는 씨다? 아니 이웃</td></tr>
+        <tr><td class="ru">сосе́дка</td><td>이웃여자</td><td>싸씨따 - 이웃 여자</td></tr>
+      </table>
+    </div>
+
+    <!-- entertainment -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🎭 문화·행사 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">кинотеа́тр</td><td>영화극장</td><td>키노째아뜨르 - 키노(cinema) 극장</td></tr>
+        <tr><td class="ru">теа́тр</td><td>극장</td><td>째아뜨르 - 쨰아뜨르(theater) = 극장</td></tr>
+        <tr><td class="ru">кино́</td><td>영화, 영화극장</td><td>키노 - 키노(cinema) = 영화</td></tr>
+        <tr><td class="ru">исто́рия</td><td>역사</td><td>이스또리야 - 이야기(story) = 역사</td></tr>
+        <tr><td class="ru">литерату́ра</td><td>문학</td><td>리떼라뚜라 - 리터러쳐(literature) = 문학</td></tr>
+      </table>
+    </div>
+
+    <!-- clothing -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">👕 의류 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">пальто́</td><td>외투, 겉옷</td><td>팔토 - 팔 때(겨울에) 팔토(외투)</td></tr>
+      </table>
+    </div>
+
+    <!-- geography -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🌏 지리·도시 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">пло́щадь</td><td>광장</td><td>플로씨야디 - 플로(floor) 광장</td></tr>
+        <tr><td class="ru">го́род</td><td>도시</td><td>고로드 - 고로드(좋은) 도시</td></tr>
+        <tr><td class="ru">дом</td><td>집, 건물</td><td>돔 - 돔(dome) 같은 집</td></tr>
+        <tr><td class="ru">библиоте́ка</td><td>도서관</td><td>비블리아떼까 - 비블(Bible) 있는 도서관</td></tr>
+        <tr><td class="ru">вокза́л</td><td>역(기차)</td><td>박잘 - 박 자! 역에 박혔다</td></tr>
+        <tr><td class="ru">банк</td><td>은행</td><td>방크 - 방크(bank) = 은행</td></tr>
+        <tr><td class="ru">магази́н</td><td>가게</td><td>마가진 - 마가진(magazine) = 가게</td></tr>
+        <tr><td class="ru">апте́ка</td><td>약국</td><td>앱떼까 - 앱(app) 약국</td></tr>
+        <tr><td class="ru">по́чта</td><td>우체국</td><td>포치따 - 포(postal) 우체국</td></tr>
+      </table>
+    </div>
+
+    <!-- transportation -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🚌 교통 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">трамва́й</td><td>트램, 전차</td><td>뜨람바이 - 뜨램(tram) = 전차</td></tr>
+        <tr><td class="ru">авто́бус</td><td>버스</td><td>아브토부스 - 아우또버스(auto bus) = 버스</td></tr>
+        <tr><td class="ru">тролле́йбус</td><td>트롤리버스</td><td>뜨롤레이부스 - 트롤(trolley) 버스</td></tr>
+        <tr><td class="ru">такси́</td><td>택시</td><td>따끼 - 따끼(taxi) = 택시</td></tr>
+      </table>
+    </div>
+
+    <!-- verbs_lesson2 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🏃 동사 (2과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">спра́шивать</td><td>묻다, 질문하다</td><td>스프라시바뜨 - 스프리(spray) 묻듯이</td></tr>
+        <tr><td class="ru">понима́ть</td><td>이해하다</td><td>뽀니마뜨 - 뽀(bone) 니(깊게) 이해</td></tr>
+        <tr><td class="ru">знать</td><td>알다</td><td>즈나뜨 - 즈나(안다) = 알다</td></tr>
+      </table>
+    </div>
+
+    <!-- facilities_lesson3 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🏢 시설 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">рестора́н</td><td>레스토랑, 식당</td><td>레스토랑은 영어랑 같다</td></tr>
+        <tr><td class="ru">компа́ния</td><td>회사</td><td>캠핑 가는 파니야(아줌마)들</td></tr>
+        <tr><td class="ru">о́фис</td><td>사무실</td><td>오피스 = 사무실</td></tr>
+        <tr><td class="ru">санато́рий</td><td>휴양소, 요양원</td><td>사나운 사람도 토리(호텔)에서 쉬면 낫는다</td></tr>
+        <tr><td class="ru">парк</td><td>공원</td><td>파르크 - 파란 크레파스 공원</td></tr>
+        <tr><td class="ru">больни́ца</td><td>병원</td><td>발이 니 아파서 짜증 = 병원</td></tr>
+        <tr><td class="ru">заво́д</td><td>공장</td><td>자봇(자동차 봇) = 공장</td></tr>
+        <tr><td class="ru">стадио́н</td><td>경기장, 스타디움</td><td>스타들이 디(뛰는) 온</td></tr>
+        <tr><td class="ru">уро́к</td><td>수업, 과</td><td>우롱(우롱차) 로(로봇)</td></tr>
+        <tr><td class="ru">сад</td><td>정원</td><td>삿(삿갓) 쓰고 정원</td></tr>
+        <tr><td class="ru">лес</td><td>숲</td><td>례스(레이스) 얽힌 나무들</td></tr>
+        <tr><td class="ru">пол</td><td>바닥, 성별</td><td>뽈뽈(기어다니는 소리)</td></tr>
+        <tr><td class="ru">шкаф</td><td>옷장</td><td>쉬캬프 - 쉬면서 캬캬 옷장</td></tr>
+        <tr><td class="ru">аэропо́рт</td><td>공항</td><td>에어로뽀르트 = 공항</td></tr>
+      </table>
+    </div>
+
+    <!-- culture -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🎨 문화 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">конце́рт</td><td>콘서트</td><td>깐쩨르트 = 콘서트</td></tr>
+        <tr><td class="ru">бале́т</td><td>발레</td><td>발렛 = 발레</td></tr>
+        <tr><td class="ru">о́пера</td><td>오페라</td><td>오페라 = 오페라</td></tr>
+        <tr><td class="ru">пе́нсия</td><td>연금</td><td>펜씨야 - 펜 씌워 야금야금</td></tr>
+      </table>
+    </div>
+
+    <!-- countries -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🌍 나라 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">Коре́я</td><td>한국</td><td>까례야 - 까리는 게 없는 예야</td></tr>
+        <tr><td class="ru">Росси́я</td><td>러시아</td><td>라씨야 - 라씨(러시아식) 마시는</td></tr>
+        <tr><td class="ru">Кита́й</td><td>중국</td><td>끼따이 - 끼를 따르는</td></tr>
+        <tr><td class="ru">Япо́ния</td><td>일본</td><td>야포니야 - 야! 포니(조랑말)야!</td></tr>
+        <tr><td class="ru">Аме́рика</td><td>미국</td><td>아메리카노 커피</td></tr>
+        <tr><td class="ru">А́нглия</td><td>영국</td><td>앙! 글이야! (셰익스피어)</td></tr>
+      </table>
+    </div>
+
+    <!-- occupations -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">👷 직업 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">пенсионе́р</td><td>연금생활자</td><td>펜씨아녜르 - 펜 씩 아껴쓰는</td></tr>
+        <tr><td class="ru">апте́карь</td><td>약사</td><td>압쩨까리 - 혈압 체크 카리</td></tr>
+        <tr><td class="ru">библиоте́карь</td><td>도서관사서</td><td>비블리아쩨까리 - 책 카리</td></tr>
+        <tr><td class="ru">бизнесме́н</td><td>사업가</td><td>비즈네스멘 = 사업가</td></tr>
+        <tr><td class="ru">инжене́р</td><td>엔지니어</td><td>인줴녜르 - 인줄 알았더니</td></tr>
+        <tr><td class="ru">пова́р</td><td>요리사</td><td>뽀바르 - 뽀빠이처럼 요리</td></tr>
+        <tr><td class="ru">почтальо́н</td><td>우체부</td><td>뽀취딸욘 - 딸에게 욘(편지)</td></tr>
+      </table>
+    </div>
+
+    <!-- verbs_lesson3 -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">💪 동사 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">жить</td><td>살다</td><td>쥐치 - 쥐처럼 치밀하게</td></tr>
+        <tr><td class="ru">рабо́тать</td><td>일하다</td><td>라보따찌 - 라면 보따리 찌고</td></tr>
+        <tr><td class="ru">учи́ться</td><td>공부하다</td><td>우치짜 - 우치! 짜릿하게</td></tr>
+        <tr><td class="ru">за́втракать</td><td>아침을 먹다</td><td>자브뜨라까찌 - 까치 소리에</td></tr>
+        <tr><td class="ru">обе́дать</td><td>점심을 먹다</td><td>배다 찌 - 배 다 찌겠다</td></tr>
+        <tr><td class="ru">у́жинать</td><td>저녁을 먹다</td><td>우지나 찌 - 쥐나 찌지 말고</td></tr>
+        <tr><td class="ru">гуля́ть</td><td>산책하다</td><td>굴 랴찌 - 굴러다니며</td></tr>
+        <tr><td class="ru">отдыха́ть</td><td>쉬다, 휴가</td><td>앗 디하! 하치! - 휴가</td></tr>
+      </table>
+    </div>
+
+    <!-- directions -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">🧭 방향 (3과)</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">восто́к</td><td>동쪽</td><td>바스똑! - 해가 동쪽에서 떠오른다</td></tr>
+        <tr><td class="ru">за́пад</td><td>서쪽</td><td>자빳 - 자빠졌다! 서쪽으로</td></tr>
+        <tr><td class="ru">юг</td><td>남쪽</td><td>유크 - 따뜻한 남쪽에서 우쿨렐레</td></tr>
+        <tr><td class="ru">се́вер</td><td>북쪽</td><td>쎄! 볘! 르! - 북쪽 바람이 세차다</td></tr>
+      </table>
+    </div>
+
+    <!-- conversation -->
+    <div class="mnemonic-section">
+      <h3 class="mnemonic-heading">💬 회화·인사말</h3>
+      <table class="mnemonic-table">
+        <tr>
+          <th>러시아어</th>
+          <th>뜻</th>
+          <th>연상기억법</th>
+        </tr>
+        <tr><td class="ru">Здра́вствуйте</td><td>안녕하세요 (존댓말)</td><td>즈드라브 - 즉 드라마 시작</td></tr>
+        <tr><td class="ru">Приве́т</td><td>안녕 (반말)</td><td>쁘리베뜨 - 쁘리 벳(bet)</td></tr>
+        <tr><td class="ru">До свида́ния</td><td>안녕히 가세요</td><td>도 씨비다니야 - 다음에 봐</td></tr>
+        <tr><td class="ru">Пока́</td><td>잘가 (반말)</td><td>뽀까 - 뽀까(포카) 잘가</td></tr>
+        <tr><td class="ru">Спаси́бо</td><td>감사합니다</td><td>스빠씨보 - 스빠 시보(살피다)</td></tr>
+        <tr><td class="ru">Пожа́луйста</td><td>천만에요, 부탁합니다</td><td>뽀잘루이스따 - 뽀잘 루이스</td></tr>
+        <tr><td class="ru">Извини́те</td><td>실례합니다, 죄송합니다</td><td>이즈비니떼 - 유명한 아니네</td></tr>
+        <tr><td class="ru">Как вас зову́т?</td><td>성함이 어떻게 되세요?</td><td>깍 바스 조뷩? - 깍 바 불러?</td></tr>
+        <tr><td class="ru">Меня́ зову́т...</td><td>제 이름은 ...입니다</td><td>메냐 조뷩 - 나를 부르는</td></tr>
+        <tr><td class="ru">Как дела́?</td><td>어떻게 지내세요?</td><td>깍 데-라? - 깍(어떻게) 델리버</td></tr>
+        <tr><td class="ru">Хорошо́</td><td>좋아요, 잘 지내요</td><td>하로쇼 - 하로! 쇼처럼 좋아</td></tr>
+        <tr><td class="ru">Норма́льно</td><td>그럭저럭요</td><td>노르말노 - 정상적으로</td></tr>
+        <tr><td class="ru">Пло́хо</td><td>안 좋아요</td><td>플로호 - 플로우 끝! 안 좋아</td></tr>
+        <tr><td class="ru">Отку́да вы?</td><td>어디서 오셨어요?</td><td>앗꾸다 비? - 아! 꼭다에서?</td></tr>
+        <tr><td class="ru">Я из Коре́и</td><td>저는 한국에서 왔어요</td><td>야 이즈 꼬레이 - 나는 한국</td></tr>
+        <tr><td class="ru">Где</td><td>어디에 (위치 의문사)</td><td>그데 - 그 디(?)(어디)</td></tr>
+        <tr><td class="ru">Куда́</td><td>어디로 (방향 의문사)</td><td>꾸다 - 꼭 어디로</td></tr>
+        <tr><td class="ru">Как</td><td>어떻게, 어때요</td><td>깍 - 깍(어떻게)</td></tr>
+        <tr><td class="ru">Когда́</td><td>언제</td><td>꼬그다 - 꼭 고?다(언제?)</td></tr>
+        <tr><td class="ru">Почему́</td><td>왜</td><td>뽀치뮤 - 뽀-치뮤(뮤직) = 왜</td></tr>
+        <tr><td class="ru">Да</td><td>네, 예</td><td>다 - 다(yes) = 네</td></tr>
+        <tr><td class="ru">Нет</td><td>아니요</td><td>니뜨 - 니(no) = 아니</td></tr>
+        <tr><td class="ru">Не</td><td>~이 아니다 (부정)</td><td>니뜨 - 부정</td></tr>
+        <tr><td class="ru">Кем вы рабо́таете?</td><td>직업이 무엇입니까?</td><td>깸 비 라보따에쩨? - 뭐하는 사람?</td></tr>
+        <tr><td class="ru">Я студе́нт</td><td>저는 학생입니다</td><td>야 스투데는뜨 - 나는 학생</td></tr>
+        <tr><td class="ru">О́чень прия́тно</td><td>만나서 반갑습니다</td><td>오첸 쁘리아뜨노 - 오! 첸(처음) 즐거워</td></tr>
+      </table>
+    </div>
+
+    <!-- 암기 팁 -->
+    <div class="mnemonic-tip">
+      <h3>💡 암기 전략</h3>
+      <ol>
+        <li><strong>표를 보며 소리 내어 읽기</strong> — 발음을 크게 해보세요</li>
+        <li><strong>눈 감고 이미지 떠올리기</strong> — 연상 이미지를 생생하게 그려보세요</li>
+        <li><strong>플래시카드로 확인하기</strong> — 한국어만 보고 러시아어 말하기</li>
+        <li><strong>반복학습</strong> — 3일, 7일, 30일 주기로 복습하기</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="notif" id="notif"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const VOCAB = [
+  // 1과
+  {ru:'кто',ko:'누가, 누구',lesson:'1'},
+  {ru:'что',ko:'무엇이, 무엇',lesson:'1'},
+  {ru:'ма́ма',ko:'엄마',lesson:'1'},
+  {ru:'па́па',ko:'아빠',lesson:'1'},
+  {ru:'мать',ko:'어머니',lesson:'1'},
+  {ru:'оте́ц',ko:'아버지',lesson:'1'},
+  {ru:'сын',ko:'아들',lesson:'1'},
+  {ru:'дочь',ko:'딸',lesson:'1'},
+  {ru:'брат',ko:'형제, 남자형제',lesson:'1'},
+  {ru:'сестра́',ko:'자매, 여자형제',lesson:'1'},
+  {ru:'муж',ko:'남편',lesson:'1'},
+  {ru:'жена́',ko:'아내',lesson:'1'},
+  {ru:'де́душка',ko:'할아버지',lesson:'1'},
+  {ru:'ба́бушка',ko:'할머니',lesson:'1'},
+  {ru:'мужчи́на',ko:'남자',lesson:'1'},
+  {ru:'же́нщина',ko:'여자',lesson:'1'},
+  {ru:'студе́нт',ko:'대학생(남자)',lesson:'1'},
+  {ru:'студе́нтка',ko:'대학생(여자)',lesson:'1'},
+  {ru:'учи́тель',ko:'남자선생님(초중고)',lesson:'1'},
+  {ru:'учи́тельница',ko:'여자선생님(초중고)',lesson:'1'},
+  {ru:'профе́ссор',ko:'교수',lesson:'1'},
+  {ru:'преподава́тель',ko:'선생님(대학, 연구소)',lesson:'1'},
+  {ru:'ма́льчик',ko:'남자아이',lesson:'1'},
+  {ru:'де́вочка',ko:'여자아이',lesson:'1'},
+  {ru:'де́вушка',ko:'아가씨, 젊은 여자',lesson:'1'},
+  {ru:'молодо́й челове́к',ko:'젊은이, 젊은 남자',lesson:'1'},
+  {ru:'де́ти',ko:'아이들',lesson:'1'},
+  {ru:'шко́ла',ko:'학교(초중고)',lesson:'1'},
+  {ru:'университе́т',ko:'대학교',lesson:'1'},
+  {ru:'институ́т',ko:'연구소, 대학',lesson:'1'},
+  {ru:'журна́л',ko:'잡지',lesson:'1'},
+  {ru:'музе́й',ko:'박물관',lesson:'1'},
+  {ru:'кафе́',ko:'카페',lesson:'1'},
+  {ru:'стол',ko:'탁자, 테이블, 식탁',lesson:'1'},
+  {ru:'стул',ko:'의자',lesson:'1'},
+  {ru:'кни́га',ko:'책',lesson:'1'},
+  {ru:'газе́та',ko:'신문',lesson:'1'},
+  {ru:'письмо́',ko:'편지',lesson:'1'},
+  {ru:'ру́чка',ko:'볼펜, 손잡이',lesson:'1'},
+  {ru:'слова́рь',ko:'사전',lesson:'1'},
+  {ru:'тетра́дь',ko:'공책',lesson:'1'},
+  {ru:'ра́дио',ko:'라디오',lesson:'1'},
+  {ru:'общежи́тие',ko:'기숙사',lesson:'1'},
+  {ru:'день',ko:'날, 하루, 낮',lesson:'1'},
+  {ru:'пе́сня',ko:'노래',lesson:'1'},
+  {ru:'мо́ре',ko:'바다',lesson:'1'},
+  {ru:'ночь',ko:'밤',lesson:'1'},
+  {ru:'портфе́ль',ko:'서류가방',lesson:'1'},
+  {ru:'му́зыка',ko:'음악',lesson:'1'},
+  {ru:'каранда́ш',ko:'연필',lesson:'1'},
+  {ru:'ле́кция',ko:'강의',lesson:'1'},
+  {ru:'ко́шка',ko:'고양이',lesson:'1'},
+  {ru:'до́ма',ko:'집에서',lesson:'1'},
+  {ru:'сейча́с',ko:'지금, 이제',lesson:'1'},
+  {ru:'здесь',ko:'여기',lesson:'1'},
+  {ru:'там',ko:'저기',lesson:'1'},
+  {ru:'э́то',ko:'이것은, 이것이',lesson:'1'},
+  {ru:'сигаре́ты',ko:'담배',lesson:'1'},
+  {ru:'стихи́',ko:'시',lesson:'1'},
+  {ru:'вре́мя',ko:'시간, 시각',lesson:'1'},
+  {ru:'и́мя',ko:'이름',lesson:'1'},
+  {ru:'чита́ть',ko:'읽다',lesson:'1'},
+  {ru:'слу́шать',ko:'듣다',lesson:'1'},
+  {ru:'де́лать',ko:'하다',lesson:'1'},
+  {ru:'я',ko:'나 (1인칭 단수)',lesson:'1'},
+  {ru:'ты',ko:'너 (2인칭 단수)',lesson:'1'},
+  {ru:'он',ko:'그(남자)',lesson:'1'},
+  {ru:'она́',ko:'그녀(여자)',lesson:'1'},
+  {ru:'оно́',ko:'그것(사물)',lesson:'1'},
+  {ru:'мы',ko:'우리',lesson:'1'},
+  {ru:'вы',ko:'너희, 당신(존댓말)',lesson:'1'},
+  {ru:'они́',ko:'그들',lesson:'1'},
+  // 2과
+  {ru:'дя́дя',ko:'아저씨, 삼촌',lesson:'2'},
+  {ru:'тётя',ko:'아줌마, 이모, 고모',lesson:'2'},
+  {ru:'врач',ko:'의사',lesson:'2'},
+  {ru:'друг',ko:'친구(남자)',lesson:'2'},
+  {ru:'подру́га',ko:'여자친구',lesson:'2'},
+  {ru:'сосе́д',ko:'이웃남자',lesson:'2'},
+  {ru:'сосе́дка',ko:'이웃여자',lesson:'2'},
+  {ru:'кинотеа́тр',ko:'영화극장',lesson:'2'},
+  {ru:'теа́тр',ko:'극장',lesson:'2'},
+  {ru:'кино́',ko:'영화, 영화극장',lesson:'2'},
+  {ru:'исто́рия',ko:'역사',lesson:'2'},
+  {ru:'литерату́ра',ko:'문학',lesson:'2'},
+  {ru:'пальто́',ko:'외투, 겉옷',lesson:'2'},
+  {ru:'пло́щадь',ko:'광장',lesson:'2'},
+  {ru:'го́род',ko:'도시',lesson:'2'},
+  {ru:'дом',ko:'집, 건물',lesson:'2'},
+  {ru:'библиоте́ка',ko:'도서관',lesson:'2'},
+  {ru:'вокза́л',ko:'역(기차)',lesson:'2'},
+  {ru:'банк',ko:'은행',lesson:'2'},
+  {ru:'магази́н',ko:'가게',lesson:'2'},
+  {ru:'апте́ка',ko:'약국',lesson:'2'},
+  {ru:'по́чта',ko:'우체국',lesson:'2'},
+  {ru:'трамва́й',ko:'트램, 전차',lesson:'2'},
+  {ru:'авто́бус',ko:'버스',lesson:'2'},
+  {ru:'тролле́йбус',ko:'트롤리버스',lesson:'2'},
+  {ru:'такси́',ko:'택시',lesson:'2'},
+  {ru:'спра́шивать',ko:'묻다, 질문하다',lesson:'2'},
+  {ru:'понима́ть',ko:'이해하다',lesson:'2'},
+  {ru:'знать',ko:'알다',lesson:'2'},
+  // 3과
+  {ru:'рестора́н',ko:'레스토랑, 식당',lesson:'3'},
+  {ru:'компа́ния',ko:'회사',lesson:'3'},
+  {ru:'о́фис',ko:'사무실',lesson:'3'},
+  {ru:'санато́рий',ko:'휴양소, 요양원',lesson:'3'},
+  {ru:'парк',ko:'공원',lesson:'3'},
+  {ru:'больни́ца',ko:'병원',lesson:'3'},
+  {ru:'заво́д',ko:'공장',lesson:'3'},
+  {ru:'стадио́н',ko:'경기장, 스타디움',lesson:'3'},
+  {ru:'уро́к',ko:'수업, 과',lesson:'3'},
+  {ru:'конце́рт',ko:'콘서트',lesson:'3'},
+  {ru:'бале́т',ko:'발레',lesson:'3'},
+  {ru:'о́пера',ko:'오페라',lesson:'3'},
+  {ru:'пе́нсия',ko:'연금',lesson:'3'},
+  {ru:'сад',ko:'정원',lesson:'3'},
+  {ru:'лес',ko:'숲',lesson:'3'},
+  {ru:'пол',ko:'바닥, 성별',lesson:'3'},
+  {ru:'шкаф',ko:'옷장',lesson:'3'},
+  {ru:'аэропо́рт',ko:'공항',lesson:'3'},
+  {ru:'Коре́я',ko:'한국',lesson:'3'},
+  {ru:'Росси́я',ko:'러시아',lesson:'3'},
+  {ru:'Кита́й',ko:'중국',lesson:'3'},
+  {ru:'Япо́ния',ko:'일본',lesson:'3'},
+  {ru:'Аме́рика',ko:'미국',lesson:'3'},
+  {ru:'А́нглия',ko:'영국',lesson:'3'},
+  {ru:'пенсионе́р',ko:'연금생활자',lesson:'3'},
+  {ru:'апте́карь',ko:'약사',lesson:'3'},
+  {ru:'библиоте́карь',ko:'도서관사서',lesson:'3'},
+  {ru:'бизнесме́н',ko:'사업가, 비즈니스맨',lesson:'3'},
+  {ru:'инжене́р',ko:'기사, 엔지니어',lesson:'3'},
+  {ru:'пова́р',ko:'요리사',lesson:'3'},
+  {ru:'почтальо́н',ko:'우체부',lesson:'3'},
+  {ru:'жить',ko:'살다',lesson:'3'},
+  {ru:'рабо́тать',ko:'일하다',lesson:'3'},
+  {ru:'учи́ться',ko:'공부하다',lesson:'3'},
+  {ru:'за́втракать',ko:'아침을 먹다',lesson:'3'},
+  {ru:'обе́дать',ko:'점심을 먹다',lesson:'3'},
+  {ru:'у́жинать',ko:'저녁을 먹다',lesson:'3'},
+  {ru:'гуля́ть',ko:'산책하다',lesson:'3'},
+  {ru:'отдыха́ть',ko:'쉬다, 휴가를 보내다',lesson:'3'},
+  {ru:'восто́к',ko:'동쪽',lesson:'3'},
+  {ru:'за́пад',ko:'서쪽',lesson:'3'},
+  {ru:'юг',ko:'남쪽',lesson:'3'},
+  {ru:'се́вер',ko:'북쪽',lesson:'3'},
+  // 회화 전용 단어
+  {ru:'Здра́вствуйте',ko:'안녕하세요 (존댓말)',lesson:'conv'},
+  {ru:'Приве́т',ko:'안녕 (반말)',lesson:'conv'},
+  {ru:'До свида́ния',ko:'안녕히 가세요',lesson:'conv'},
+  {ru:'Пока́',ko:'잘가 (반말)',lesson:'conv'},
+  {ru:'Спаси́бо',ko:'감사합니다',lesson:'conv'},
+  {ru:'Пожа́луйста',ko:'천만에요, 부탁합니다',lesson:'conv'},
+  {ru:'Извини́те',ko:'실례합니다, 죄송합니다',lesson:'conv'},
+  {ru:'Как вас зову́т?',ko:'성함이 어떻게 되세요?',lesson:'conv'},
+  {ru:'Меня́ зову́т...',ko:'제 이름은 ...입니다',lesson:'conv'},
+  {ru:'Как дела́?',ko:'어떻게 지내세요?',lesson:'conv'},
+  {ru:'Хорошо́',ko:'좋아요, 잘 지내요',lesson:'conv'},
+  {ru:'Норма́льно',ko:'그럭저럭요',lesson:'conv'},
+  {ru:'Пло́хо',ko:'안 좋아요',lesson:'conv'},
+  {ru:'Отку́да вы?',ko:'어디서 오셨어요?',lesson:'conv'},
+  {ru:'Я из Коре́и',ko:'저는 한국에서 왔어요',lesson:'conv'},
+  {ru:'Где',ko:'어디에 (위치 의문사)',lesson:'conv'},
+  {ru:'Куда́',ko:'어디로 (방향 의문사)',lesson:'conv'},
+  {ru:'Как',ko:'어떻게, 어때요',lesson:'conv'},
+  {ru:'Когда́',ko:'언제',lesson:'conv'},
+  {ru:'Почему́',ko:'왜',lesson:'conv'},
+  {ru:'Да',ko:'네, 예',lesson:'conv'},
+  {ru:'Нет',ko:'아니요',lesson:'conv'},
+  {ru:'Не',ko:'~이 아니다 (부정)',lesson:'conv'},
+  {ru:'Кем вы рабо́таете?',ko:'직업이 무엇입니까?',lesson:'conv'},
+  {ru:'Я студе́нт',ko:'저는 학생입니다',lesson:'conv'},
+  {ru:'О́чень прия́тно',ko:'만나서 반갑습니다',lesson:'conv'},
+];
+
+// ============================================================
+// GRAMMAR DATA
+// ============================================================
+const GRAMMAR_TOPICS = [
+  {
+    id: 'alphabet',
+    title: '① 러시아어 알파벳',
+    content: `
+<h2>러시아어 알파벳 (Кириллица)</h2>
+<p>러시아어는 <strong>33개</strong>의 키릴문자를 사용합니다. 알파벳 암기가 학습의 첫 번째 단계입니다.</p>
+<div class="alpha-grid" id="alpha-grid"></div>
+<h3>발음 규칙</h3>
+<p>• 강세(акце́нт)가 있는 음절의 모음은 원래대로 발음, 강세 없는 <strong>о</strong>는 [아]로 발음됩니다.</p>
+<p>• 예: <strong>хорошо́</strong> [хара쇼] → 세 번째 음절에 강세</p>
+<p>• <strong>е, ё, ю, я</strong> — 모음 앞이나 단어 첫 자리에서 [й+모음]으로 발음됩니다.</p>
+<p>• 어말 유성자음은 무성음화: <strong>год</strong> [곳], <strong>хлеб</strong> [흘렙]</p>
+`
+  },
+  {
+    id: 'gender',
+    title: '② 명사의 성 (род)',
+    content: `
+<h2>명사의 성 (Род существи́тельного)</h2>
+<p>러시아어 명사는 <strong>남성(мужско́й)</strong>, <strong>여성(же́нский)</strong>, <strong>중성(сре́дний)</strong> 3가지 성이 있습니다.</p>
+<h3>어미로 성 구별하기</h3>
+<table class="grammar-table">
+<tr><th>성</th><th>어미</th><th>예시</th></tr>
+<tr><td><span class="tag tag-m">남성</span></td><td>자음 끝</td><td class="ru">стол (탁자), студе́нт (남학생), врач (의사)</td></tr>
+<tr><td><span class="tag tag-m">남성</span></td><td>-й</td><td class="ru">музе́й (박물관)</td></tr>
+<tr><td><span class="tag tag-f">여성</span></td><td>-а, -я</td><td class="ru">ма́ма (엄마), ле́кция (강의), тётя (아줌마)</td></tr>
+<tr><td><span class="tag tag-f">여성</span></td><td>연자음 -ь</td><td class="ru">дочь (딸), ночь (밤), тетра́дь (공책)</td></tr>
+<tr><td><span class="tag tag-n">중성</span></td><td>-о, -е</td><td class="ru">мо́ре (바다), кафе́ (카페)</td></tr>
+<tr><td><span class="tag tag-n">중성</span></td><td>-мя</td><td class="ru">вре́мя (시간), и́мя (이름)</td></tr>
+</table>
+<h3>시험 TIP</h3>
+<p>• <strong>мужчи́на</strong> (남자), <strong>дя́дя</strong> (아저씨) — 남성이지만 어미가 -а → <span class="tag tag-m">예외 남성</span></p>
+<p>• <strong>кафе́, ра́дио, общежи́тие</strong> — 불변화 명사(외래어)</p>
+<div class="example-box">
+<div class="ru">Э́то стол. / Э́то кни́га. / Э́то мо́ре.</div>
+<div class="ko">이것은 탁자다. / 이것은 책이다. / 이것은 바다다.</div>
+</div>
+`
+  },
+  {
+    id: 'pronoun',
+    title: '③ 인칭대명사 & 동사변화',
+    content: `
+<h2>인칭대명사와 동사변화</h2>
+<h3>인칭대명사 (Ли́чные местоиме́ния)</h3>
+<table class="grammar-table">
+<tr><th>인칭</th><th>단수</th><th>의미</th><th>복수</th><th>의미</th></tr>
+<tr><td>1인칭</td><td class="ru">я</td><td>나</td><td class="ru">мы</td><td>우리</td></tr>
+<tr><td>2인칭</td><td class="ru">ты</td><td>너(반말)</td><td class="ru">вы</td><td>너희 / 당신(존댓말)</td></tr>
+<tr><td>3인칭 남</td><td class="ru">он</td><td>그(남자)</td><td class="ru">они́</td><td>그들</td></tr>
+<tr><td>3인칭 여</td><td class="ru">она́</td><td>그녀</td><td></td><td></td></tr>
+<tr><td>3인칭 중</td><td class="ru">оно́</td><td>그것</td><td></td><td></td></tr>
+</table>
+<h3>동사 현재형 어미변화 (1식: -ать)</h3>
+<p>예: <strong>чита́ть</strong> (읽다), <strong>слу́шать</strong> (듣다), <strong>де́лать</strong> (하다), <strong>знать</strong> (알다)</p>
+<table class="grammar-table">
+<tr><th>인칭</th><th>어미</th><th>읽다</th><th>듣다</th><th>하다</th><th>알다</th></tr>
+<tr><td class="ru">я</td><td>-ю</td><td class="ru">чита́ю</td><td class="ru">слу́шаю</td><td class="ru">де́лаю</td><td class="ru">зна́ю</td></tr>
+<tr><td class="ru">ты</td><td>-ешь</td><td class="ru">чита́ешь</td><td class="ru">слу́шаешь</td><td class="ru">де́лаешь</td><td class="ru">зна́ешь</td></tr>
+<tr><td class="ru">он/она́</td><td>-ет</td><td class="ru">чита́ет</td><td class="ru">слу́шает</td><td class="ru">де́лает</td><td class="ru">зна́ет</td></tr>
+<tr><td class="ru">мы</td><td>-ем</td><td class="ru">чита́ем</td><td class="ru">слу́шаем</td><td class="ru">де́лаем</td><td class="ru">зна́ем</td></tr>
+<tr><td class="ru">вы</td><td>-ете</td><td class="ru">чита́ете</td><td class="ru">слу́шаете</td><td class="ru">де́лаете</td><td class="ru">зна́ете</td></tr>
+<tr><td class="ru">они́</td><td>-ют</td><td class="ru">чита́ют</td><td class="ru">слу́шают</td><td class="ru">де́лают</td><td class="ru">зна́ют</td></tr>
+</table>
+<h3>동사 현재형 어미변화 (2식: -ить/-еть)</h3>
+<p>예: <strong>говори́ть</strong> (말하다), <strong>учи́ться</strong> (공부하다)</p>
+<table class="grammar-table">
+<tr><th>인칭</th><th>어미</th><th>말하다</th><th>공부하다</th></tr>
+<tr><td class="ru">я</td><td>-ю/-у</td><td class="ru">говорю́</td><td class="ru">учу́сь</td></tr>
+<tr><td class="ru">ты</td><td>-ишь</td><td class="ru">говори́шь</td><td class="ru">у́чишься</td></tr>
+<tr><td class="ru">он/она́</td><td>-ит</td><td class="ru">говори́т</td><td class="ru">у́чится</td></tr>
+<tr><td class="ru">мы</td><td>-им</td><td class="ru">говори́м</td><td class="ru">у́чимся</td></tr>
+<tr><td class="ru">вы</td><td>-ите</td><td class="ru">говори́те</td><td class="ru">у́читесь</td></tr>
+<tr><td class="ru">они́</td><td>-ят/-ат</td><td class="ru">говоря́т</td><td class="ru">у́чатся</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">Я чита́ю кни́гу. / Ты слу́шаешь му́зыку. / Она́ зна́ет ру́сский.</div>
+<div class="ko">나는 책을 읽는다. / 너는 음악을 듣는다. / 그녀는 러시아어를 안다.</div>
+</div>
+`
+  },
+  {
+    id: 'negation',
+    title: '④ 부정문 (не)',
+    content: `
+<h2>부정문 — не (아니다/않다)</h2>
+<p>러시아어 부정은 동사 앞에 <strong>не</strong>를 붙입니다. 한국어의 "~이 아니다", "~하지 않는다"에 해당합니다.</p>
+<h3>동사 부정</h3>
+<div class="example-box">
+<div class="ru">Я чита́ю. → Я не чита́ю.</div>
+<div class="ko">나는 읽는다. → 나는 읽지 않는다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Она́ зна́ет. → Она́ не зна́ет.</div>
+<div class="ko">그녀는 안다. → 그녀는 모른다.</div>
+</div>
+<h3>это 부정 (이것은 ~이 아니다)</h3>
+<div class="example-box">
+<div class="ru">Э́то кни́га. → Э́то не кни́га.</div>
+<div class="ko">이것은 책이다. → 이것은 책이 아니다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Э́то студе́нт. → Э́то не студе́нт.</div>
+<div class="ko">이 사람은 학생이다. → 이 사람은 학생이 아니다.</div>
+</div>
+<h3>주어 부정</h3>
+<p>주어가 부정될 때 명사는 <strong>생격(роди́тельный паде́ж)</strong>으로 변합니다.</p>
+<div class="example-box">
+<div class="ru">У меня́ есть кни́га. → У меня́ нет кни́ги.</div>
+<div class="ko">나는 책이 있다. → 나는 책이 없다.</div>
+</div>
+`
+  },
+  {
+    id: 'question',
+    title: '⑤ 의문문 & 의문사',
+    content: `
+<h2>의문문과 의문사</h2>
+<h3>예/아니오 의문문</h3>
+<p>어순을 그대로 유지하고 <strong>억양만 올려서</strong> 의문문을 만듭니다.</p>
+<div class="example-box">
+<div class="ru">Э́то кни́га? (억양↑)</div>
+<div class="ko">이것은 책입니까?</div>
+</div>
+<div class="example-box">
+<div class="ru">Ты студе́нт?</div>
+<div class="ko">너는 학생이니?</div>
+</div>
+<h3>의문사 목록</h3>
+<table class="grammar-table">
+<tr><th>의문사</th><th>의미</th><th>예문</th></tr>
+<tr><td class="ru">кто</td><td>누가, 누구</td><td class="ru">Кто э́то? — 이 사람은 누구입니까?</td></tr>
+<tr><td class="ru">что</td><td>무엇이, 무엇</td><td class="ru">Что э́то? — 이것은 무엇입니까?</td></tr>
+<tr><td class="ru">где</td><td>어디에</td><td class="ru">Где библиоте́ка? — 도서관이 어디에 있나요?</td></tr>
+<tr><td class="ru">куда́</td><td>어디로</td><td class="ru">Куда́ вы идёте? — 어디로 가세요?</td></tr>
+<tr><td class="ru">как</td><td>어떻게, 어때요</td><td class="ru">Как дела́? — 어떻게 지내세요?</td></tr>
+<tr><td class="ru">когда́</td><td>언제</td><td class="ru">Когда́ уро́к? — 수업이 언제입니까?</td></tr>
+<tr><td class="ru">почему́</td><td>왜</td><td class="ru">Почему́? — 왜요?</td></tr>
+<tr><td class="ru">ско́лько</td><td>얼마나, 몇</td><td class="ru">Ско́лько сто́ит? — 얼마예요?</td></tr>
+</table>
+<h3>Кто э́то? vs Что э́то?</h3>
+<div class="example-box">
+<div class="ru">— Кто э́то? — Э́то студе́нт.</div>
+<div class="ko">— 이 사람은 누구입니까? — 이 사람은 학생입니다.</div>
+</div>
+<div class="example-box">
+<div class="ru">— Что э́то? — Э́то кни́га.</div>
+<div class="ko">— 이것은 무엇입니까? — 이것은 책입니다.</div>
+</div>
+`
+  },
+  {
+    id: 'tobe',
+    title: '⑥ быть 동사 (있다/이다)',
+    content: `
+<h2>быть 동사 — "이다/있다"</h2>
+<p>러시아어 현재시제에서 <strong>быть (be 동사)</strong>는 일반적으로 생략됩니다.</p>
+<h3>현재시제 — 주로 생략</h3>
+<div class="example-box">
+<div class="ru">Я студе́нт. (= Я есть студе́нт.)</div>
+<div class="ko">나는 학생이다.</div>
+</div>
+<div class="example-box">
+<div class="ru">Она́ врач. / Он профе́ссор.</div>
+<div class="ko">그녀는 의사이다. / 그는 교수이다.</div>
+</div>
+<h3>есть — 있다 (존재)</h3>
+<p>무언가가 존재한다고 할 때 <strong>есть</strong>를 씁니다.</p>
+<div class="example-box">
+<div class="ru">Здесь есть библиоте́ка.</div>
+<div class="ko">여기에 도서관이 있다.</div>
+</div>
+<div class="example-box">
+<div class="ru">У меня́ есть слова́рь.</div>
+<div class="ko">나에게 사전이 있다. (나는 사전을 가지고 있다.)</div>
+</div>
+<h3>нет — 없다</h3>
+<div class="example-box">
+<div class="ru">Здесь нет рестора́на.</div>
+<div class="ko">여기에 레스토랑이 없다.</div>
+</div>
+<div class="example-box">
+<div class="ru">У меня́ нет слова́ря.</div>
+<div class="ko">나는 사전이 없다.</div>
+</div>
+`
+  },
+  {
+    id: 'names',
+    title: '⑦ 이름 묻고 답하기',
+    content: `
+<h2>이름 묻고 답하기</h2>
+<h3>주요 표현</h3>
+<table class="grammar-table">
+<tr><th>러시아어</th><th>한국어</th></tr>
+<tr><td class="ru">Как вас зову́т?</td><td>성함이 어떻게 되세요? (존댓말)</td></tr>
+<tr><td class="ru">Как тебя́ зову́т?</td><td>이름이 뭐야? (반말)</td></tr>
+<tr><td class="ru">Меня́ зову́т Минсу.</td><td>저는 민수라고 합니다.</td></tr>
+<tr><td class="ru">Как ва́ше и́мя?</td><td>성함이 어떻게 되세요?</td></tr>
+<tr><td class="ru">Моё и́мя Минсу.</td><td>내 이름은 민수입니다.</td></tr>
+<tr><td class="ru">О́чень прия́тно!</td><td>만나서 반갑습니다!</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">— Здра́вствуйте! Как вас зову́т?<br>— Меня́ зову́т А́нна. А вас?<br>— Я Минсу. О́чень прия́тно!</div>
+<div class="ko">— 안녕하세요! 성함이 어떻게 되세요?<br>— 저는 안나입니다. 당신은요?<br>— 저는 민수입니다. 만나서 반갑습니다!</div>
+</div>
+<h3>출신 묻고 답하기</h3>
+<div class="example-box">
+<div class="ru">— Отку́да вы?<br>— Я из Коре́и. А вы?<br>— Я из Росси́и.</div>
+<div class="ko">— 어디서 오셨어요?<br>— 저는 한국에서 왔어요. 당신은요?<br>— 저는 러시아에서 왔어요.</div>
+</div>
+`
+  },
+  {
+    id: 'verb3',
+    title: '⑧ 3과 동사 활용',
+    content: `
+<h2>3과 핵심 동사 변화표</h2>
+<h3>жить (살다) — 2식 변형</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">живу́</td><td class="ru">живёшь</td><td class="ru">живёт</td><td class="ru">живём</td><td class="ru">живёте</td><td class="ru">живу́т</td></tr>
+</table>
+<h3>рабо́тать (일하다) — 1식</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">рабо́таю</td><td class="ru">рабо́таешь</td><td class="ru">рабо́тает</td><td class="ru">рабо́таем</td><td class="ru">рабо́таете</td><td class="ru">рабо́тают</td></tr>
+</table>
+<h3>учи́ться (공부하다, 재귀동사) — 2식</h3>
+<table class="grammar-table">
+<tr><th>я</th><th>ты</th><th>он/она́</th><th>мы</th><th>вы</th><th>они́</th></tr>
+<tr><td class="ru">учу́сь</td><td class="ru">у́чишься</td><td class="ru">у́чится</td><td class="ru">у́чимся</td><td class="ru">у́читесь</td><td class="ru">у́чатся</td></tr>
+</table>
+<h3>식사 동사 — 1식</h3>
+<table class="grammar-table">
+<tr><th>동사</th><th>я</th><th>ты</th><th>он/она́</th><th>они́</th></tr>
+<tr><td>за́втракать (아침)</td><td class="ru">за́втракаю</td><td class="ru">за́втракаешь</td><td class="ru">за́втракает</td><td class="ru">за́втракают</td></tr>
+<tr><td>обе́дать (점심)</td><td class="ru">обе́даю</td><td class="ru">обе́даешь</td><td class="ru">обе́дает</td><td class="ru">обе́дают</td></tr>
+<tr><td>у́жинать (저녁)</td><td class="ru">у́жинаю</td><td class="ru">у́жинаешь</td><td class="ru">у́жинает</td><td class="ru">у́жинают</td></tr>
+</table>
+<div class="example-box">
+<div class="ru">— Где вы рабо́таете? — Я рабо́таю в компа́нии.<br>— Где вы живёте? — Я живу́ в общежи́тии.</div>
+<div class="ko">— 어디서 일하세요? — 저는 회사에서 일합니다.<br>— 어디 사세요? — 저는 기숙사에 삽니다.</div>
+</div>
+`
+  },
+];
+
+// ============================================================
+// CONVERSATION DATA
+// ============================================================
+const CONVERSATIONS = [
+  {
+    title: '1. 첫 만남 인사 — Знако́мство',
+    lines: [
+      {speaker:'A', ru:'Здра́вствуйте! Меня́ зову́т Минсу. А как вас зову́т?', ko:'안녕하세요! 저는 민수입니다. 성함이 어떻게 되세요?'},
+      {speaker:'B', ru:'Здра́вствуйте! Меня́ зову́т А́нна. О́чень прия́тно!', ko:'안녕하세요! 저는 안나입니다. 만나서 반갑습니다!'},
+      {speaker:'A', ru:'О́чень прия́тно! Вы студе́нтка?', ko:'저도 반갑습니다! 학생이신가요?'},
+      {speaker:'B', ru:'Да, я студе́нтка. А вы?', ko:'네, 저는 학생입니다. 당신은요?'},
+      {speaker:'A', ru:'Я то́же студе́нт. Отку́да вы?', ko:'저도 학생입니다. 어디서 오셨어요?'},
+      {speaker:'B', ru:'Я из Росси́и. А вы из Коре́и?', ko:'저는 러시아에서 왔어요. 당신은 한국에서 왔나요?'},
+      {speaker:'A', ru:'Да, я из Коре́и.', ko:'네, 저는 한국에서 왔어요.'},
+    ],
+    vocab: ['Здра́вствуйте','Меня́ зову́т...','Как вас зову́т?','О́чень прия́тно','студе́нтка','Отку́да вы?','Я из Коре́и']
+  },
+  {
+    title: '2. 안부 인사 — Как дела́?',
+    lines: [
+      {speaker:'A', ru:'Приве́т, А́ня! Как дела́?', ko:'안녕, 아냐! 어떻게 지내?'},
+      {speaker:'B', ru:'Приве́т, Минсу! Хорошо́, спаси́бо. А ты?', ko:'안녕, 민수! 잘 지내, 고마워. 너는?'},
+      {speaker:'A', ru:'Норма́льно. Ты сейча́с до́ма?', ko:'그럭저럭. 지금 집에 있어?'},
+      {speaker:'B', ru:'Нет, я в библиоте́ке. Чита́ю кни́гу.', ko:'아니, 나는 도서관에 있어. 책을 읽고 있어.'},
+      {speaker:'A', ru:'Поня́тно! Пока́.', ko:'알겠어! 잘 있어.'},
+      {speaker:'B', ru:'Пока́!', ko:'잘가!'},
+    ],
+    vocab: ['Приве́т','Как дела́?','Хорошо́','Спаси́бо','Норма́льно','сейча́с','до́ма','библиоте́ка','чита́ть','Пока́']
+  },
+  {
+    title: '3. 직업 묻기 — Профе́ссия',
+    lines: [
+      {speaker:'A', ru:'Извини́те, вы врач?', ko:'실례합니다만, 의사이신가요?'},
+      {speaker:'B', ru:'Нет, я не врач. Я инжене́р.', ko:'아니요, 저는 의사가 아닙니다. 저는 엔지니어입니다.'},
+      {speaker:'A', ru:'А где вы рабо́таете?', ko:'어디서 일하세요?'},
+      {speaker:'B', ru:'Я рабо́таю в компа́нии. А вы? Кто вы?', ko:'저는 회사에서 일합니다. 당신은요? 직업이 뭐세요?'},
+      {speaker:'A', ru:'Я студе́нт. Я учу́сь в университе́те.', ko:'저는 학생입니다. 대학교에서 공부합니다.'},
+    ],
+    vocab: ['Извини́те','врач','инжене́р','рабо́тать','компа́ния','студе́нт','учи́ться','университе́т']
+  },
+  {
+    title: '4. 위치 묻기 — Где нахо́дится...?',
+    lines: [
+      {speaker:'A', ru:'Извини́те, где здесь банк?', ko:'실례합니다, 여기 은행이 어디에 있나요?'},
+      {speaker:'B', ru:'Банк там. Э́то не далеко́.', ko:'은행은 저기 있어요. 멀지 않아요.'},
+      {speaker:'A', ru:'А апте́ка? Где апте́ка?', ko:'약국은요? 약국이 어디에 있나요?'},
+      {speaker:'B', ru:'Апте́ка ря́дом с ба́нком.', ko:'약국은 은행 옆에 있어요.'},
+      {speaker:'A', ru:'Спаси́бо большо́е!', ko:'대단히 감사합니다!'},
+      {speaker:'B', ru:'Пожа́луйста!', ko:'천만에요!'},
+    ],
+    vocab: ['Извини́те','банк','там','здесь','апте́ка','Спаси́бо','Пожа́луйста']
+  },
+  {
+    title: '5. 일상 표현 — Повседне́вная жизнь',
+    lines: [
+      {speaker:'A', ru:'Что ты де́лаешь сейча́с?', ko:'지금 뭐 해?'},
+      {speaker:'B', ru:'Я слу́шаю му́зыку. А ты?', ko:'음악 듣고 있어. 너는?'},
+      {speaker:'A', ru:'Я обе́даю. Ты уже́ за́втракал?', ko:'점심 먹고 있어. 너는 아침 먹었어?'},
+      {speaker:'B', ru:'Да, я уже́ за́втракал. Ве́чером гуля́ю в па́рке.', ko:'응, 아침은 먹었어. 저녁에 공원에서 산책할 거야.'},
+      {speaker:'A', ru:'Хорошо́! Я то́же отдыха́ю ве́чером.', ko:'좋겠다! 나도 저녁에 쉴 거야.'},
+    ],
+    vocab: ['де́лать','слу́шать','му́зыка','обе́дать','за́втракать','гуля́ть','па́рк','отдыха́ть']
+  },
+];
+
+// ============================================================
+// SONG DATA
+// ============================================================
+const SONG_LINES = [
+  {ru:'Тёплое место', ko:'따뜻한 곳'},
+  {ru:'Но улицы ждут отпечатков наших ног', ko:'밖에서는 우리의 발자국을 기다린다'},
+  {ru:'Звёздная пыль на сапогах', ko:'군화 위에는 별빛 먼지'},
+  {ru:'Мягкое кресло, клетчатый плед', ko:'부드러운 안락의자, 격자무늬 담요'},
+  {ru:'Группа крови на рукаве', ko:'소매 위의 혈액형'},
+  {ru:'Мой порядковый номер на рукаве', ko:'소매 위의 나의 군번'},
+  {ru:'Пожелай мне удачи в бою', ko:'전투에서 나에게 행운을 빌어다오'},
+  {ru:'Не остаться в этой траве', ko:'이 들판에 남겨지지 않기를'},
+  {ru:'Пожелай мне удачи', ko:'나에게 행운을 빌어다오'},
+  {ru:'И есть чем платить', ko:'지불할 것이 있고'},
+  {ru:'Но я не хочу победы любой ценой', ko:'그러나 나는 어떤 댓가도 치른 승리를 원치 않는다'},
+  {ru:'Я хотел бы остаться с тобой', ko:'나는 당신과 함께 있고 싶다'},
+  {ru:'Просто остаться с тобой', ko:'그냥 당신과 함께 있고 싶다'},
+  {ru:'Но высокая в небе звезда зовёт меня в путь', ko:'하지만 하늘 높이 있는 별이 나를 여행으로 부른다'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let learned = JSON.parse(localStorage.getItem('ru_learned') || '{}');
+let quizScores = JSON.parse(localStorage.getItem('ru_scores') || '[]');
+let currentLesson = 'all';
+let flashCards = [];
+let flashIdx = 0;
+let flashDir = false; // false = 러→한, true = 한→러
+let flashKnown = new Set();
+let flashUnknown = new Set();
+let currentFlashLesson = 'all';
+
+// ============================================================
+// ALPHABET DATA
+// ============================================================
+const ALPHA = [
+  ['А','а','아'],['Б','б','브'],['В','в','브'],['Г','г','그'],
+  ['Д','д','드'],['Е','е','예'],['Ё','ё','요'],['Ж','ж','쥐'],
+  ['З','з','즈'],['И','и','이'],['Й','й','이(짧)'],['К','к','크'],
+  ['Л','л','르'],['М','м','므'],['Н','н','느'],['О','о','오'],
+  ['П','п','프'],['Р','р','르(굴)'],['С','с','스'],['Т','т','트'],
+  ['У','у','우'],['Ф','ф','프(영)'],['Х','х','흐'],['Ц','ц','츠'],
+  ['Ч','ч','치'],['Ш','ш','쉬'],['Щ','щ','쉬(연)'],['Ъ','ъ','경자음'],
+  ['Ы','ы','이(딱딱)'],['Ь','ь','연자음'],['Э','э','에'],['Ю','ю','유'],
+  ['Я','я','야'],
+];
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  updateStats();
+  renderWordGrid('all');
+  renderFlashCards('all');
+  renderGrammar();
+  renderConversations();
+  renderQuizSetup();
+  renderSong();
+  updateBadges();
+}
+
+function updateStats() {
+  const total = VOCAB.length;
+  const learnedCount = Object.values(learned).filter(Boolean).length;
+  const lastScore = quizScores.length ? quizScores[quizScores.length-1] : 0;
+  document.getElementById('stat-words').textContent = total;
+  document.getElementById('stat-learned').textContent = learnedCount;
+  document.getElementById('stat-quiz').textContent = lastScore ? lastScore + '%' : '—';
+  const pct = Math.round(learnedCount / total * 100);
+  document.getElementById('prog-vocab').style.width = pct + '%';
+  document.getElementById('prog-grammar').style.width = '0%';
+}
+
+function updateBadges() {
+  const counts = {all: VOCAB.length, '1': 0, '2': 0, '3': 0, conv: 0};
+  VOCAB.forEach(w => { counts[w.lesson]++; });
+  document.getElementById('badge-all').textContent = counts.all;
+  document.getElementById('badge-1').textContent = counts['1'];
+  document.getElementById('badge-2').textContent = counts['2'];
+  document.getElementById('badge-3').textContent = counts['3'];
+  document.getElementById('badge-conv').textContent = counts.conv;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  btns.forEach(b => { if (b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('active'); });
+  if (name === 'quiz') renderQuizSetup();
+}
+
+// ============================================================
+// VOCAB
+// ============================================================
+function renderWordGrid(lesson) {
+  currentLesson = lesson;
+  const search = (document.getElementById('vocab-search')?.value || '').toLowerCase();
+  const showLearnedOnly = document.getElementById('show-learned')?.checked;
+
+  let words = VOCAB.filter(w => {
+    if (lesson !== 'all' && w.lesson !== lesson) return false;
+    if (search && !w.ru.toLowerCase().includes(search) && !w.ko.includes(search)) return false;
+    if (showLearnedOnly && !learned[w.ru]) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('word-grid');
+  grid.innerHTML = '';
+  words.forEach(w => {
+    const cell = document.createElement('div');
+    cell.className = 'word-cell' + (learned[w.ru] ? ' learned' : '');
+    cell.innerHTML = `<div class="word-ru">${w.ru}</div><div class="word-ko">${w.ko}</div>`;
+    cell.onclick = () => toggleLearned(w.ru, cell);
+    grid.appendChild(cell);
+  });
+
+  if (words.length === 0) {
+    grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);grid-column:1/-1;">검색 결과가 없습니다</div>';
+  }
+}
+
+function toggleLearned(ru, cell) {
+  learned[ru] = !learned[ru];
+  localStorage.setItem('ru_learned', JSON.stringify(learned));
+  cell.classList.toggle('learned', learned[ru]);
+  updateStats();
+  notify(learned[ru] ? '✓ 학습 완료로 표시했습니다' : '학습 완료 표시를 해제했습니다', learned[ru] ? 'success' : '');
+}
+
+function filterVocab(lesson, btn) {
+  currentLesson = lesson;
+  if (btn) {
+    document.querySelectorAll('#vocab-tabs .lesson-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderWordGrid(lesson);
+}
+
+function filterBySearch() { renderWordGrid(currentLesson); }
+
+function resetLearned() {
+  if (!confirm('모든 학습 완료 기록을 초기화할까요?')) return;
+  learned = {};
+  localStorage.removeItem('ru_learned');
+  renderWordGrid(currentLesson);
+  updateStats();
+  notify('초기화되었습니다', 'warning');
+}
+
+// ============================================================
+// FLASHCARD
+// ============================================================
+function getFlashDeck(lesson) {
+  if (lesson === 'all') return [...VOCAB];
+  return VOCAB.filter(w => w.lesson === lesson);
+}
+
+function renderFlashCards(lesson) {
+  currentFlashLesson = lesson;
+  flashCards = [...getFlashDeck(lesson)];
+  flashIdx = 0;
+  flashKnown.clear();
+  flashUnknown.clear();
+  showFlashCard();
+}
+
+function setFlashLesson(lesson, btn) {
+  document.querySelectorAll('#sec-flash .lesson-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFlashCards(lesson);
+}
+
+function setFlashDir() {
+  flashDir = document.getElementById('flash-dir').checked;
+  showFlashCard();
+}
+
+function showFlashCard() {
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+
+  const total = flashCards.length;
+  document.getElementById('flash-info').textContent = `카드 ${Math.min(flashIdx+1, total)} / ${total}`;
+
+  if (total === 0) {
+    document.getElementById('flash-front').textContent = '단어 없음';
+    document.getElementById('flash-back').textContent = '—';
+    document.getElementById('flash-lesson-tag').textContent = '';
+    document.getElementById('flash-hint').textContent = '';
+    return;
+  }
+
+  const w = flashCards[flashIdx % total];
+  if (!flashDir) {
+    document.getElementById('flash-front').textContent = w.ru;
+    document.getElementById('flash-back').textContent = w.ko;
+  } else {
+    document.getElementById('flash-front').textContent = w.ko;
+    document.getElementById('flash-back').textContent = w.ru;
+  }
+  document.getElementById('flash-lesson-tag').textContent = w.lesson === 'conv' ? '회화' : w.lesson + '과';
+  document.getElementById('flash-hint').textContent = '';
+
+  const known = flashKnown.size;
+  const unknown = flashUnknown.size;
+  const answered = known + unknown;
+  document.getElementById('flash-known').textContent = '알아요: ' + known;
+  document.getElementById('flash-unknown').textContent = '모름: ' + unknown;
+  document.getElementById('flash-prog').style.width = answered > 0 ? (known/answered*100) + '%' : '0%';
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard() {
+  flashIdx = (flashIdx + 1) % flashCards.length;
+  showFlashCard();
+}
+
+function prevCard() {
+  flashIdx = (flashIdx - 1 + flashCards.length) % flashCards.length;
+  showFlashCard();
+}
+
+function markCard(known) {
+  if (flashCards.length === 0) return;
+  const w = flashCards[flashIdx % flashCards.length];
+  if (known) {
+    flashKnown.add(w.ru);
+    flashUnknown.delete(w.ru);
+    notify('✓ 알아요!', 'success');
+  } else {
+    flashUnknown.add(w.ru);
+    flashKnown.delete(w.ru);
+    notify('다시 공부하세요');
+  }
+  nextCard();
+}
+
+function shuffleCards() {
+  for (let i = flashCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [flashCards[i], flashCards[j]] = [flashCards[j], flashCards[i]];
+  }
+  flashIdx = 0;
+  showFlashCard();
+  notify('🔀 카드를 섞었습니다!');
+}
+
+function resetCards() {
+  renderFlashCards(currentFlashLesson);
+  notify('↺ 처음부터 시작합니다');
+}
+
+function onlyUnknown() {
+  if (flashUnknown.size === 0) { notify('모르는 카드가 없어요! 🎉', 'success'); return; }
+  flashCards = VOCAB.filter(w => flashUnknown.has(w.ru));
+  flashIdx = 0;
+  flashKnown.clear();
+  flashUnknown.clear();
+  showFlashCard();
+  notify(`모르는 단어 ${flashCards.length}개만 표시합니다`);
+}
+
+// ============================================================
+// GRAMMAR
+// ============================================================
+function renderGrammar() {
+  const nav = document.getElementById('grammar-nav');
+  const content = document.getElementById('grammar-content');
+
+  nav.innerHTML = GRAMMAR_TOPICS.map((t, i) =>
+    `<button class="grammar-nav-btn${i===0?' active':''}" onclick="showGrammar(${i},this)">${t.title}</button>`
+  ).join('');
+
+  showGrammar(0);
+}
+
+function showGrammar(idx, btn) {
+  document.querySelectorAll('.grammar-nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelectorAll('.grammar-nav-btn')[idx]?.classList.add('active');
+
+  const content = document.getElementById('grammar-content');
+  content.innerHTML = GRAMMAR_TOPICS[idx].content;
+
+  if (GRAMMAR_TOPICS[idx].id === 'alphabet') {
+    const grid = document.getElementById('alpha-grid');
+    if (grid) {
+      grid.innerHTML = ALPHA.map(([U,L,p]) =>
+        `<div class="alpha-cell"><div class="upper">${U}</div><div class="lower">${L}</div><div class="pron">${p}</div></div>`
+      ).join('');
+    }
+  }
+}
+
+// ============================================================
+// CONVERSATIONS
+// ============================================================
+function renderConversations() {
+  const list = document.getElementById('conv-list');
+  list.innerHTML = CONVERSATIONS.map(conv => {
+    const vocabItems = conv.vocab.map(v => {
+      const word = VOCAB.find(w => w.ru === v || w.ru.startsWith(v));
+      return word ?
+        `<div class="conv-vocab-chip"><span class="ru-small">${word.ru}</span><span class="ko-small">${word.ko}</span></div>` :
+        `<div class="conv-vocab-chip"><span class="ru-small">${v}</span></div>`;
+    }).join('');
+
+    const lines = conv.lines.map(l => `
+      <div class="conv-line">
+        <div class="conv-speaker${l.speaker==='B'?' b':''}">${l.speaker}</div>
+        <div class="conv-bubble">
+          <div class="ru">${l.ru}</div>
+          <div class="ko">${l.ko}</div>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="conv-card">
+        <div class="conv-header"><h3>${conv.title}</h3></div>
+        <div class="conv-body">
+          ${lines}
+          <div class="conv-vocab">
+            <h4>핵심 단어</h4>
+            <div class="conv-vocab-grid">${vocabItems}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let quizState = {
+  mode: 'mc', // mc = multiple choice, fill = fill in blank
+  lesson: 'all',
+  direction: 'ru2ko', // ru2ko or ko2ru
+  questions: [],
+  currentQ: 0,
+  score: 0,
+  wrongAnswers: [],
+  answered: false,
+};
+
+function renderQuizSetup() {
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = `
+    <div class="quiz-setup">
+      <h3>퀴즈 설정</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">학습 범위와 유형을 선택하세요</p>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">범위 선택</div>
+        <div class="quiz-options" style="grid-template-columns: repeat(5, 1fr);">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'lesson','all')">전체</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','1')">1과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','2')">2과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','3')">3과</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'lesson','conv')">회화</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">방향</div>
+        <div class="quiz-options">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'direction','ru2ko')">🇷🇺 러시아어 → 한국어</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'direction','ko2ru')">🇰🇷 한국어 → 러시아어</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px;">유형</div>
+        <div class="quiz-options">
+          <div class="quiz-option-btn selected" onclick="selectQuizOpt(this,'mode','mc')">객관식 (4지선다)</div>
+          <div class="quiz-option-btn" onclick="selectQuizOpt(this,'mode','fill')">주관식 (직접 입력)</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;" onclick="startQuiz()">퀴즈 시작 →</button>
+    </div>
+  `;
+  quizState.lesson = 'all';
+  quizState.mode = 'mc';
+  quizState.direction = 'ru2ko';
+}
+
+function selectQuizOpt(btn, field, value) {
+  const parent = btn.closest('.quiz-options');
+  parent.querySelectorAll('.quiz-option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizState[field] = value;
+}
+
+function startQuiz() {
+  let pool = VOCAB;
+  if (quizState.lesson !== 'all') pool = pool.filter(w => w.lesson === quizState.lesson);
+
+  if (pool.length < 4) { notify('단어가 너무 적습니다 (최소 4개 필요)'); return; }
+
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  quizState.questions = shuffled.slice(0, Math.min(20, shuffled.length));
+  quizState.currentQ = 0;
+  quizState.score = 0;
+  quizState.wrongAnswers = [];
+  quizState.pool = pool;
+
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const area = document.getElementById('quiz-area');
+  const {questions, currentQ, mode, direction, pool} = quizState;
+
+  if (currentQ >= questions.length) { renderQuizResult(); return; }
+
+  const q = questions[currentQ];
+  const question = direction === 'ru2ko' ? q.ru : q.ko;
+  const answer = direction === 'ru2ko' ? q.ko : q.ru;
+  const pct = Math.round(currentQ / questions.length * 100);
+
+  let inputHTML = '';
+  if (mode === 'mc') {
+    const others = pool.filter(w => w.ru !== q.ru).sort(() => Math.random() - 0.5).slice(0, 3);
+    const choices = [...others.map(w => direction === 'ru2ko' ? w.ko : w.ru), answer].sort(() => Math.random() - 0.5);
+    inputHTML = `<div class="quiz-choices">` + choices.map(c =>
+      `<button class="quiz-choice" onclick="checkMC(this,'${c.replace(/'/g,"\\'")}','${answer.replace(/'/g,"\\'")}')">${c}</button>`
+    ).join('') + `</div>`;
+  } else {
+    inputHTML = `<div class="quiz-input-wrap">
+      <input type="text" id="quiz-input" placeholder="정답을 입력하세요..." onkeydown="if(event.key==='Enter')checkFill()">
+      <br><button class="btn btn-primary" onclick="checkFill()">확인</button>
+    </div>`;
+  }
+
+  area.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-q-num">문제 ${currentQ+1} / ${questions.length}</div>
+      <div class="quiz-q-progress"><div class="quiz-q-progress-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-question">${question}</div>
+      ${inputHTML}
+      <div id="quiz-feedback" class="quiz-feedback" style="display:none;"></div>
+      <button id="next-btn" class="btn btn-primary" style="width:100%;margin-top:16px;display:none;" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  `;
+
+  if (mode === 'fill') setTimeout(() => document.getElementById('quiz-input')?.focus(), 50);
+}
+
+function checkMC(btn, chosen, answer) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  document.querySelectorAll('.quiz-choice').forEach(b => {
+    b.classList.add('disabled');
+    if (b.textContent === answer) b.classList.add('correct');
+  });
+
+  const correct = chosen === answer;
+  if (!correct) {
+    btn.classList.add('wrong');
+    quizState.wrongAnswers.push(quizState.questions[quizState.currentQ]);
+  } else {
+    quizState.score++;
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.textContent = correct ? '✓ 정답!' : `✗ 오답. 정답: ${answer}`;
+
+  document.getElementById('next-btn').style.display = 'block';
+  quizState.answered = false;
+}
+
+function checkFill() {
+  const input = document.getElementById('quiz-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+
+  const q = quizState.questions[quizState.currentQ];
+  const answer = quizState.direction === 'ru2ko' ? q.ko : q.ru;
+  const correct = val.toLowerCase() === answer.toLowerCase();
+
+  input.className = correct ? 'correct' : 'wrong';
+  input.disabled = true;
+
+  if (correct) {
+    quizState.score++;
+  } else {
+    quizState.wrongAnswers.push(q);
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.textContent = correct ? '✓ 정답!' : `✗ 오답. 정답: ${answer}`;
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  quizState.currentQ++;
+  renderQuizQuestion();
+}
+
+function renderQuizResult() {
+  const area = document.getElementById('quiz-area');
+  const {score, questions, wrongAnswers} = quizState;
+  const pct = Math.round(score / questions.length * 100);
+
+  quizScores.push(pct);
+  if (quizScores.length > 20) quizScores.shift();
+  localStorage.setItem('ru_scores', JSON.stringify(quizScores));
+  updateStats();
+
+  let gradeClass = 'grade-A', gradeText = 'A+ 완벽해요! 🎉';
+  if (pct < 90) { gradeClass = 'grade-B'; gradeText = 'B 잘하고 있어요! 💪'; }
+  if (pct < 70) { gradeClass = 'grade-C'; gradeText = 'C 더 연습하세요 📚'; }
+  if (pct < 50) { gradeClass = 'grade-F'; gradeText = 'F 다시 공부해요 😢'; }
+
+  const wrongHTML = wrongAnswers.length > 0 ? `
+    <div class="wrong-list">
+      <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:10px;">틀린 단어 (${wrongAnswers.length}개)</div>
+      ${wrongAnswers.map(w => `<div class="wrong-item"><span class="ru">${w.ru}</span><span class="ko">${w.ko}</span></div>`).join('')}
+    </div>
+  ` : '<div style="color:var(--success);font-size:14px;margin-top:16px;">🎉 모두 맞혔어요!</div>';
+
+  area.innerHTML = `
+    <div class="quiz-result">
+      <div class="score">${pct}%</div>
+      <div class="score-label">${score} / ${questions.length} 정답</div>
+      <div class="grade ${gradeClass}">${gradeText}</div>
+      ${wrongHTML}
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="startQuiz()">다시 풀기</button>
+        <button class="btn btn-outline" onclick="renderQuizSetup()">설정 변경</button>
+        ${wrongAnswers.length > 0 ? `<button class="btn btn-danger" onclick="quizWrongOnly()">틀린 것만 다시</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function quizWrongOnly() {
+  if (quizState.wrongAnswers.length < 2) { notify('틀린 단어가 부족합니다 (최소 2개)'); return; }
+  const pool = quizState.wrongAnswers;
+  quizState.questions = [...pool].sort(() => Math.random() - 0.5);
+  quizState.pool = pool;
+  quizState.currentQ = 0;
+  quizState.score = 0;
+  quizState.wrongAnswers = [];
+  renderQuizQuestion();
+}
+
+// ============================================================
+// SONG
+// ============================================================
+function renderSong() {
+  const lines = document.getElementById('song-lines');
+  lines.innerHTML = SONG_LINES.map(l => `
+    <div class="song-line-pair">
+      <div class="song-ru">${l.ru}</div>
+      <div class="song-ko">${l.ko}</div>
+    </div>
+  `).join('');
+
+  const songWords = ['кровь','рукав','удача','трава','звезда','победа','путь','место','пыль','сапог'];
+  const wordEl = document.getElementById('song-words');
+  const found = VOCAB.filter(w => songWords.some(sw => w.ru.toLowerCase().includes(sw)));
+  const extra = [
+    {ru:'рукав',ko:'소매',lesson:'conv'},
+    {ru:'удача',ko:'행운',lesson:'conv'},
+    {ru:'трава',ko:'풀, 들판',lesson:'conv'},
+    {ru:'звезда',ko:'별',lesson:'conv'},
+    {ru:'победа',ko:'승리',lesson:'conv'},
+    {ru:'кровь',ko:'피, 혈액',lesson:'conv'},
+    {ru:'бой',ko:'전투',lesson:'conv'},
+  ];
+  const allWords = [...found, ...extra.filter(e => !found.find(f => f.ru === e.ru))];
+  wordEl.innerHTML = allWords.map(w => `
+    <div class="word-cell">
+      <div class="word-ru">${w.ru}</div>
+      <div class="word-ko">${w.ko}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// UTILITY
+// ============================================================
+function notify(msg, type = '') {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = 'notif show' + (type ? ' ' + type : '');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>

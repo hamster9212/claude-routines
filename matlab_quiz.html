@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATLAB Chapter 1 퀴즈</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nanum Gothic', '맑은 고딕', sans-serif;
+  background: #0F172A;
+  color: #E2E8F0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== SCREEN MANAGER ===== */
+.screen { display: none; width: 100%; max-width: 720px; padding: 24px 20px; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ===== START SCREEN ===== */
+#screen-start {
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+.start-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #60A5FA, #34D399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.start-subtitle {
+  color: #94A3B8;
+  font-size: 0.95rem;
+  margin-top: -16px;
+}
+.rules-box {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px 24px;
+  text-align: left;
+  width: 100%;
+}
+.rules-box h3 {
+  color: #F59E0B;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.rules-box ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rules-box li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #CBD5E1;
+  line-height: 1.5;
+}
+.rules-box li::before {
+  content: "⚡";
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+.start-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.btn-primary {
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-print {
+  background: transparent;
+  color: #94A3B8;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.btn-print:hover { border-color: #60A5FA; color: #60A5FA; }
+.category-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.cat-chip {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ===== QUIZ SCREEN ===== */
+#screen-quiz { gap: 16px; }
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-wrap { flex: 1; }
+.progress-bar {
+  height: 6px;
+  background: #1E293B;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #3B82F6, #34D399);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.question-counter {
+  font-size: 0.8rem;
+  color: #64748B;
+  margin-top: 4px;
+}
+.timer-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+.timer-ring { width: 56px; height: 56px; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: #1E293B; stroke-width: 4; }
+.ring-fill {
+  fill: none;
+  stroke: #3B82F6;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 150.8;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94A3B8;
+}
+.timer-wrap.warning .ring-fill { stroke: #EF4444; }
+.timer-wrap.warning .timer-text { color: #EF4444; }
+@keyframes pulse-timer { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.timer-wrap.warning { animation: pulse-timer 0.6s infinite; }
+
+.question-card {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 20px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.category-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: white;
+}
+.badge-syntax    { background: #3B82F6; }
+.badge-numeric   { background: #06B6D4; }
+.badge-flowchart { background: #EF4444; }
+.badge-piecewise { background: #8B5CF6; }
+.badge-code      { background: #10B981; }
+
+.difficulty { font-size: 0.72rem; color: #64748B; margin-left: auto; }
+.question-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #E2E8F0;
+  margin-bottom: 14px;
+}
+.question-text code {
+  background: #0F172A;
+  color: #7DD3FC;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+.code-block {
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #7DD3FC;
+  white-space: pre;
+  overflow-x: auto;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+/* ===== ANSWER AREA ===== */
+.answer-area { display: flex; flex-direction: column; gap: 8px; }
+
+.option-btn {
+  background: #0F172A;
+  border: 2px solid #334155;
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #CBD5E1;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+  line-height: 1.5;
+}
+.option-btn:hover:not(:disabled) { border-color: #60A5FA; color: #E2E8F0; }
+.option-btn.selected { border-color: #3B82F6; background: #1E3A5F; color: #BAE6FD; }
+.option-btn.correct { border-color: #10B981; background: #064E3B; color: #6EE7B7; }
+.option-btn.wrong { border-color: #EF4444; background: #450A0A; color: #FCA5A5; }
+.option-btn:disabled { cursor: default; }
+
+.text-input-wrap { display: flex; flex-direction: column; gap: 8px; }
+.text-input-wrap label { font-size: 0.85rem; color: #94A3B8; }
+.answer-input {
+  background: #0F172A;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #E2E8F0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.answer-input:focus { border-color: #3B82F6; }
+.answer-input:disabled { opacity: 0.5; }
+
+.drag-list { display: flex; flex-direction: column; gap: 6px; }
+.drag-item {
+  background: #0F172A;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  color: #CBD5E1;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.15s, opacity 0.15s;
+  user-select: none;
+}
+.drag-item::before { content: "⠿"; color: #475569; font-size: 1rem; }
+.drag-item.dragging { opacity: 0.4; cursor: grabbing; }
+.drag-item.drag-over { border-color: #3B82F6; border-top-width: 3px; }
+.drag-item.disabled { cursor: default; }
+
+/* ===== FEEDBACK ===== */
+.feedback-banner {
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.feedback-banner.correct { display: flex; background: #064E3B; color: #6EE7B7; border: 1px solid #10B981; }
+.feedback-banner.wrong { display: flex; background: #450A0A; color: #FCA5A5; border: 1px solid #EF4444; }
+.explanation-block {
+  background: #1C1A2E;
+  border: 1px solid #4C1D95;
+  border-left: 4px solid #8B5CF6;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 0.875rem;
+  color: #C4B5FD;
+  line-height: 1.7;
+  display: none;
+}
+.explanation-block.visible { display: block; }
+.explanation-block strong { color: #A78BFA; }
+.correct-answer-reveal {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #064E3B;
+  border-radius: 6px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #6EE7B7;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-row { display: flex; gap: 10px; }
+.btn-submit {
+  flex: 1;
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+.btn-submit:disabled {
+  background: #1E293B;
+  color: #475569;
+  cursor: not-allowed;
+}
+.btn-next {
+  display: none;
+  flex: 1;
+  background: linear-gradient(135deg, #10B981, #3B82F6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ===== REVIEW SCREEN ===== */
+#screen-review { gap: 20px; align-items: center; }
+.review-header { text-align: center; }
+.score-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 6px solid #10B981;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+.score-circle.poor { border-color: #EF4444; }
+.score-circle .score-num { font-size: 2rem; font-weight: 800; color: #34D399; }
+.score-circle.poor .score-num { color: #FCA5A5; }
+.score-circle .score-denom { font-size: 0.8rem; color: #64748B; }
+.review-time { font-size: 0.85rem; color: #64748B; }
+.review-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  width: 100%;
+}
+.wrong-list { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+.wrong-item {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-left: 4px solid #EF4444;
+  border-radius: 10px;
+  padding: 16px;
+}
+.wrong-item-q { font-size: 0.9rem; color: #CBD5E1; margin-bottom: 10px; line-height: 1.6; }
+.wrong-item-q code {
+  background: #0F172A;
+  color: #7DD3FC;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+.wrong-answer { color: #FCA5A5; font-size: 0.85rem; margin-bottom: 4px; }
+.right-answer { color: #6EE7B7; font-size: 0.85rem; margin-bottom: 8px; font-weight: 700; }
+.wrong-explanation { font-size: 0.82rem; color: #94A3B8; line-height: 1.6; border-top: 1px solid #334155; padding-top: 8px; }
+.all-correct-msg {
+  text-align: center;
+  color: #34D399;
+  font-size: 1rem;
+  padding: 24px;
+  background: #064E3B;
+  border-radius: 12px;
+  width: 100%;
+}
+.review-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.btn-retry {
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-retry-wrong {
+  background: transparent;
+  color: #F59E0B;
+  border: 1px solid #F59E0B;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ===== PRINT STYLES ===== */
+#print-sheet { display: none; }
+
+@media print {
+  body { background: white !important; color: black !important; display: block; }
+  .screen { display: none !important; }
+  #print-sheet {
+    display: block !important;
+    font-family: '맑은 고딕', 'Nanum Gothic', sans-serif;
+    font-size: 10.5pt;
+    color: black;
+    padding: 15mm 20mm;
+  }
+  .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+  .print-header h1 { font-size: 16pt; margin-bottom: 4px; }
+  .print-header p { font-size: 9pt; color: #555; }
+  .print-q { margin-bottom: 18px; page-break-inside: avoid; }
+  .print-q-num { font-weight: bold; font-size: 10pt; color: #222; }
+  .print-q-text { margin-top: 4px; line-height: 1.6; }
+  .print-q-text code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 1px 4px; }
+  .print-code { background: #f5f5f5; border: 1px solid #ccc; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 9.5pt; margin: 6px 0; white-space: pre-wrap; }
+  .print-answer-box { border: 1px solid #999; min-height: 30px; margin-top: 6px; }
+  .print-options { margin-top: 6px; }
+  .print-options li { list-style: none; margin-bottom: 3px; font-size: 9.5pt; }
+  .print-options li::before { content: "○  "; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== START SCREEN ===== -->
+<div id="screen-start" class="screen active">
+  <div class="start-title">MATLAB Chapter 1 퀴즈</div>
+  <div class="start-subtitle">총 25문제 · 강제 응시 모드 · 오답 즉시 피드백</div>
+
+  <div class="category-summary">
+    <span class="cat-chip badge-syntax">문법 5문제</span>
+    <span class="cat-chip badge-numeric">공학예제 6문제</span>
+    <span class="cat-chip badge-flowchart">Flowchart 4문제</span>
+    <span class="cat-chip badge-piecewise">piecewise 3문제</span>
+    <span class="cat-chip badge-code">코드완성 7문제</span>
+  </div>
+
+  <div class="rules-box">
+    <h3>강제 응시 규칙</h3>
+    <ul>
+      <li>답변을 입력하기 전까지는 제출 버튼이 비활성화됩니다</li>
+      <li>각 문제마다 제한 시간이 있습니다 (30~90초)</li>
+      <li>시간 초과 시 자동으로 오답 처리 후 다음 문제로 넘어갑니다</li>
+      <li>스킵 버튼은 없습니다. 25문제를 모두 풀어야 결과를 볼 수 있습니다</li>
+      <li>A4 문제지를 인쇄한 후 손으로 답안을 먼저 작성하세요</li>
+    </ul>
+  </div>
+
+  <div class="start-buttons">
+    <button class="btn-print" onclick="printSheet()">A4 문제지 인쇄</button>
+    <button class="btn-primary" onclick="startSession()">퀴즈 시작 →</button>
+  </div>
+</div>
+
+<!-- ===== QUIZ SCREEN ===== -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="progress-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="question-counter" id="question-counter">1 / 25</div>
+    </div>
+    <div class="timer-wrap" id="timer-wrap">
+      <svg class="timer-ring" viewBox="0 0 56 56">
+        <circle class="ring-bg" cx="28" cy="28" r="24"/>
+        <circle class="ring-fill" id="ring-fill" cx="28" cy="28" r="24"
+          stroke-dasharray="150.8" stroke-dashoffset="0"/>
+      </svg>
+      <span class="timer-text" id="timer-text">00:45</span>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="card-header">
+      <span class="category-badge" id="cat-badge">문법</span>
+      <span class="difficulty" id="difficulty-label">★★☆</span>
+    </div>
+    <div class="question-text" id="question-text"></div>
+    <div class="code-block" id="code-block" style="display:none"></div>
+    <div class="answer-area" id="answer-area"></div>
+    <div class="feedback-banner" id="feedback-banner"></div>
+    <div class="explanation-block" id="explanation-block"></div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-submit" id="btn-submit" disabled onclick="submitAnswer()">제출</button>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+  </div>
+</div>
+
+<!-- ===== REVIEW SCREEN ===== -->
+<div id="screen-review" class="screen">
+  <div class="review-header">
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num">0</span>
+      <span class="score-denom" id="score-denom">/ 25</span>
+    </div>
+    <div class="review-time" id="review-time"></div>
+  </div>
+  <div class="review-title">오답 목록</div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <div class="review-buttons">
+    <button class="btn-retry" onclick="retryAll()">처음부터 다시 시작</button>
+    <button class="btn-retry-wrong" onclick="retryWrong()" id="btn-retry-wrong">틀린 문제만 다시 풀기</button>
+  </div>
+</div>
+
+<!-- ===== PRINT SHEET (hidden, print-only) ===== -->
+<div id="print-sheet"></div>
+
+<script>
+// =========================================================
+//  QUESTIONS DATA
+// =========================================================
+const ALL_QUESTIONS = [
+  // ── MATLAB 문법 ──────────────────────────────────────────
+  {
+    id: 1,
+    category: 'syntax',
+    categoryLabel: '문법',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: 'MATLAB에서 세미콜론(<code>;</code>)의 역할로 올바른 것은?',
+    options: [
+      '명령어 실행 결과를 Command Window에 출력하지 않도록 억제한다',
+      '현재 줄에서 실행을 중단하고 오류를 발생시킨다',
+      '변수를 초기화(0으로 설정)한다',
+      '주석을 시작하는 기호이다'
+    ],
+    answer: 0,
+    timeLimit: 30,
+    hint: '세미콜론 없이 명령어를 실행하면 결과가 출력됩니다.',
+    explanation: '세미콜론(;)은 출력을 억제하지만, MATLAB은 해당 값을 메모리에 그대로 보유합니다. 즉, 값이 사라지는 것이 아닙니다.'
+  },
+  {
+    id: 2,
+    category: 'syntax',
+    categoryLabel: '문법',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: 'MATLAB에서 <code>sqrt(V/(pi*h))</code>와 <code>sqrt(V/pi*h)</code>의 결과가 다른 이유는?',
+    options: [
+      '소괄호가 연산 순서(우선순위)를 바꾸기 때문에',
+      'sqrt 함수가 두 개의 인수를 받지 못하기 때문에',
+      'pi는 예약어라 나눗셈 연산자와 함께 쓸 수 없기 때문에',
+      '아무 차이가 없다'
+    ],
+    answer: 0,
+    timeLimit: 35,
+    hint: '연산자 우선순위: 괄호 > 지수 > 곱셈·나눗셈 > 덧셈·뺄셈',
+    explanation: '<code>V/pi*h</code>는 (V÷pi)×h 순서로 계산됩니다. 반드시 <code>V/(pi*h)</code>처럼 괄호로 묶어야 V÷(pi×h)가 됩니다.'
+  },
+  {
+    id: 3,
+    category: 'syntax',
+    categoryLabel: '문법',
+    type: 'multiple_choice',
+    difficulty: 1,
+    question: 'MATLAB에서 주석(comment)을 작성할 때 사용하는 기호는?',
+    options: ['// (슬래시 두 개)', '# (해시)', '% (퍼센트)', '/* ... */ (블록 주석)'],
+    answer: 2,
+    timeLimit: 25,
+    hint: 'MATLAB에서 주석은 해당 기호 이후의 모든 텍스트를 무시합니다.',
+    explanation: 'MATLAB에서 % 기호 이후의 내용은 모두 주석으로 처리됩니다. C/Java의 //나 Python의 #와 다릅니다.'
+  },
+  {
+    id: 4,
+    category: 'syntax',
+    categoryLabel: '문법',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: 'MATLAB에서 <code>.*</code> 연산자가 <code>*</code>와 다른 점은?',
+    options: [
+      '스칼라(단일 수치)에만 사용 가능하다',
+      '배열의 대응하는 요소끼리(element-wise) 곱셈을 수행한다',
+      '행렬 곱셈을 수행한다',
+      '두 배열의 내적(dot product)을 계산한다'
+    ],
+    answer: 1,
+    timeLimit: 35,
+    hint: '벡터/배열 연산에서 점(.)이 붙은 연산자는 요소별 연산을 의미합니다.',
+    explanation: '<code>*</code>는 행렬 곱셈(선형대수), <code>.*</code>는 같은 위치의 요소끼리 곱하는 element-wise 연산입니다. 예: [1 2].*[3 4] = [3 8]'
+  },
+  {
+    id: 5,
+    category: 'syntax',
+    categoryLabel: '문법',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: 'MATLAB에서 거듭제곱을 표현하는 올바른 연산자는?',
+    options: ['** (별표 두 개)', '^ (캐럿)', 'pow(a, b) 함수만 사용 가능', 'exp(n)'],
+    answer: 1,
+    timeLimit: 25,
+    hint: '예: r의 2승은 r^2, 루트는 r^(1/2) 또는 sqrt(r)',
+    explanation: 'MATLAB에서 거듭제곱은 ^ 연산자를 사용합니다. r^2는 r²이고, r^(1/2)는 √r과 동일합니다.'
+  },
+
+  // ── 공학 예제 (숫자) ─────────────────────────────────────
+  {
+    id: 6,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'number_input',
+    difficulty: 2,
+    question: '원형 실린더에서 <code>r = 8</code>, <code>h = 15</code>일 때, 부피 <code>V = π·r²·h</code>를 계산하시오. (소수 둘째 자리까지, π ≈ 3.14159)',
+    answer: 3015.93,
+    tolerance: 1.0,
+    timeLimit: 60,
+    hint: 'MATLAB: V = pi * r^2 * h',
+    explanation: 'V = π × 8² × 15 = π × 64 × 15 ≈ 3015.93'
+  },
+  {
+    id: 7,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'number_input',
+    difficulty: 3,
+    question: '위 실린더(r=8, h=15) 부피를 20% 증가시킨 후, 높이 h=15를 유지하면서 새 반지름 r을 구하시오. (소수 넷째 자리까지)',
+    answer: 8.7636,
+    tolerance: 0.001,
+    timeLimit: 90,
+    hint: '새 V = 기존 V × 1.2, 그 후 r = sqrt(V / (pi*h))',
+    explanation: '새 V = 3015.93 × 1.2 = 3619.11, r = √(3619.11 / (π×15)) = √(76.7077) ≈ 8.7636'
+  },
+  {
+    id: 8,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: '사이클로이드(cycloid) 곡선의 매개변수 방정식에서 x 좌표를 올바르게 나타낸 것은? (r: 반지름, φ: 매개변수 각도)',
+    options: [
+      'x = r(φ + sinφ)',
+      'x = r(φ − sinφ)',
+      'x = r(sinφ − φ)',
+      'x = r · cosφ'
+    ],
+    answer: 1,
+    timeLimit: 40,
+    hint: '사이클로이드는 굴러가는 원의 한 점이 그리는 곡선입니다.',
+    explanation: '사이클로이드: x = r(φ − sinφ), y = r(1 − cosφ). φ는 0에서 4π까지 변화합니다.'
+  },
+  {
+    id: 9,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: '사이클로이드 곡선의 y 좌표를 올바르게 나타낸 것은?',
+    options: [
+      'y = r(1 + cosφ)',
+      'y = r · sinφ',
+      'y = r(1 − cosφ)',
+      'y = r(φ − cosφ)'
+    ],
+    answer: 2,
+    timeLimit: 35,
+    hint: 'y 좌표는 원의 중심 높이에서 코사인 항을 뺀 형태입니다.',
+    explanation: '사이클로이드: x = r(φ − sinφ), y = r(1 − cosφ). φ=0일 때 y=0, φ=π일 때 y=2r(최고점).'
+  },
+  {
+    id: 10,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'multiple_choice',
+    difficulty: 3,
+    question: '케이블-보 장력 공식 <code>T = LbLcW / (D√(Lb²−D²))</code> 에서, 분모를 올바르게 표현한 것은?',
+    options: [
+      'LbLcW',
+      'Lb² − D²',
+      'D × √(Lb² − D²)',
+      '√(LbLcW)'
+    ],
+    answer: 2,
+    timeLimit: 45,
+    hint: '분자는 LbLcW, 분모는 D와 제곱근 항의 곱입니다.',
+    explanation: 'T = (Lb × Lc × W) / (D × √(Lb² − D²)). 분모는 D와 √(Lb²−D²)의 곱입니다.'
+  },
+  {
+    id: 11,
+    category: 'numeric',
+    categoryLabel: '공학예제',
+    type: 'number_input',
+    difficulty: 3,
+    question: '포사체(projectile) 운동에서 A=40°, v₀=20m/s, g=9.81m/s². 조건 h(t)≥6m AND v(t)≤16m/s를 동시에 만족하는 첫 번째 시각 t₁은? (소수 넷째 자리까지)',
+    answer: 0.8649,
+    tolerance: 0.001,
+    timeLimit: 60,
+    hint: 'h(t) = v₀t·sinA − 0.5gt², v(t) = √(v₀² − 2v₀gt·sinA + g²t²)',
+    explanation: 't₁ ≈ 0.8649 s. 두 조건이 동시에 참(AND)인 첫 시점입니다. t₂ = 1.7560 s에서 두 번째로 만족됩니다.'
+  },
+
+  // ── Flowchart 규칙 ────────────────────────────────────────
+  {
+    id: 12,
+    category: 'flowchart',
+    categoryLabel: 'Flowchart',
+    type: 'multiple_choice',
+    difficulty: 1,
+    question: '순서도(flowchart)에서 마름모(◇) 모양이 나타내는 것은?',
+    options: [
+      '처리/연산 블록 (action)',
+      '시작 또는 종료',
+      '판단/조건 (decision) — 논리식 평가',
+      '데이터 입출력'
+    ],
+    answer: 2,
+    timeLimit: 25,
+    hint: '마름모는 갈림길(분기)을 의미합니다.',
+    explanation: '마름모(◇)는 판단 기호입니다. 내부에 논리 조건(예: x < d?)이 들어가고, True/False 두 방향으로 분기됩니다.'
+  },
+  {
+    id: 13,
+    category: 'flowchart',
+    categoryLabel: 'Flowchart',
+    type: 'multiple_choice',
+    difficulty: 1,
+    question: '순서도에서 직사각형(□)이 나타내는 것은?',
+    options: [
+      '조건 분기 (if/else)',
+      '처리/연산 (action) — 실행 문장',
+      '시작 또는 종료',
+      '반복 제어 (loop)'
+    ],
+    answer: 1,
+    timeLimit: 25,
+    hint: '직사각형은 실제로 "무언가를 한다"는 뜻입니다.',
+    explanation: '직사각형(□)은 처리 기호(process symbol)입니다. 계산, 대입, 함수 호출 등 실행 가능한 명령을 나타냅니다.'
+  },
+  {
+    id: 14,
+    category: 'flowchart',
+    categoryLabel: 'Flowchart',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: 'if 문 순서도에서 조건이 False(거짓)일 때의 흐름으로 옳은 것은?',
+    options: [
+      '항상 위 방향으로 돌아간다',
+      '항상 오른쪽 방향으로 분기한다',
+      '표준 방향은 없으며, 화살표에 True/False를 반드시 명시해야 한다',
+      '항상 아래 방향으로 진행한다'
+    ],
+    answer: 2,
+    timeLimit: 35,
+    hint: '순서도 표준(ISO 5807)에서 방향은 고정되어 있지 않습니다.',
+    explanation: '순서도에서 True/False 분기 방향은 특정 표준이 없습니다. 반드시 화살표에 "True" 또는 "False" 레이블을 명시해야 독자가 이해할 수 있습니다.'
+  },
+  {
+    id: 15,
+    category: 'flowchart',
+    categoryLabel: 'Flowchart',
+    type: 'order',
+    difficulty: 3,
+    question: '다음 단계들을 올바른 순서도 순서로 배열하시오 (질량-스프링 piecewise 모델 기준)',
+    options: [
+      'x < d 인지 판단 (◇)',
+      'W, k₁, k₂, d 값 입력',
+      'W = k₁x 계산 (x < d일 때)',
+      'W = k₁x + 2k₂(x−d) 계산 (x ≥ d일 때)',
+      'x 값 출력'
+    ],
+    answer: [1, 0, 2, 3, 4],
+    timeLimit: 70,
+    hint: '입력 → 판단 → 두 분기 경로 → 출력 순서입니다.',
+    explanation: '순서: ① 파라미터 입력 → ② x<d 조건 판단 → ③-a x<d: W=k₁x → ③-b x≥d: W=k₁x+2k₂(x−d) → ④ x 출력'
+  },
+
+  // ── piecewise / if 공식 ───────────────────────────────────
+  {
+    id: 16,
+    category: 'piecewise',
+    categoryLabel: 'piecewise',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: '질량-스프링 모델에서 <code>x < d</code>일 때 힘 W의 올바른 식은?',
+    options: [
+      'W = k₁x + 2k₂(x−d)',
+      'W = k₁x',
+      'W = 2k₂(x−d)',
+      'W = k₁d'
+    ],
+    answer: 1,
+    timeLimit: 35,
+    hint: '두 스프링이 모두 작동하는 구간과 하나만 작동하는 구간이 다릅니다.',
+    explanation: 'x < d이면 두 번째 스프링이 아직 접촉하지 않은 상태이므로 W = k₁x (선형 스프링 하나만 작용).'
+  },
+  {
+    id: 17,
+    category: 'piecewise',
+    categoryLabel: 'piecewise',
+    type: 'multiple_choice',
+    difficulty: 2,
+    question: '질량-스프링 모델에서 <code>x ≥ d</code>일 때 힘 W의 올바른 식은?',
+    options: [
+      'W = k₁x',
+      'W = 2k₂(x−d)',
+      'W = k₁x + 2k₂(x−d)',
+      'W = k₁d + k₂x'
+    ],
+    answer: 2,
+    timeLimit: 35,
+    hint: 'x가 d를 초과하면 두 번째 스프링도 추가로 작용합니다.',
+    explanation: 'x ≥ d이면 첫 번째 스프링(k₁x) + 두 번째 스프링(2k₂(x−d))이 함께 작용합니다.'
+  },
+  {
+    id: 18,
+    category: 'piecewise',
+    categoryLabel: 'piecewise',
+    type: 'multiple_choice',
+    difficulty: 3,
+    question: '질량-스프링 모델 파라미터: k₁=10⁴ N/m, k₂=1.5×10⁴ N/m, d=0.1 m. W=500 N일 때 적용해야 할 식은?',
+    options: [
+      'W = k₁x + 2k₂(x−d) (x ≥ d)',
+      'W = k₁x (x < d) → x = W/k₁ = 0.05 m < d이므로 이 식 사용',
+      'W = k₁x (x < d) → x = W/k₁ = 0.15 m, 그러나 d=0.1이므로 조건 위반',
+      '먼저 두 식을 모두 풀어보고 적합한 것을 선택한다'
+    ],
+    answer: 3,
+    timeLimit: 60,
+    hint: '먼저 가정을 세우고, 그 결과가 가정과 일치하는지 확인하는 방식을 사용합니다.',
+    explanation: '일반적으로 먼저 x < d로 가정하여 W=k₁x → x=W/k₁을 구하고, 이 x가 d보다 작은지 확인합니다. W=500이면 x=0.05<d=0.1이므로 W=k₁x가 맞습니다.'
+  },
+
+  // ── 코드 완성 ─────────────────────────────────────────────
+  {
+    id: 19,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 2,
+    question: '다음 코드에서 빈칸을 채워 변수 V를 계산하되, 결과가 화면에 출력되지 않도록 하시오.',
+    codeBlock: 'r = 8;\nh = 15;\nV = pi*r^2*h___',
+    answer: ';',
+    timeLimit: 30,
+    hint: '출력 억제 기호를 사용하세요.',
+    explanation: '세미콜론(;)을 줄 끝에 붙이면 결과 출력이 억제됩니다. V의 값은 여전히 메모리에 저장됩니다.'
+  },
+  {
+    id: 20,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 2,
+    question: '코사인 법칙 a² = b₁² + c₁² − 2b₁c₁cosA₁ 를 MATLAB으로 계산하는 코드의 빈칸을 채우시오.',
+    codeBlock: 'b1 = 180; c1 = 115; A1 = 120;\na = sqrt(b1^2 + c1^2 - 2*b1*c1*___(A1*pi/180))',
+    answer: 'cos',
+    timeLimit: 40,
+    hint: '삼각함수 이름을 소문자로 입력하세요. MATLAB에서 각도는 라디안 단위입니다.',
+    explanation: 'MATLAB의 삼각함수는 라디안을 인수로 받습니다. cos(A1*pi/180)으로 도(degree)를 라디안으로 변환합니다.'
+  },
+  {
+    id: 21,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 2,
+    question: '부피 V를 20% 증가시키는 MATLAB 코드의 빈칸을 채우시오.',
+    codeBlock: 'V = V + ___*V;',
+    answer: '0.2',
+    timeLimit: 25,
+    hint: '20%는 소수로 0.?입니다.',
+    explanation: 'V = V + 0.2*V 는 V = V * 1.2 와 동일합니다. 20% 증가.'
+  },
+  {
+    id: 22,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 2,
+    question: '증가된 부피에서 새 반지름을 구하는 코드의 빈칸을 채우시오.',
+    codeBlock: 'r = ___(V/(pi*h))',
+    answer: 'sqrt',
+    timeLimit: 30,
+    hint: '제곱근 함수를 사용하세요.',
+    explanation: 'r = sqrt(V/(pi*h))는 V = π·r²·h에서 r을 역으로 구하는 식입니다. sqrt()는 MATLAB의 제곱근 함수입니다.'
+  },
+  {
+    id: 23,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 3,
+    question: '사이클로이드 x 좌표 배열 계산 코드의 빈칸을 채우시오.',
+    codeBlock: 'r = 10;\nphi = linspace(0, 4*pi, 1000);\nx = r*(phi - ___(phi));',
+    answer: 'sin',
+    timeLimit: 35,
+    hint: '사이클로이드 x = r(φ − sinφ)에서 빠진 함수는?',
+    explanation: 'x = r*(phi - sin(phi))입니다. 사이클로이드 공식 x = r(φ − sinφ)에서 sinφ 항이 필요합니다.'
+  },
+  {
+    id: 24,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 3,
+    question: '포사체 높이 함수를 MATLAB 익명 함수로 정의하는 코드의 빈칸을 채우시오.',
+    codeBlock: 'v0=20; A=40*pi/180; g=9.81;\nh = ___(t) v0*t*sin(A) - 0.5*g*t.^2;',
+    answer: '@',
+    timeLimit: 40,
+    hint: 'MATLAB에서 익명 함수는 특정 기호로 시작합니다.',
+    explanation: 'MATLAB 익명 함수(anonymous function)는 @(인수) 표현식 형태로 정의합니다. @(t)가 "t를 입력으로 받는 함수"를 선언합니다.'
+  },
+  {
+    id: 25,
+    category: 'code',
+    categoryLabel: '코드완성',
+    type: 'fill_blank',
+    difficulty: 2,
+    question: '포사체가 땅에 닿는 시간 t_hit을 계산하는 코드의 빈칸을 채우시오.',
+    codeBlock: 'v0=20; A=40*pi/180; g=9.81;\nt_hit = 2*(v0/g)*___(A);',
+    answer: 'sin',
+    timeLimit: 35,
+    hint: '포사체가 지면에 닿는 시간: t = 2(v₀/g)sinA',
+    explanation: 't_hit = 2*(v0/g)*sin(A). 이는 포사체 운동에서 체공 시간 공식입니다. sin(발사각)에 비례합니다.'
+  }
+];
+
+// =========================================================
+//  STATE
+// =========================================================
+const state = {
+  questions: [],          // active question set (all or wrong-only)
+  currentIndex: 0,
+  answers: [],            // {userAnswer, correct, timeTaken}
+  timerInterval: null,
+  timeLeft: 0,
+  timeLimitForCurrent: 0,
+  sessionStart: null,
+  dragOrder: [],          // for 'order' type questions
+  submitted: false
+};
+
+// =========================================================
+//  SCREEN MANAGER
+// =========================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// =========================================================
+//  SESSION CONTROL
+// =========================================================
+function startSession(questions) {
+  state.questions = questions || [...ALL_QUESTIONS];
+  state.currentIndex = 0;
+  state.answers = new Array(state.questions.length).fill(null);
+  state.sessionStart = Date.now();
+  showScreen('quiz');
+  history.pushState(null, '', '');
+  renderQuestion(0);
+}
+
+function retryAll() { startSession([...ALL_QUESTIONS]); }
+
+function retryWrong() {
+  const wrongIds = state.answers
+    .map((a, i) => (!a || !a.correct) ? state.questions[i] : null)
+    .filter(Boolean);
+  if (wrongIds.length === 0) return;
+  startSession(wrongIds);
+}
+
+// Block browser back button
+window.addEventListener('popstate', () => {
+  history.pushState(null, '', '');
+});
+
+// =========================================================
+//  QUESTION RENDERER
+// =========================================================
+const BADGES = {
+  syntax:    'badge-syntax',
+  numeric:   'badge-numeric',
+  flowchart: 'badge-flowchart',
+  piecewise: 'badge-piecewise',
+  code:      'badge-code'
+};
+
+function stars(d) {
+  return '★'.repeat(d) + '☆'.repeat(3 - d);
+}
+
+function renderQuestion(index) {
+  const q = state.questions[index];
+  const total = state.questions.length;
+  state.submitted = false;
+
+  // Progress
+  document.getElementById('progress-fill').style.width = `${(index / total) * 100}%`;
+  document.getElementById('question-counter').textContent = `${index + 1} / ${total}`;
+
+  // Badge & difficulty
+  const badge = document.getElementById('cat-badge');
+  badge.textContent = q.categoryLabel;
+  badge.className = 'category-badge ' + (BADGES[q.category] || 'badge-syntax');
+  document.getElementById('difficulty-label').textContent = stars(q.difficulty);
+
+  // Question text (render inline code)
+  document.getElementById('question-text').innerHTML = q.question;
+
+  // Code block
+  const codeEl = document.getElementById('code-block');
+  if (q.codeBlock) {
+    codeEl.textContent = q.codeBlock;
+    codeEl.style.display = 'block';
+  } else {
+    codeEl.style.display = 'none';
+  }
+
+  // Answer area
+  const area = document.getElementById('answer-area');
+  area.innerHTML = '';
+  if (q.type === 'multiple_choice') renderMC(q, area);
+  else if (q.type === 'fill_blank') renderFill(q, area);
+  else if (q.type === 'number_input') renderNumber(q, area);
+  else if (q.type === 'order') renderOrder(q, area);
+
+  // Clear feedback
+  const fb = document.getElementById('feedback-banner');
+  fb.className = 'feedback-banner';
+  fb.textContent = '';
+  const ex = document.getElementById('explanation-block');
+  ex.className = 'explanation-block';
+  ex.innerHTML = '';
+
+  // Buttons
+  const submitBtn = document.getElementById('btn-submit');
+  submitBtn.disabled = true;
+  submitBtn.style.display = 'flex';
+  submitBtn.textContent = '제출';
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.style.display = 'none';
+  nextBtn.textContent = index === total - 1 ? '결과 보기' : '다음 문제 →';
+
+  // Timer
+  startTimer(q.timeLimit);
+}
+
+// --- Multiple Choice ---
+function renderMC(q, area) {
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<strong>${String.fromCharCode(65 + i)}.</strong> ${opt}`;
+    btn.dataset.index = i;
+    btn.onclick = () => {
+      if (state.submitted) return;
+      area.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('btn-submit').disabled = false;
+    };
+    area.appendChild(btn);
+  });
+}
+
+// --- Fill Blank ---
+function renderFill(q, area) {
+  const wrap = document.createElement('div');
+  wrap.className = 'text-input-wrap';
+  const lbl = document.createElement('label');
+  lbl.textContent = '빈칸에 들어갈 내용을 입력하세요:';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'answer-input';
+  inp.placeholder = '답 입력...';
+  inp.id = 'fill-input';
+  inp.oninput = () => {
+    document.getElementById('btn-submit').disabled = inp.value.trim().length === 0;
+  };
+  inp.onkeydown = (e) => { if (e.key === 'Enter' && !document.getElementById('btn-submit').disabled) submitAnswer(); };
+  wrap.appendChild(lbl);
+  wrap.appendChild(inp);
+  area.appendChild(wrap);
+  setTimeout(() => inp.focus(), 50);
+}
+
+// --- Number Input ---
+function renderNumber(q, area) {
+  const wrap = document.createElement('div');
+  wrap.className = 'text-input-wrap';
+  const lbl = document.createElement('label');
+  lbl.textContent = '숫자를 입력하세요:';
+  const inp = document.createElement('input');
+  inp.type = 'number';
+  inp.step = 'any';
+  inp.className = 'answer-input';
+  inp.placeholder = '숫자 입력...';
+  inp.id = 'num-input';
+  inp.oninput = () => {
+    document.getElementById('btn-submit').disabled = inp.value.trim().length === 0;
+  };
+  inp.onkeydown = (e) => { if (e.key === 'Enter' && !document.getElementById('btn-submit').disabled) submitAnswer(); };
+  wrap.appendChild(lbl);
+  wrap.appendChild(inp);
+  area.appendChild(wrap);
+  setTimeout(() => inp.focus(), 50);
+}
+
+// --- Order (Drag & Drop) ---
+function renderOrder(q, area) {
+  // Shuffle options
+  const shuffled = q.options.map((text, origIdx) => ({ text, origIdx }));
+  shuffleArray(shuffled);
+  state.dragOrder = shuffled.map(item => item.origIdx);
+
+  const list = document.createElement('div');
+  list.className = 'drag-list';
+  list.id = 'drag-list';
+
+  shuffled.forEach((item, pos) => {
+    const div = document.createElement('div');
+    div.className = 'drag-item';
+    div.draggable = true;
+    div.dataset.pos = pos;
+    div.textContent = item.text;
+    list.appendChild(div);
+  });
+
+  area.appendChild(list);
+  setupDragDrop(list);
+}
+
+function setupDragDrop(list) {
+  let dragSrc = null;
+
+  function getItems() { return Array.from(list.querySelectorAll('.drag-item')); }
+
+  list.addEventListener('dragstart', e => {
+    dragSrc = e.target;
+    dragSrc.classList.add('dragging');
+  });
+  list.addEventListener('dragend', e => {
+    dragSrc.classList.remove('dragging');
+    list.querySelectorAll('.drag-item').forEach(i => i.classList.remove('drag-over'));
+    dragSrc = null;
+  });
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('.drag-item');
+    if (!target || target === dragSrc) return;
+    list.querySelectorAll('.drag-item').forEach(i => i.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+  list.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.drag-item');
+    if (!target || target === dragSrc) return;
+    const items = getItems();
+    const srcIdx = items.indexOf(dragSrc);
+    const tgtIdx = items.indexOf(target);
+    if (srcIdx < tgtIdx) list.insertBefore(dragSrc, target.nextSibling);
+    else list.insertBefore(dragSrc, target);
+    // Update order
+    const q = state.questions[state.currentIndex];
+    const newItems = getItems();
+    state.dragOrder = newItems.map(el => {
+      const txt = el.textContent;
+      return q.options.indexOf(txt);
+    });
+    document.getElementById('btn-submit').disabled = false;
+  });
+
+  // Touch support
+  let touchItem = null, touchClone = null;
+  list.addEventListener('touchstart', e => {
+    touchItem = e.target.closest('.drag-item');
+    if (!touchItem) return;
+    touchItem.classList.add('dragging');
+    touchClone = touchItem.cloneNode(true);
+    touchClone.style.cssText = `position:fixed;opacity:0.7;pointer-events:none;z-index:9999;width:${touchItem.offsetWidth}px;`;
+    document.body.appendChild(touchClone);
+  }, { passive: true });
+  list.addEventListener('touchmove', e => {
+    if (!touchItem || !touchClone) return;
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - 20) + 'px';
+    touchClone.style.top = (touch.clientY - 20) + 'px';
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const target = el && el.closest('.drag-item');
+    list.querySelectorAll('.drag-item').forEach(i => i.classList.remove('drag-over'));
+    if (target && target !== touchItem) target.classList.add('drag-over');
+  }, { passive: true });
+  list.addEventListener('touchend', e => {
+    if (!touchItem) return;
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const target = el && el.closest('.drag-item');
+    if (target && target !== touchItem) {
+      const items = getItems();
+      const srcIdx = items.indexOf(touchItem);
+      const tgtIdx = items.indexOf(target);
+      if (srcIdx < tgtIdx) list.insertBefore(touchItem, target.nextSibling);
+      else list.insertBefore(touchItem, target);
+      const q = state.questions[state.currentIndex];
+      const newItems = getItems();
+      state.dragOrder = newItems.map(el => q.options.indexOf(el.textContent));
+      document.getElementById('btn-submit').disabled = false;
+    }
+    touchItem.classList.remove('dragging');
+    list.querySelectorAll('.drag-item').forEach(i => i.classList.remove('drag-over'));
+    if (touchClone) { document.body.removeChild(touchClone); touchClone = null; }
+    touchItem = null;
+  });
+}
+
+// =========================================================
+//  TIMER
+// =========================================================
+const RING_CIRC = 150.8;
+
+function startTimer(seconds) {
+  clearInterval(state.timerInterval);
+  state.timeLeft = seconds;
+  state.timeLimitForCurrent = seconds;
+  updateTimerDisplay();
+  document.getElementById('timer-wrap').classList.remove('warning');
+
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerDisplay();
+    if (state.timeLeft <= 10) document.getElementById('timer-wrap').classList.add('warning');
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timerInterval);
+      if (!state.submitted) autoSubmitEmpty();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const s = Math.max(0, state.timeLeft);
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = (s % 60).toString().padStart(2, '0');
+  document.getElementById('timer-text').textContent = `${m}:${sec}`;
+  const offset = RING_CIRC * (1 - s / state.timeLimitForCurrent);
+  document.getElementById('ring-fill').style.strokeDashoffset = offset;
+}
+
+function autoSubmitEmpty() {
+  const q = state.questions[state.currentIndex];
+  state.answers[state.currentIndex] = { userAnswer: null, correct: false, timeTaken: q.timeLimit };
+  state.submitted = true;
+  showFeedback(q, null, false);
+  lockInputs();
+  revealNext();
+}
+
+// =========================================================
+//  SUBMIT
+// =========================================================
+function submitAnswer() {
+  if (state.submitted) return;
+  clearInterval(state.timerInterval);
+  state.submitted = true;
+
+  const q = state.questions[state.currentIndex];
+  const userAnswer = collectAnswer(q);
+  const correct = checkAnswer(q, userAnswer);
+  const timeTaken = q.timeLimit - state.timeLeft;
+
+  state.answers[state.currentIndex] = { userAnswer, correct, timeTaken };
+
+  lockInputs();
+  showFeedback(q, userAnswer, correct);
+  revealNext();
+}
+
+function collectAnswer(q) {
+  if (q.type === 'multiple_choice') {
+    const sel = document.querySelector('.option-btn.selected');
+    return sel ? parseInt(sel.dataset.index) : null;
+  }
+  if (q.type === 'fill_blank') {
+    const el = document.getElementById('fill-input');
+    return el ? el.value.trim() : null;
+  }
+  if (q.type === 'number_input') {
+    const el = document.getElementById('num-input');
+    return el ? el.value.trim() : null;
+  }
+  if (q.type === 'order') {
+    return [...state.dragOrder];
+  }
+  return null;
+}
+
+function checkAnswer(q, userAnswer) {
+  if (userAnswer === null || userAnswer === undefined) return false;
+  if (q.type === 'multiple_choice') return userAnswer === q.answer;
+  if (q.type === 'fill_blank') return normalize(userAnswer) === normalize(String(q.answer));
+  if (q.type === 'number_input') {
+    const n = parseFloat(userAnswer);
+    if (isNaN(n)) return false;
+    return Math.abs(n - q.answer) <= q.tolerance;
+  }
+  if (q.type === 'order') {
+    return JSON.stringify(userAnswer) === JSON.stringify(q.answer);
+  }
+  return false;
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/\s/g, '').replace(/^['"]|['"]$/g, '');
+}
+
+// =========================================================
+//  FEEDBACK
+// =========================================================
+function showFeedback(q, userAnswer, correct) {
+  const fb = document.getElementById('feedback-banner');
+  if (correct) {
+    fb.textContent = '✓ 정답입니다!';
+    fb.className = 'feedback-banner correct';
+  } else {
+    fb.className = 'feedback-banner wrong';
+    fb.textContent = userAnswer === null ? '⏱ 시간 초과! 오답 처리됩니다.' : '✗ 오답입니다.';
+  }
+
+  // Highlight MC options
+  if (q.type === 'multiple_choice') {
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      const idx = parseInt(btn.dataset.index);
+      if (idx === q.answer) btn.classList.add('correct');
+      else if (idx === userAnswer && !correct) btn.classList.add('wrong');
+    });
+  }
+
+  // Explanation
+  if (!correct) {
+    const ex = document.getElementById('explanation-block');
+    let answerText = '';
+    if (q.type === 'multiple_choice') answerText = q.options[q.answer];
+    else if (q.type === 'order') answerText = q.answer.map(i => q.options[i]).join(' → ');
+    else answerText = String(q.answer);
+
+    ex.innerHTML = `
+      <strong>힌트:</strong> ${q.hint}<br><br>
+      <strong>해설:</strong> ${q.explanation}
+      <div class="correct-answer-reveal">정답: ${answerText}</div>
+    `;
+    ex.className = 'explanation-block visible';
+  }
+}
+
+function lockInputs() {
+  document.querySelectorAll('.option-btn, .answer-input').forEach(el => {
+    el.disabled = true;
+  });
+  document.querySelectorAll('.drag-item').forEach(el => {
+    el.draggable = false;
+    el.classList.add('disabled');
+  });
+  document.getElementById('btn-submit').style.display = 'none';
+}
+
+function revealNext() {
+  document.getElementById('btn-next').style.display = 'flex';
+}
+
+// =========================================================
+//  NAVIGATION
+// =========================================================
+function nextQuestion() {
+  const next = state.currentIndex + 1;
+  if (next >= state.questions.length) {
+    finishSession();
+  } else {
+    state.currentIndex = next;
+    renderQuestion(next);
+  }
+}
+
+// =========================================================
+//  REVIEW
+// =========================================================
+function finishSession() {
+  clearInterval(state.timerInterval);
+  const elapsed = Math.round((Date.now() - state.sessionStart) / 1000);
+  const score = state.answers.filter(a => a && a.correct).length;
+  const total = state.questions.length;
+
+  showScreen('review');
+  document.getElementById('progress-fill').style.width = '100%';
+
+  // Score circle
+  const circle = document.getElementById('score-circle');
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  if (score / total < 0.6) circle.classList.add('poor');
+  else circle.classList.remove('poor');
+
+  // Time
+  const mm = Math.floor(elapsed / 60), ss = elapsed % 60;
+  document.getElementById('review-time').textContent =
+    `소요 시간: ${mm}분 ${ss}초 · 정답률: ${Math.round(score/total*100)}%`;
+
+  // Wrong list
+  const wrongList = document.getElementById('wrong-list');
+  wrongList.innerHTML = '';
+  let anyWrong = false;
+
+  state.answers.forEach((ans, i) => {
+    if (ans && ans.correct) return;
+    anyWrong = true;
+    const q = state.questions[i];
+    const div = document.createElement('div');
+    div.className = 'wrong-item';
+
+    let userTxt = '(시간 초과)';
+    if (ans && ans.userAnswer !== null) {
+      if (q.type === 'multiple_choice' && ans.userAnswer !== null) userTxt = q.options[ans.userAnswer] || String(ans.userAnswer);
+      else if (q.type === 'order' && Array.isArray(ans.userAnswer)) userTxt = ans.userAnswer.map(idx => q.options[idx]).join(' → ');
+      else userTxt = String(ans.userAnswer);
+    }
+
+    let correctTxt = '';
+    if (q.type === 'multiple_choice') correctTxt = q.options[q.answer];
+    else if (q.type === 'order') correctTxt = q.answer.map(idx => q.options[idx]).join(' → ');
+    else correctTxt = String(q.answer);
+
+    div.innerHTML = `
+      <div class="wrong-item-q"><strong>Q${i+1}.</strong> ${q.question}</div>
+      <div class="wrong-answer">✗ 내 답: ${userTxt}</div>
+      <div class="right-answer">✓ 정답: ${correctTxt}</div>
+      <div class="wrong-explanation">${q.explanation}</div>
+    `;
+    wrongList.appendChild(div);
+  });
+
+  if (!anyWrong) {
+    wrongList.innerHTML = '<div class="all-correct-msg">🎉 모든 문제를 정답으로 맞혔습니다! 완벽한 이해입니다.</div>';
+    document.getElementById('btn-retry-wrong').style.display = 'none';
+  } else {
+    document.getElementById('btn-retry-wrong').style.display = 'block';
+  }
+}
+
+// =========================================================
+//  PRINT SHEET
+// =========================================================
+function printSheet() {
+  const sheet = document.getElementById('print-sheet');
+  sheet.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'print-header';
+  header.innerHTML = `
+    <h1>MATLAB Chapter 1 퀴즈 문제지</h1>
+    <p>이름: _________________________ · 날짜: _______________ · 총 ${ALL_QUESTIONS.length}문제</p>
+  `;
+  sheet.appendChild(header);
+
+  ALL_QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'print-q';
+
+    let html = `<div class="print-q-num">Q${i+1}. [${q.categoryLabel}] ${stars(q.difficulty)}</div>`;
+    html += `<div class="print-q-text">${q.question.replace(/<code>/g,'`').replace(/<\/code>/g,'`')}</div>`;
+
+    if (q.codeBlock) {
+      html += `<div class="print-code">${q.codeBlock}</div>`;
+    }
+
+    if (q.type === 'multiple_choice') {
+      html += '<ul class="print-options">';
+      q.options.forEach((opt, oi) => {
+        html += `<li>${String.fromCharCode(65+oi)}. ${opt}</li>`;
+      });
+      html += '</ul>';
+    } else if (q.type === 'order') {
+      html += '<ul class="print-options">';
+      q.options.forEach((opt, oi) => { html += `<li>${oi+1}. ${opt}</li>`; });
+      html += '</ul>';
+    }
+
+    html += '<div class="print-answer-box"></div>';
+    div.innerHTML = html;
+    sheet.appendChild(div);
+  });
+
+  window.print();
+}
+
+// =========================================================
+//  UTILS
+// =========================================================
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+</script>
+</body>
+</html>

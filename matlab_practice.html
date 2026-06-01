@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATLAB 예제 필기 연습</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nanum Gothic', '맑은 고딕', sans-serif;
+  background: #0F172A;
+  color: #E2E8F0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.container {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 상단 진행 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #94A3B8;
+}
+.counter {
+  font-size: 0.85rem;
+  color: #475569;
+}
+.progress-bar {
+  height: 5px;
+  background: #1E293B;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #3B82F6, #34D399);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* 카드 */
+.card {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.example-label {
+  display: inline-block;
+  background: #3B82F6;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+
+.problem-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #F1F5F9;
+  line-height: 1.5;
+}
+
+.problem-desc {
+  font-size: 0.9rem;
+  color: #94A3B8;
+  line-height: 1.8;
+  border-left: 3px solid #334155;
+  padding-left: 14px;
+}
+.problem-desc code {
+  background: #0F172A;
+  color: #7DD3FC;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.88em;
+}
+
+/* 주석 영역 (항상 노출) */
+.comments-block {
+  background: #0F172A;
+  border: 1px solid #1E3A5F;
+  border-radius: 10px 10px 0 0;
+  padding: 14px 22px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.92rem;
+  color: #6A9955;
+  white-space: pre;
+  line-height: 1.8;
+  overflow-x: auto;
+  border-bottom: none;
+}
+
+/* 코드 영역 */
+.code-wrap {
+  position: relative;
+}
+.code-block {
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 0 0 10px 10px;
+  padding: 20px 22px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.92rem;
+  color: #7DD3FC;
+  white-space: pre;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+.code-block .comment { color: #6A9955; }
+.code-block .keyword { color: #C792EA; }
+.code-block .number  { color: #F78C6C; }
+.code-block .string  { color: #C3E88D; }
+
+.code-cover {
+  position: absolute;
+  inset: 0;
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.code-cover:hover { background: #1E293B; }
+.code-cover-icon { font-size: 2rem; }
+.code-cover-text { font-size: 0.9rem; color: #475569; }
+
+/* 버튼들 */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-reveal {
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  color: white;
+}
+.btn-next {
+  background: linear-gradient(135deg, #10B981, #3B82F6);
+  color: white;
+}
+.btn-prev {
+  background: transparent;
+  color: #64748B;
+  border: 1px solid #334155;
+}
+.btn-restart {
+  background: transparent;
+  color: #F59E0B;
+  border: 1px solid #F59E0B;
+}
+
+/* 상태 배지 */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #475569;
+}
+.status-dot.done { background: #10B981; }
+.status-text { color: #64748B; }
+
+/* 완료 화면 */
+.finish-card {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 48px 28px;
+  text-align: center;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.finish-card.active { display: flex; }
+.finish-icon { font-size: 3rem; }
+.finish-title { font-size: 1.4rem; font-weight: 800; color: #34D399; }
+.finish-sub { color: #94A3B8; font-size: 0.9rem; line-height: 1.7; }
+
+/* 인덱스 점 */
+.dot-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #334155;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dot.current { background: #3B82F6; }
+.dot.seen { background: #10B981; }
+
+/* 탭 */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: #1E293B;
+  border-radius: 12px;
+  padding: 4px;
+}
+.tab {
+  flex: 1;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+  color: #64748B;
+  transition: all 0.2s;
+}
+.tab.active { background: #3B82F6; color: white; }
+
+/* 플로우차트 텍스트 */
+.fc-chart {
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 20px 28px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: #94A3B8;
+  white-space: pre;
+  line-height: 2;
+  overflow-x: auto;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-bar">
+    <button class="tab active" id="tab-practice" onclick="switchTab('practice')">예제 필기 연습</button>
+    <button class="tab" id="tab-flowchart" onclick="switchTab('flowchart')">Flow Chart</button>
+  </div>
+  <div id="section-practice">
+  <div class="header">
+    <div class="header-title">MATLAB 예제 필기 연습</div>
+    <div class="counter" id="counter">1 / 6</div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:14.3%"></div>
+  </div>
+  <div class="dot-row" id="dot-row"></div>
+
+  <!-- 문제 카드 -->
+  <div class="card" id="main-card">
+    <span class="example-label" id="ex-label">예제 1</span>
+    <div class="problem-title" id="prob-title"></div>
+    <div class="problem-desc" id="prob-desc"></div>
+    <div class="comments-block" id="comments-block"></div>
+    <div class="code-wrap">
+      <div class="code-block" id="code-block"></div>
+      <div class="code-cover" id="code-cover" onclick="revealCode()">
+        <div class="code-cover-icon">✏️</div>
+        <div class="code-cover-text">A4에 먼저 손으로 작성하세요<br>작성 완료 후 클릭하여 정답 확인</div>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot" id="status-dot"></div>
+      <div class="status-text" id="status-text">코드가 가려져 있습니다. A4에 작성 후 확인하세요.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-prev" onclick="go(-1)">← 이전</button>
+      <button class="btn btn-reveal" id="btn-reveal" onclick="revealCode()">정답 확인</button>
+      <button class="btn btn-next" id="btn-next" onclick="go(1)" style="display:none">다음 예제 →</button>
+    </div>
+  </div>
+
+  <!-- 완료 카드 -->
+  <div class="finish-card" id="finish-card">
+    <div class="finish-icon">🎯</div>
+    <div class="finish-title">전체 예제 완료!</div>
+    <div class="finish-sub">9개 예제를 모두 연습했습니다.<br>다시 처음부터 반복하면 암기에 도움이 됩니다.</div>
+    <button class="btn btn-restart" onclick="restart()">처음부터 다시</button>
+  </div>
+  </div><!-- /section-practice -->
+
+  <div id="section-flowchart" style="display:none">
+    <div class="header">
+      <div class="header-title">Flow Chart 연습</div>
+      <div class="counter" id="fc-counter">1 / 4</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="fc-progress" style="width:25%"></div></div>
+    <div class="dot-row" id="fc-dot-row"></div>
+    <div class="card" id="fc-card">
+      <span class="example-label" id="fc-label">FC 1</span>
+      <div class="problem-title" id="fc-title"></div>
+      <div class="problem-desc" id="fc-desc"></div>
+      <div class="code-wrap">
+        <div class="fc-chart" id="fc-chart"></div>
+        <div class="code-cover" id="fc-cover" onclick="revealFC()">
+          <div class="code-cover-icon">✏️</div>
+          <div class="code-cover-text">A4에 먼저 flowchart를 그리세요<br>완성 후 클릭하여 정답 확인</div>
+        </div>
+      </div>
+      <div class="status-row">
+        <div class="status-dot" id="fc-status-dot"></div>
+        <div class="status-text" id="fc-status-text">Flowchart가 가려져 있습니다.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="goFC(-1)">← 이전</button>
+        <button class="btn btn-reveal" id="fc-btn-reveal" onclick="revealFC()">정답 확인</button>
+        <button class="btn btn-next" id="fc-btn-next" onclick="goFC(1)" style="display:none">다음 →</button>
+      </div>
+    </div>
+    <div class="finish-card" id="fc-finish-card">
+      <div class="finish-icon">🎯</div>
+      <div class="finish-title">Flowchart 완료!</div>
+      <div class="finish-sub">4개 flowchart를 모두 연습했습니다.</div>
+      <button class="btn btn-restart" onclick="restartFC()">처음부터 다시</button>
+    </div>
+  </div><!-- /section-flowchart -->
+</div>
+
+<script>
+const EXAMPLES = [
+  {
+    label: '예제 1 — 원형 실린더',
+    title: '원형 실린더 부피 계산 및 반지름 역산',
+    desc: `주어진 조건:
+• 부피 공식: V = π·r²·h
+• 부피를 20% 증가시킨 후, 높이 유지하고 새 반지름 r_new를 구하시오
+• 테스트: r = 8 m, h = 15 m  →  r_new ≈ 8.7636 m`,
+    comments:
+`% 이 문제는 원형 실린더의 부피를 계산하고, 부피를 20% 증가시킨 후
+% 높이를 유지하면서 새로운 반지름을 구하는 문제입니다.
+% Input 함수와 Output 함수를 적절히 이용해서 풀이하시오.
+% Inputs : r = 8 [m], h = 15 [m]
+% Outputs : r_new [m]`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+r = 8;    % [m]
+h = 15;   % [m]
+
+% Calculation section %
+V     = pi*r^2*h;
+V_new = V + 0.2*V;
+r_new = sqrt(V_new/(pi*h));
+
+% Output section %
+disp('r_new [m] = ');
+disp(r_new);`
+  },
+  {
+    label: '예제 2 — 사이클로이드 곡선',
+    title: '사이클로이드 매개변수 곡선 플롯',
+    desc: `주어진 조건:
+• x = r(φ − sinφ),  y = r(1 − cosφ),  0 ≤ φ ≤ 4π
+• 테스트: r = 10 m
+• Outputs : x-y 곡선 플롯`,
+    comments:
+`% 이 문제는 사이클로이드 곡선의 매개변수 방정식을 이용하여
+% x, y 배열을 계산하고 곡선을 플롯하는 문제입니다.
+% Input 함수와 Output 함수를 적절히 이용해서 풀이하시오.
+% Inputs : r = 10 [m]
+% Outputs : plot of x-y cycloid curve`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+r = 10;   % [m]
+
+% Calculation section %
+dphi = 0.01;
+phi  = 0:dphi:4*pi;
+x    = r*(phi - sin(phi));
+y    = r*(1   - cos(phi));
+
+% Output section %
+disp('Plotting cycloid...');
+plot(x, y)
+xlabel('x (m)')
+ylabel('y (m)')
+grid on`
+  },
+  {
+    label: '예제 3 — 코사인 법칙',
+    title: '4변형에서 코사인 법칙으로 미지의 변 계산',
+    desc: `The four-sided figure consists of two triangles having a common side a.
+• 삼각형 1: a² = b₁² + c₁² − 2b₁c₁·cosA₁
+• 삼각형 2: a² = b₂² + c₂² − 2b₂c₂·cosA₂  (A2가 a의 맞은편 각)
+• b1=180m, b2=165m, c1=115m, A1=120°, A2=100°
+  → a = 257.5364 m,  c2 = 171.1503 m`,
+    comments:
+`% 사각형을 대각선 a로 나눈 두 삼각형 문제
+% 삼각형 1: a² = b₁² + c₁² − 2·b₁·c₁·cos(A₁)
+% 삼각형 2: a² = b₂² + c₂² − 2·b₂·c₂·cos(A₂) → 2차방정식으로 c2 풀이
+% Inputs : b1=180, b2=165, c1=115 [m], A1=120, A2=100 [deg]
+% Outputs : a=257.5364, c2=171.1503 [m]`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+b1 = 180;  % [m]
+b2 = 165;  % [m]
+c1 = 115;  % [m]
+A1 = 120;  % [deg]
+A2 = 100;  % [deg]
+
+% Calculation section %
+% a²  = b1² + c1² − 2·b1·c1·cos(A1)
+a  = sqrt(b1^2 + c1^2 - 2*b1*c1*cosd(A1));
+
+% a²  = b2² + c2² − 2·b2·c2·cos(A2)  → 2차방정식으로 c2 계산
+% c2² − 2·b2·cos(A2)·c2 + (b2² − a²) = 0
+coef_b = -2*b2*cosd(A2);
+coef_c = b2^2 - a^2;
+c2_roots = roots([1, coef_b, coef_c]);
+c2 = c2_roots(c2_roots > 0);
+
+% Output section %
+disp('a [m] = ');
+disp(a);
+disp('c2 [m] = ');
+disp(c2);
+
+% ※ 별해 — roots() 함수 이용
+% %c2^2 -2*b2*c2*cosd(A2) + b2^2 - a^2 = 0
+% coef1 = -2*b2*cosd(A2);
+% coef2 = b2^2-a^2;
+% y = [1,coef1, coef2];
+% All_roots = roots(y);
+% c2 = All_roots(All_roots>0);
+% disp(['a의 길이(a):',num2str(a),'[m]'])
+% disp(['c2의 길이(c2):', num2str(c2), '[m]'])`
+  },
+  {
+    label: '예제 4 — 케이블-보 장력',
+    title: '케이블-보 시스템 최소 장력 및 최적 D 계산',
+    desc: `A cable of length Lc supports a beam of length Lb so that it is horizontal when weight W is attached at the beam end.
+• T = Lb·Lc·W / (D·√(Lb²−D²))
+• (a) W=400N, Lb=3m, Lc=5m → T_min = 1333.3333 N, D_opt = 2.1213 m
+• (b) T vs D 플롯 — T_min의 10% 이상 증가하는 D 범위 확인`,
+    comments:
+`% A cable supports a beam horizontally; find D that minimizes tension T.
+% T = Lb*Lc*W / (D*sqrt(Lb^2 - D^2))
+% (a) Inputs : W=400 [N], Lb=3 [m], Lc=5 [m]
+% (b) plot T vs D, check sensitivity (10% above T_min)
+% Outputs : T_min [N], D_opt [m]`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+W  = 400;  % [N]
+Lb = 3;    % [m]
+Lc = 5;    % [m]
+
+% Calculation section %
+dD = 0.001;
+D  = dD:dD:(Lb-dD);
+T = (Lb*Lc*W) ./ (D .* sqrt(Lb^2 - D.^2));
+[T_min, idx] = min(T);
+D_opt = D(idx);
+
+% Output section %
+disp('T_min [N] = ');
+disp(T_min);
+disp('D_opt [m] = ');
+disp(D_opt);
+
+% (b) T_min의 10% 이상 증가 범위: T <= 1.1*T_min인 D 구간
+T_threshold = 1.1 * T_min;
+dT = abs(T - T_threshold);
+[~, idx_left] = min(dT(1:idx));
+[~, idx_right] = min(dT(idx:end));
+D1 = D(idx_left);
+D2 = D(idx + idx_right - 1);
+
+disp('(b) D 범위 (T ≤ 1.1*T_min):');
+disp(['D1 = ', num2str(D1), ' m']);
+disp(['D2 = ', num2str(D2), ' m']);
+disp(['ΔD = ', num2str(D2 - D1), ' m']);
+
+plot(D, T, 'b-', 'LineWidth', 1.5)
+hold on
+plot([D1, D2], [T_threshold, T_threshold], 'r--', 'LineWidth', 1.5)
+plot(D_opt, T_min, 'go', 'MarkerSize', 8)
+xlabel('D (m)'); ylabel('T (N)')
+legend('T(D)', '1.1 T_{min}', 'T_{min}')
+grid on
+
+% ※ 별해 — abs(T - T_threshold) 최솟값으로 D1·D2 탐색 (10% 초과 경계)
+% T_threshold = 1.1 * T_min;
+% dT          = abs(T - T_threshold);
+% T_min_index = idx;
+%
+% % 왼쪽 D1
+% dT_left = dT(1:T_min_index);
+% [~, idx_left] = min(dT_left);
+% D1 = D(idx_left);
+%
+% % 오른쪽 D2
+% dT_right = dT(T_min_index:end);
+% [~, idx_right] = min(dT_right);
+% D2 = D(T_min_index + idx_right - 1);
+%
+% disp('D1: '); disp(D1);
+% disp('D2: '); disp(D2);
+% disp('D 변화 범위: '); disp(D2 - D1);`
+  },
+  {
+    label: '예제 5 — 질량-스프링 piecewise',
+    title: 'piecewise 스프링 변위 계산 (함수 파일 + 플롯)',
+    desc: `주어진 조건:
+• x < d : W = k₁x  /  x ≥ d : W = k₁x + 2k₂(x−d)
+• k₁ = 10⁴ N/m,  k₂ = 1.5×10⁴ N/m,  d = 0.1 m
+• (a) W = 500 N, 2000 N 두 경우에 대해 x 계산
+• (b) 0 ≤ W ≤ 3000 N 범위에서 x vs W 플롯
+
+✏️ 함수 파일(MassSpring.m)과 메인 스크립트 두 파일을 각각 작성하시오.
+   본 해 함수는 Cond1/cond2 논리 인덱싱으로 벡터 처리.`,
+    comments:
+`% 이 문제는 piecewise 스프링 모델을 함수 파일로 구현합니다.
+% MassSpring.m  →  function x = MassSpring(W, k1, k2, d)
+% 본 해 : Cond1/cond2 논리 인덱싱으로 벡터 W를 한 번에 처리.
+% (a) 스크립트 : W = 숫자 입력 → disp(x)
+% (b) 스크립트 : W = 0:1:3000 → plot + grid on
+% 별해 : if문 버전 (스칼라 전용)`,
+    code:
+`% ===== 함수 파일 : MassSpring.m  [본 해] =====
+function x = MassSpring(W, k1, k2, d)
+x_temp = W/k1;
+Cond1  = x_temp < d;
+cond2  = x_temp >= d;
+x1     = x_temp(Cond1);
+x2     = (W(cond2) + 2*k2*d) / (k1 + 2*k2);
+x      = [x1, x2];
+end
+
+% ===== (a) 메인 스크립트 — 스칼라 검증 =====
+clear;
+clc;
+
+W  = 2000;   % [N]  (500N → x=0.050m / 2000N → x=0.125m)
+k1 = 10^4;
+k2 = 1.5*10^4;
+d  = 0.1;
+
+x = MassSpring(W, k1, k2, d);
+disp(x);
+
+% ===== (b) 메인 스크립트 — 플롯 =====
+clear;
+clc;
+
+W  = 0:1:3000;
+k1 = 10^4;
+k2 = 1.5*10^4;
+d  = 0.1;
+
+x = MassSpring(W, k1, k2, d);
+
+figure(1)
+plot(W, x);
+grid on
+
+% ※ 별해 (선택사항) — if문 사용, 스칼라 전용
+% function x = MassSpring(W, k1, k2, d)
+% x_temp = W / k1;
+% if x_temp < d
+%     x = x_temp;
+% else
+%     x = (W + 2*k2*d) / (k1 + 2*k2);
+% end
+% end`
+  },
+  {
+    label: '예제 6 — 울타리 길이 계산',
+    title: '도형의 변 L과 둘레 T 계산 (함수 파일)',
+    desc: `주어진 조건:
+• D = W/√2,  L = (A − 0.5D²)/W,  T = W + 2L + 2D
+• 테스트: W = 6 m, A = 80 m²  →  L = 11.8333 m,  T = 38.1519 m
+
+✏️ 함수 파일(fence.m)과 메인 스크립트 두 파일을 각각 작성하시오.`,
+    comments:
+`% 이 문제는 함수 파일을 작성하여 호출하는 방식으로 풀이합니다.
+% fence.m  →  function [L, T] = fence(W, A)
+% 테스트: W = 6 m, A = 80 m²  →  L = 11.8333 m,  T = 38.1519 m
+% Inputs : W [m], A [m^2]
+% Outputs : L [m], T [m]`,
+    code:
+`% ===== 함수 파일 : fence.m =====
+function [L, T] = fence(W, A)
+D = W/sqrt(2);
+L = (A - 0.5*D^2)/W;
+T = W + 2*L + 2*D;
+end
+
+% ===== 메인 스크립트 =====
+% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+W = 6;    % [m]
+A = 80;   % [m^2]
+
+% Calculation section %
+[L, T] = fence(W, A);
+
+% Output section %
+disp('L [m] = ');
+disp(L);
+disp('T [m] = ');
+disp(T);`
+  },
+  {
+    label: '예제 7 — 포사체 운동',
+    title: '포사체 조건 동시 만족 시각 계산',
+    desc: `주어진 조건:
+• h(t) = v₀t·sinA − 0.5gt²,  v(t) = √(v₀²−2v₀gt·sinA+g²t²)
+• v0=20 m/s, A=40°, g=9.81 m/s²
+  → t1 = 0.8404 s,  t2 = 1.7806 s`,
+    comments:
+`% 이 문제는 포사체 운동에서 h(t)>=6 AND v(t)<=16 조건을
+% 동시에 만족하는 첫 번째와 마지막 시각을 구하는 문제입니다.
+% Input 함수와 Output 함수를 적절히 이용해서 풀이하시오.
+% Inputs : v0=20 [m/s], A=40 [deg], g=9.81 [m/s^2]
+% Outputs : t1 [s], t2 [s]`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+v0    = 20;    % [m/s]
+A_deg = 40;    % [deg]
+g     = 9.81;  % [m/s^2]
+
+% Calculation section %
+A     = A_deg*pi/180;
+t_hit = 2*(v0/g)*sin(A);
+dt    = 0.0001;
+t     = 0:dt:t_hit;
+h     = v0*t.*sin(A) - 0.5*g*t.^2;
+v     = sqrt(v0^2 - 2*v0*g*t.*sin(A) + g^2*t.^2);
+cond  = (h >= 6) & (v <= 16);
+t_valid = t(cond);
+t1    = t_valid(1);
+t2    = t_valid(end);
+
+% Output section %
+disp('t1 [s] = ');
+disp(t1);
+disp('t2 [s] = ');
+disp(t2);`
+  },
+  {
+    label: '예제 8 — 관개수로 단면 최적화',
+    title: '수로 단면 최소 둘레길이 최적화 (fminsearch)',
+    desc: `주어진 조건:
+• 단면적 = 100 ft², 목적함수: L = 100/d − d/tanθ + 2d/sinθ
+• 테스트: d0=20 ft, θ0=1 rad (초기값)
+  → d_opt = 7.5984 ft,  θ_opt = 1.0472 rad (60°),  L_min = 26.3215 ft
+
+✏️ 함수 파일(channel.m)과 메인 스크립트 두 파일을 각각 작성하시오.
+   fminsearch(@channel, X0) 호출 방식에 주의.`,
+    comments:
+`% 이 문제는 fminsearch를 이용해 수로 둘레 L을 최소화합니다.
+% channel.m  →  function L = channel(X)
+%                d = X(1); theta = X(2);
+% 메인 스크립트에서 fminsearch(@channel, X0)로 최적해를 구합니다.
+% Inputs : d0=20 [ft], theta0=1 [rad]
+% Outputs : d_opt=7.5984, theta_opt=1.0472, L_min=26.3215`,
+    code:
+`% ===== 함수 파일 : channel.m =====
+function L = channel(X)
+d     = X(1);
+theta = X(2);
+L = 100./d - d./tan(theta) + 2*d./sin(theta);
+end
+
+% ===== 메인 스크립트 =====
+% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+d0     = 20;   % [ft]
+theta0 = 1;    % [rad]
+
+% Calculation section %
+X0 = [d0, theta0];
+[Xmin, Lmin] = fminsearch(@channel, X0);
+d_opt     = Xmin(1);
+theta_opt = Xmin(2);
+
+% Output section %
+disp('d_opt [ft] = ');
+disp(d_opt);
+disp('theta_opt [rad] = ');
+disp(theta_opt);
+disp('L_min [ft] = ');
+disp(Lmin);
+
+% ※ 별해 (선택사항) — 3개 초기값으로 fminsearch 비교 후 전역 최솟값 선택
+% ===== 함수 파일 : hamberger.m =====
+% function L = hamberger(X)
+%     d     = X(1);
+%     theta = X(2);
+%     L = 100/d - d/tan(theta) + 2*d/sin(theta);
+% end
+%
+% ===== 메인 스크립트 =====
+% clear; clc; close all;
+%
+% x0 = [20, 1.0];
+% x1 = [20, 0.1];
+% x2 = [20, 1.5];
+%
+% [X0_min, L0_min] = fminsearch(@hamberger, x0);
+% [X1_min, L1_min] = fminsearch(@hamberger, x1);
+% [X2_min, L2_min] = fminsearch(@hamberger, x2);
+%
+% X = [X0_min; X1_min; X2_min];
+% L = [L0_min, L1_min, L2_min];
+%
+% [~, idx] = min(L);
+%
+% d_opt     = X(idx, 1);
+% theta_opt = X(idx, 2);
+%
+% disp('최적 d, theta:')
+% disp([d_opt, theta_opt])
+% disp('L 최솟값:')
+% disp(min(L))`
+  },
+  {
+    label: '예제 9 — 비용 행렬 연산',
+    title: '제품 비용 × 생산량 행렬 곱으로 분기별·연간 비용 계산',
+    desc: `The following tables show costs associated with a certain product and the production volume for the four quarters. Use MATLAB to find the quarterly costs for materials, labor, and transportation; the total annual costs; and the total quarterly costs.
+
+Unit costs ($ × 10³):          Quarterly production volume:
+  Product | Mat | Lab | Trans     Product | Q1 | Q2 | Q3 | Q4
+    1     |  6  |  2  |   1         1    | 10 | 12 | 13 | 15
+    2     |  2  |  5  |   4         2    |  8 |  7 |  6 |  4
+    3     |  4  |  3  |   2         3    | 12 | 10 | 13 |  9
+    4     |  9  |  7  |   3         4    |  6 |  4 | 11 |  5
+
+핵심: Q = C' * P  →  Q1=[178,138,84], Q2=[162,117,72], Q3=[241,172,96], Q4=[179,112,64]`,
+    comments:
+`% 행렬 C (4×3): 4 제품 × [재료비, 인건비, 운송비] 단가 ($ × 10^3)
+% 행렬 P (4×4): 4 제품 × 4 분기 생산량
+% Q = C' * P → (3×4): 비용 종류 × 분기별 총비용
+% annual = sum(Q, 2) → 연간 비용 합계 (3×1)
+% qtotal = sum(Q, 1) → 분기별 총비용 (1×4)
+% Outputs : Q [3×4], annual [3×1], qtotal [1×4]`,
+    code:
+`% initialization
+clear;
+clc;
+close all;
+
+% Input section %
+C = [6 2 1;    % Product 1: Mat=6, Lab=2, Trans=1
+     2 5 4;    % Product 2
+     4 3 2;    % Product 3
+     9 7 3];   % Product 4  (unit costs $ x10^3)
+
+P = [10 12 13 15;   % Product 1
+      8  7  6  4;   % Product 2
+     12 10 13  9;   % Product 3
+      6  4 11  5];  % Product 4  (quarterly production volume)
+
+% Calculation section %
+Q      = C' * P;      % 3x4 : quarterly cost by type
+annual = sum(Q, 2);   % 3x1 : annual total by type
+qtotal = sum(Q, 1);   % 1x4 : total cost by quarter
+
+% Output section %
+disp('Q [Mat;Lab;Trans x Q1~Q4] ($x10^3) = ');
+disp(Q);
+disp('Annual totals [Mat;Lab;Trans] ($x10^3) = ');
+disp(annual);
+disp('Quarterly totals ($x10^3) = ');
+disp(qtotal);`
+  }
+];
+
+let current = 0;
+const seen = new Array(EXAMPLES.length).fill(false);
+
+function buildDots() {
+  const row = document.getElementById('dot-row');
+  row.innerHTML = '';
+  EXAMPLES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === current ? ' current' : (seen[i] ? ' seen' : ''));
+    d.onclick = () => goTo(i);
+    row.appendChild(d);
+  });
+}
+
+function renderExample(idx) {
+  const ex = EXAMPLES[idx];
+  document.getElementById('ex-label').textContent = ex.label;
+  document.getElementById('prob-title').textContent = ex.title;
+  document.getElementById('prob-desc').innerHTML = ex.desc.replace(/\n/g,'<br>');
+  document.getElementById('comments-block').textContent = ex.comments;
+  document.getElementById('code-block').textContent = ex.code;
+
+  // 항상 가린 상태로 시작
+  document.getElementById('code-cover').style.display = 'flex';
+  document.getElementById('btn-reveal').style.display = 'flex';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('status-dot').className = 'status-dot';
+  document.getElementById('status-text').textContent = '코드가 가려져 있습니다. A4에 작성 후 확인하세요.';
+
+  document.getElementById('counter').textContent = `${idx+1} / ${EXAMPLES.length}`;
+  document.getElementById('progress-fill').style.width = `${((idx+1)/EXAMPLES.length)*100}%`;
+
+  document.getElementById('main-card').style.display = 'flex';
+  document.getElementById('finish-card').classList.remove('active');
+
+  buildDots();
+}
+
+function revealCode() {
+  document.getElementById('code-cover').style.display = 'none';
+  document.getElementById('btn-reveal').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'flex';
+  document.getElementById('status-dot').classList.add('done');
+  document.getElementById('status-text').textContent = '정답 확인 완료. 내용을 비교하세요.';
+  seen[current] = true;
+  buildDots();
+}
+
+function go(dir) {
+  goTo(current + dir);
+}
+
+function goTo(idx) {
+  if (idx < 0) return;
+  if (idx >= EXAMPLES.length) {
+    showFinish();
+    return;
+  }
+  current = idx;
+  renderExample(current);
+}
+
+function showFinish() {
+  document.getElementById('main-card').style.display = 'none';
+  document.getElementById('finish-card').classList.add('active');
+  document.getElementById('progress-fill').style.width = '100%';
+  buildDots();
+}
+
+function restart() {
+  current = 0;
+  seen.fill(false);
+  renderExample(0);
+}
+
+const FLOWCHARTS = [
+  {
+    label: 'FC 1',
+    title: '질량-스프링 변위 (if-else)',
+    desc: `k₁=10⁴ N/m, k₂=1.5×10⁴ N/m, d=0.1 m, W=2000 N
+위 값으로 변위 x를 구하는 flowchart를 그리고, x 값을 직접 계산하시오.
+조건: x_temp = W/k₁,  x_temp < d 이면 단일 스프링,  아니면 2번째 스프링 추가`,
+    chart:
+`               [START]
+                  |
+          x_temp = W / k1        <- x_temp = 2000 / 10000 = 0.2 m
+                  |
+     ◇  x_temp < d (= 0.1 m) ?  ◇
+              /              \\
+            Yes                No   <- 해당 (0.2 >= 0.1)
+             |                  |
+        x = x_temp         x = (W + 2·k2·d) / (k1 + 2·k2)
+          (= 0.2 m)           = (2000 + 2×15000×0.1) / (10000 + 30000)
+                              = (2000 + 3000) / 40000
+                              = 0.125 m
+             |                  |
+             └────────┬──────────┘
+                    [END]
+
+  ▶ 정답: x = 0.125 m`
+  },
+  {
+    label: 'FC 2',
+    title: '포사체 AND 조건 판별 (중첩 if)',
+    desc: `v₀=15 m/s, A=35°, g=9.81 m/s²
+h(t) = v₀t·sinA − 0.5gt²,  v(t) = √(v₀²−2v₀gt·sinA+g²t²)
+조건 h(t)≥6 AND v(t)≤16 을 동시에 만족하는지 판별하는 flowchart를 그리시오.`,
+    chart:
+`               [START]
+                  |
+     h = v0·t·sinA − 0.5·g·t²
+     v = sqrt(v0² − 2·v0·g·t·sinA + g²·t²)
+                  |
+         ◇  h >= 6 ?  ◇
+               /        \\
+             Yes          No
+              |             |
+      ◇  v <= 16 ?  ◇    cond = 0   (조건 불만족)
+            /        \\
+          Yes          No
+           |             |
+        cond = 1      cond = 0  (조건 불만족)
+        (조건 만족)
+           |             |
+           └──────┬───────┘
+                [END]
+                cond = 1  →  조건 만족 구간
+                cond = 0  →  조건 불만족
+
+  ※ MATLAB 단축 표현:  cond = (h >= 6) & (v <= 16);`
+  },
+  {
+    label: 'FC 3',
+    title: '3구간 piecewise 함수 (if-elseif-else)',
+    desc: `다음 piecewise 함수의 flowchart를 그리고 각 테스트 케이스의 f 값을 계산하시오.
+  x < 0     →  f = x + 4
+  0 ≤ x < 5 →  f = x² − 1
+  x ≥ 5     →  f = 3x − 9
+테스트: x = −3, 0, 2, 5, 7`,
+    chart:
+`               [START]
+                  |
+          ◇  x < 0 ?  ◇
+                /        \\
+              Yes          No
+               |             |
+           f = x + 4    ◇  x < 5 ?  ◇
+                              /        \\
+                            Yes          No
+                             |             |
+                          f = x²−1      f = 3x−9
+               |             |             |
+               └─────────────┴──────┬───────┘
+                                  [END]
+
+  ▶ 정답:
+     x = −3  →  f = −3+4   =  1
+     x =  0  →  f = 0²−1   = −1
+     x =  2  →  f = 2²−1   =  3
+     x =  5  →  f = 3×5−9  =  6
+     x =  7  →  f = 3×7−9  = 12`
+  },
+  {
+    label: 'FC 4',
+    title: '최솟값 탐색 — for 루프 + if (케이블-보)',
+    desc: `T = LbLcW / (D·√(Lb²−D²)),  D = 0.001 : 0.001 : Lb−0.001
+D 범위를 순차 탐색하여 T_min과 D_opt를 구하는 flowchart를 그리시오.
+(MATLAB min() 함수 없이, for 루프와 if문으로 직접 구현)`,
+    chart:
+`               [START]
+                  |
+         T_min = Inf,  D_opt = 0
+         dD = 0.001;  D = dD
+                  |
+       ◇  D < Lb ?  ◇         <- 반복 조건 (for 루프)
+             /        \\
+           Yes          No
+            |             |
+   T = Lb·Lc·W /        [END]
+     (D·√(Lb²−D²))     T_min, D_opt 출력
+            |
+   ◇  T < T_min ?  ◇
+          /        \\
+        Yes          No
+         |             |
+      T_min = T        |
+      D_opt = D        |
+         |             |
+         └──────┬───────┘
+          D = D + dD
+                |
+       (반복 조건으로 이동)
+
+  ※ MATLAB 단축 표현:
+     D = dD:dD:(Lb-dD);
+     T = (Lb*Lc*W) ./ (D.*sqrt(Lb^2-D.^2));
+     [T_min, idx] = min(T);
+     D_opt = D(idx);`
+  }
+];
+
+let fcCurrent = 0;
+const fcSeen = new Array(FLOWCHARTS.length).fill(false);
+
+function buildFCDots() {
+  const row = document.getElementById('fc-dot-row');
+  row.innerHTML = '';
+  FLOWCHARTS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === fcCurrent ? ' current' : (fcSeen[i] ? ' seen' : ''));
+    d.onclick = () => goFCTo(i);
+    row.appendChild(d);
+  });
+}
+
+function renderFC(idx) {
+  const fc = FLOWCHARTS[idx];
+  document.getElementById('fc-label').textContent = fc.label;
+  document.getElementById('fc-title').textContent = fc.title;
+  document.getElementById('fc-desc').innerHTML = fc.desc.replace(/\n/g,'<br>');
+  document.getElementById('fc-chart').textContent = fc.chart;
+  document.getElementById('fc-cover').style.display = 'flex';
+  document.getElementById('fc-btn-reveal').style.display = 'flex';
+  document.getElementById('fc-btn-next').style.display = 'none';
+  document.getElementById('fc-status-dot').className = 'status-dot';
+  document.getElementById('fc-status-text').textContent = 'Flowchart가 가려져 있습니다. A4에 먼저 그리세요.';
+  document.getElementById('fc-counter').textContent = `${idx+1} / ${FLOWCHARTS.length}`;
+  document.getElementById('fc-progress').style.width = `${((idx+1)/FLOWCHARTS.length)*100}%`;
+  document.getElementById('fc-card').style.display = 'flex';
+  document.getElementById('fc-finish-card').classList.remove('active');
+  buildFCDots();
+}
+
+function revealFC() {
+  document.getElementById('fc-cover').style.display = 'none';
+  document.getElementById('fc-btn-reveal').style.display = 'none';
+  document.getElementById('fc-btn-next').style.display = 'flex';
+  document.getElementById('fc-status-dot').classList.add('done');
+  document.getElementById('fc-status-text').textContent = '정답 확인 완료.';
+  fcSeen[fcCurrent] = true;
+  buildFCDots();
+}
+
+function goFC(dir) { goFCTo(fcCurrent + dir); }
+
+function goFCTo(idx) {
+  if (idx < 0) return;
+  if (idx >= FLOWCHARTS.length) {
+    document.getElementById('fc-card').style.display = 'none';
+    document.getElementById('fc-finish-card').classList.add('active');
+    document.getElementById('fc-progress').style.width = '100%';
+    buildFCDots();
+    return;
+  }
+  fcCurrent = idx;
+  renderFC(fcCurrent);
+}
+
+function restartFC() {
+  fcCurrent = 0;
+  fcSeen.fill(false);
+  renderFC(0);
+}
+
+function switchTab(tab) {
+  document.getElementById('section-practice').style.display = tab === 'practice' ? '' : 'none';
+  document.getElementById('section-flowchart').style.display = tab === 'flowchart' ? '' : 'none';
+  document.getElementById('tab-practice').className = 'tab' + (tab === 'practice' ? ' active' : '');
+  document.getElementById('tab-flowchart').className = 'tab' + (tab === 'flowchart' ? ' active' : '');
+  if (tab === 'flowchart' && fcSeen.every(v => !v)) renderFC(0);
+}
+
+// 초기 렌더
+renderExample(0);
+</script>
+</body>
+</html>
