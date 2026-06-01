@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>준영의 Life Command System</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#8b5cf6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LCS">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -763,7 +767,20 @@
     <div class="section-header">
       <span class="section-title">Life Dashboard</span>
       <span class="section-badge" id="total-progress-badge">로딩 중...</span>
+      <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
+        <div style="position:relative;">
+          <input id="search-input" type="text" placeholder="🔍 검색..." oninput="renderSearch(this.value)"
+            style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:inherit;font-size:13px;width:180px;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <button onclick="requestNotificationPermission()" title="알림 설정"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.2s;"
+          onmouseover="this.style.borderColor='var(--purple)';this.style.color='var(--purple)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">🔔</button>
+      </div>
     </div>
+    <div id="search-results" style="display:none;margin-bottom:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;"></div>
+    <div id="weekly-stats" style="margin-bottom:20px;"></div>
     <div class="categories-grid" id="categories-grid">
       <!-- Rendered by JS -->
     </div>
@@ -1002,6 +1019,12 @@ function renderDashboard() {
         <input class="add-task-input" id="input-${cat.id}"
           placeholder="할 일 입력..."
           onkeydown="if(event.key==='Enter') addTask('${cat.id}')">
+        <select id="priority-${cat.id}" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 4px;color:var(--text);font-size:12px;cursor:pointer;flex-shrink:0;">
+          <option value="urgent">🔴</option>
+          <option value="important">🟡</option>
+          <option value="normal" selected>⚪</option>
+        </select>
+        <input type="date" id="due-${cat.id}" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;color:var(--text-muted);font-size:12px;font-family:inherit;flex-shrink:0;width:130px;">
         <button class="add-task-submit" style="background:${cat.color}" onclick="addTask('${cat.id}')">추가</button>
       </div>
     </div>`;
@@ -1011,14 +1034,30 @@ function renderDashboard() {
   document.getElementById('total-progress-badge').textContent = `${totalDone}/${totalAll} · ${totalPct}%`;
 }
 
+function getDday(dueDate) {
+  if (!dueDate) return '';
+  const diff = Math.ceil((new Date(dueDate) - new Date().setHours(0,0,0,0)) / 86400000);
+  if (diff < 0) return `<span style="color:var(--red);font-size:11px;font-weight:700;">D+${Math.abs(diff)}</span>`;
+  if (diff === 0) return `<span style="color:var(--orange);font-size:11px;font-weight:700;">D-day</span>`;
+  if (diff <= 3) return `<span style="color:var(--yellow);font-size:11px;font-weight:700;">D-${diff}</span>`;
+  return `<span style="color:var(--text-muted);font-size:11px;">D-${diff}</span>`;
+}
+
+const PRIORITY_MAP = { urgent: '🔴', important: '🟡', normal: '⚪' };
+
 function renderTask(catId, task, idx) {
+  const dday = getDday(task.due);
+  const pri = PRIORITY_MAP[task.priority || 'normal'];
   return `
   <div class="task-item" id="task-${catId}-${idx}">
     <div class="task-check ${task.done ? 'checked' : ''}" onclick="toggleTask('${catId}', ${idx})">
       ${task.done ? '✓' : ''}
     </div>
-    <span class="task-text ${task.done ? 'done' : ''}" id="task-text-${catId}-${idx}"
-      ondblclick="editTask('${catId}', ${idx})">${escHtml(task.text)}</span>
+    <div style="flex:1;min-width:0;">
+      <span class="task-text ${task.done ? 'done' : ''}" id="task-text-${catId}-${idx}"
+        ondblclick="editTask('${catId}', ${idx})">${pri} ${escHtml(task.text)}</span>
+      ${dday ? `<div style="margin-top:2px;">${dday}</div>` : ''}
+    </div>
     <div class="task-actions">
       <button class="task-act-btn" onclick="editTask('${catId}', ${idx})" title="수정">✏</button>
       <button class="task-act-btn del" onclick="deleteTask('${catId}', ${idx})" title="삭제">✕</button>
@@ -1046,7 +1085,9 @@ function addTask(catId) {
   if (!text) return;
 
   if (!tasks[catId]) tasks[catId] = [];
-  tasks[catId].push({ text, done: false, created: Date.now() });
+  const priority = document.getElementById('priority-' + catId)?.value || 'normal';
+  const due = document.getElementById('due-' + catId)?.value || '';
+  tasks[catId].push({ text, done: false, priority, due, created: Date.now() });
   saveTasks(tasks);
   input.value = '';
   renderDashboard();
@@ -1064,7 +1105,9 @@ function addTask(catId) {
 function toggleTask(catId, idx) {
   tasks[catId][idx].done = !tasks[catId][idx].done;
   saveTasks(tasks);
+  if (tasks[catId][idx].done) confetti();
   renderDashboard();
+  renderWeeklyStats();
 }
 
 function deleteTask(catId, idx) {
@@ -1382,8 +1425,132 @@ function showToast(msg, type = '') {
 
 // ==================== INIT ====================
 
+// ==================== SEARCH ====================
+function renderSearch(query) {
+  const resultsEl = document.getElementById('search-results');
+  if (!query.trim()) { resultsEl.style.display = 'none'; return; }
+  const results = [];
+  CATEGORIES.forEach(cat => {
+    (tasks[cat.id] || []).forEach((t, i) => {
+      if (t.text.toLowerCase().includes(query.toLowerCase())) {
+        results.push({ cat, task: t, idx: i });
+      }
+    });
+  });
+  if (results.length === 0) {
+    resultsEl.style.display = 'block';
+    resultsEl.innerHTML = `<div style="color:var(--text-muted);font-size:13px;text-align:center;">검색 결과 없음</div>`;
+    return;
+  }
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = `
+    <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">검색 결과 ${results.length}개</div>
+    ${results.map(r => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:var(--bg3);margin-bottom:6px;">
+        <span style="font-size:16px;">${r.cat.icon}</span>
+        <span style="font-size:12px;color:var(--text-muted);flex-shrink:0;">${r.cat.name}</span>
+        <span style="flex:1;font-size:13px;${r.task.done?'text-decoration:line-through;color:var(--text-muted)':''}">${PRIORITY_MAP[r.task.priority||'normal']} ${escHtml(r.task.text)}</span>
+        ${getDday(r.task.due)}
+      </div>`).join('')}`;
+}
+
+// ==================== WEEKLY STATS ====================
+function renderWeeklyStats() {
+  const el = document.getElementById('weekly-stats');
+  if (!el) return;
+  const stats = JSON.parse(localStorage.getItem('lcs_daily') || '{}');
+  // Record today's done count
+  const today = new Date().toISOString().split('T')[0];
+  const doneCnt = Object.values(tasks).flat().filter(t => t.done).length;
+  stats[today] = doneCnt;
+  localStorage.setItem('lcs_daily', JSON.stringify(stats));
+
+  // Last 7 days
+  const days = Array.from({length:7}, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6-i));
+    return d.toISOString().split('T')[0];
+  });
+  const max = Math.max(...days.map(d => stats[d] || 0), 1);
+  const labels = ['월','화','수','목','금','토','일'];
+  const todayLabel = new Date().getDay(); // 0=Sun
+
+  el.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:flex-end;gap:8px;">
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;writing-mode:vertical-lr;margin-right:4px;align-self:center;">이번 주</div>
+      ${days.map((d, i) => {
+        const cnt = stats[d] || 0;
+        const h = Math.round((cnt / max) * 48) || 4;
+        const isToday = d === today;
+        const label = labels[(new Date(d).getDay() + 6) % 7];
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:11px;color:var(--text-muted);">${cnt||''}</div>
+          <div style="width:100%;height:${h}px;background:${isToday?'var(--purple)':'rgba(139,92,246,0.25)'};border-radius:4px 4px 0 0;transition:height 0.3s;"></div>
+          <div style="font-size:11px;color:${isToday?'var(--purple)':'var(--text-muted)'};font-weight:${isToday?700:400};">${label}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ==================== NOTIFICATIONS ====================
+function requestNotificationPermission() {
+  if (!('Notification' in window)) { showToast('이 브라우저는 알림을 지원하지 않습니다', 'error'); return; }
+  Notification.requestPermission().then(p => {
+    if (p === 'granted') {
+      showToast('알림 허용됨! D-day 태스크를 알려드릴게요 🔔', 'success');
+      checkDueTasks();
+    } else {
+      showToast('알림이 차단되어 있습니다', 'error');
+    }
+  });
+}
+
+function checkDueTasks() {
+  const today = new Date().toISOString().split('T')[0];
+  const dueTodayTasks = [];
+  CATEGORIES.forEach(cat => {
+    (tasks[cat.id] || []).forEach(t => {
+      if (!t.done && t.due && t.due <= today) {
+        dueTodayTasks.push(`[${cat.name}] ${t.text}`);
+      }
+    });
+  });
+  if (dueTodayTasks.length > 0 && Notification.permission === 'granted') {
+    new Notification('오늘 마감 태스크 ' + dueTodayTasks.length + '개', {
+      body: dueTodayTasks.slice(0, 3).join('\n'),
+      icon: '/favicon.ico'
+    });
+  }
+}
+
+// ==================== CONFETTI ====================
+function confetti() {
+  const colors = ['#8b5cf6','#3b82f6','#10b981','#f59e0b','#ef4444','#ec4899'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed; z-index:99999; pointer-events:none;
+      width:8px; height:8px; border-radius:${Math.random()>0.5?'50%':'2px'};
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw; top:-10px;
+      animation: confettiFall ${1+Math.random()*2}s ease-in forwards;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+if (!document.getElementById('confetti-style')) {
+  const s = document.createElement('style');
+  s.id = 'confetti-style';
+  s.textContent = `@keyframes confettiFall { to { transform: translateY(110vh) rotate(${Math.random()*720}deg); opacity:0; } }`;
+  document.head.appendChild(s);
+}
+
 renderDashboard();
 checkApiKey();
+renderWeeklyStats();
+checkDueTasks();
 
 // Keyboard shortcut: Escape closes modal
 document.addEventListener('keydown', e => {
