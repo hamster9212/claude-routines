@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus System — 준영</title>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a35;
+    --accent: #7c6af7;
+    --accent-dim: #3d3580;
+    --red: #e85555;
+    --yellow: #f0b429;
+    --green: #3ecf8e;
+    --text: #e2e2e8;
+    --text-dim: #6e6e80;
+    --text-mid: #a0a0b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 320px 1fr 300px;
+    grid-template-areas:
+      "header header header"
+      "mirror center capture"
+      "footer footer footer";
+    gap: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    grid-area: header;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; }
+  .header-task-display {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header-task-display span { color: var(--text); font-weight: 500; }
+  .streak-badge {
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ─── MIRROR PANEL ─── */
+  .mirror-panel {
+    grid-area: mirror;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mirror-warning {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .mirror-warning.active {
+    border-left-color: var(--red);
+    border-color: rgba(232, 85, 85, 0.4);
+    background: rgba(232, 85, 85, 0.05);
+    animation: pulse-red 1.5s ease-in-out 2;
+  }
+  .mirror-warning.dismissed { opacity: 0.35; border-left-color: var(--border); }
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: 0 0 12px rgba(232, 85, 85, 0.3); }
+  }
+  .warning-trigger {
+    font-size: 11px;
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .warning-text { color: var(--text-mid); }
+  .warning-cost {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .dismiss-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .mirror-warning:hover .dismiss-btn { opacity: 1; }
+
+  /* ─── CENTER ─── */
+  .center-panel {
+    grid-area: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 24px;
+    gap: 24px;
+    overflow-y: auto;
+  }
+
+  /* Task Input */
+  .task-setup {
+    width: 100%;
+    max-width: 520px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .task-setup label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .task-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+  #taskInput {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #taskInput:focus { border-color: var(--accent); }
+  #taskInput::placeholder { color: var(--text-dim); }
+  .start-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .start-btn:hover { opacity: 0.85; }
+  .start-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .intent-box {
+    margin-top: 12px;
+    display: none;
+  }
+  .intent-box.visible { display: block; }
+  .intent-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  #intentInput {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text-mid);
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+  }
+
+  /* Timer */
+  .timer-ring-wrapper {
+    position: relative;
+    width: 220px;
+    height: 220px;
+  }
+  .timer-svg { transform: rotate(-90deg); }
+  .timer-track { fill: none; stroke: var(--surface2); stroke-width: 6; }
+  .timer-progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+  }
+  .timer-progress.warning { stroke: var(--yellow); }
+  .timer-progress.urgent { stroke: var(--red); }
+  .timer-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .timer-display {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .timer-phase {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Timer controls */
+  .timer-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .ctrl-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .ctrl-btn:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .ctrl-btn.primary:hover { opacity: 0.85; }
+  .ctrl-btn:disabled { opacity: 0.35; cursor: default; }
+
+  /* Duration selector */
+  .duration-selector {
+    display: flex;
+    gap: 6px;
+  }
+  .dur-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .dur-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .dur-btn:hover:not(.selected) { border-color: var(--text-dim); color: var(--text); }
+
+  /* Switch friction */
+  .friction-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .friction-overlay.show { display: flex; }
+  .friction-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 420px;
+    text-align: center;
+  }
+  .friction-icon { font-size: 40px; margin-bottom: 16px; }
+  .friction-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .friction-body { font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 20px; }
+  .friction-elapsed { font-size: 28px; font-weight: 700; color: var(--accent); margin: 12px 0; }
+  .friction-btns { display: flex; gap: 10px; justify-content: center; }
+  .friction-back { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .friction-capture { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .friction-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 13px; font-family: inherit; outline: none; margin-bottom: 10px; }
+  .friction-input:focus { border-color: var(--accent); }
+
+  /* ─── CAPTURE PANEL ─── */
+  .capture-panel {
+    grid-area: capture;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
+  .capture-input-area {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  #captureInput {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    min-height: 32px;
+    max-height: 80px;
+  }
+  #captureInput::placeholder { color: var(--text-dim); }
+  .capture-send {
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .capture-send:hover { opacity: 0.8; }
+  .capture-hint { font-size: 11px; color: var(--text-dim); text-align: center; }
+  .parking-lot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .parking-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    color: var(--text-mid);
+    line-height: 1.5;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    animation: slide-in 0.2s ease;
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .parking-item-text { flex: 1; }
+  .parking-item-time { font-size: 10px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+  .parking-item-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 13px; padding: 0; opacity: 0; transition: opacity 0.1s; flex-shrink: 0; }
+  .parking-item:hover .parking-item-del { opacity: 1; }
+  .empty-state { font-size: 12px; color: var(--text-dim); text-align: center; padding: 20px; line-height: 1.8; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    grid-area: footer;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .footer-stat { display: flex; align-items: center; gap: 6px; }
+  .footer-stat strong { color: var(--text); font-size: 13px; }
+  .footer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); }
+  .footer-dot.green { background: var(--green); }
+  .footer-dot.red { background: var(--red); }
+
+  /* ─── BREAK SCREEN ─── */
+  .break-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .break-overlay.show { display: flex; }
+  .break-title { font-size: 32px; font-weight: 700; }
+  .break-subtitle { font-size: 14px; color: var(--text-mid); }
+  .break-timer { font-size: 56px; font-weight: 700; color: var(--green); font-variant-numeric: tabular-nums; }
+  .break-skip { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); font-size: 13px; padding: 10px 20px; cursor: pointer; font-family: inherit; margin-top: 8px; }
+  .break-skip:hover { color: var(--text); border-color: var(--text-dim); }
+  .break-review {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 28px;
+    max-width: 360px;
+    text-align: left;
+  }
+  .break-review-title { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+  .break-review-items { font-size: 13px; color: var(--text-mid); line-height: 2; }
+
+  /* Notification toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--text);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ─── PRIORITY SETUP MODAL ─── */
+  .priority-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .priority-modal.show { display: flex; }
+  .priority-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 480px;
+    width: 90%;
+  }
+  .priority-header {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .priority-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .priority-field {
+    margin-bottom: 20px;
+  }
+  .priority-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .priority-field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .priority-field input:focus { border-color: var(--accent); }
+  .priority-field input::placeholder { color: var(--text-dim); }
+  .priority-confirm {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .priority-confirm:hover { opacity: 0.85; }
+  .priority-confirm:disabled { opacity: 0.4; cursor: default; }
+
+  /* ─── PRIORITY ANCHOR (HEADER) ─── */
+  .priority-anchor {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124, 106, 247, 0.12);
+    border: 1px solid rgba(124, 106, 247, 0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .priority-anchor.show { display: flex; }
+  .priority-anchor.mismatch {
+    background: rgba(240, 180, 41, 0.12);
+    border-color: rgba(240, 180, 41, 0.4);
+    animation: pulse-yellow 2s ease-in-out infinite;
+  }
+  @keyframes pulse-yellow {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: 0 0 10px rgba(240, 180, 41, 0.25); }
+  }
+  .priority-anchor-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .priority-anchor-text { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+  .priority-anchor-alert { color: var(--yellow); flex-shrink: 0; }
+
+  /* ─── URGE SURF BUTTON (in friction) ─── */
+  .friction-urge {
+    background: rgba(240, 180, 41, 0.1);
+    border: 1px solid rgba(240, 180, 41, 0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    color: var(--text-mid);
+    line-height: 1.5;
+    text-align: left;
+  }
+  .friction-urge strong { color: var(--yellow); }
+  .urge-surf-btn {
+    width: 100%;
+    background: rgba(240, 180, 41, 0.15);
+    border: 1px solid rgba(240, 180, 41, 0.35);
+    border-radius: 8px;
+    color: var(--yellow);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-bottom: 10px;
+    transition: background 0.15s;
+  }
+  .urge-surf-btn:hover { background: rgba(240, 180, 41, 0.25); }
+  .urge-surf-countdown {
+    display: none;
+    font-size: 11px;
+    color: var(--yellow);
+    text-align: center;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .urge-surf-countdown.show { display: block; }
+
+  /* ─── SESSION QUESTION ─── */
+  .session-question {
+    display: none;
+    background: rgba(232, 85, 85, 0.08);
+    border: 1px solid rgba(232, 85, 85, 0.25);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+  .session-question.show { display: block; }
+  .session-question-q { color: var(--red); font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+  .session-question-btns { display: flex; gap: 8px; margin-top: 10px; }
+  .sq-yes { background: var(--green); border: none; border-radius: 6px; color: white; font-size: 12px; font-weight: 700; padding: 8px 16px; cursor: pointer; font-family: inherit; }
+  .sq-no { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-dim); font-size: 12px; font-weight: 600; padding: 8px 16px; cursor: pointer; font-family: inherit; }
+</style>
+</head>
+<body>
+
+<!-- PRIORITY SETUP MODAL -->
+<div class="priority-modal" id="priorityModal">
+  <div class="priority-card">
+    <div class="priority-header">오늘 하루 정의하기</div>
+    <div class="priority-sub">매일 한 번만. 이게 나머지 모든 결정의 기준이 돼.</div>
+    <div class="priority-field">
+      <label>🎯 오늘 반드시 완료해야 할 것 1가지</label>
+      <input type="text" id="topPriorityInput" placeholder="예: malloc 예제 5개 + 포인터 개념 정리" autocomplete="off">
+    </div>
+    <div class="priority-field">
+      <label>⚠ 오늘 하고 싶지만 미뤄야 할 충동 1가지</label>
+      <input type="text" id="impulseInput" placeholder="예: 러시아어 앱 만들기, Life System 개선" autocomplete="off">
+    </div>
+    <button class="priority-confirm" id="priorityConfirmBtn" onclick="confirmPriority()" disabled>하루 시작 →</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">⚡ Focus</div>
+  <div class="header-task-display" id="headerTask">지금 뭐 할지 정하세요</div>
+  <div class="priority-anchor" id="priorityAnchor" onclick="showPriorityReminder()" title="오늘의 최우선 과제">
+    <span class="priority-anchor-label">TOP-1</span>
+    <span class="priority-anchor-text" id="priorityAnchorText">—</span>
+    <span class="priority-anchor-alert" id="priorityAnchorAlert" style="display:none">⚠</span>
+  </div>
+  <div class="streak-badge" id="streakBadge">🔥 0 블록</div>
+</header>
+
+<!-- MIRROR PANEL -->
+<aside class="mirror-panel">
+  <div class="panel-title">🪞 Mirror — 준영의 패턴</div>
+
+  <div class="mirror-warning" id="w1" data-keywords="개선,기능,추가,만들,업그레이드,새로,더 좋은">
+    <button class="dismiss-btn" onclick="dismissWarning('w1')">✕</button>
+    <div class="warning-trigger">⚠ 트리거: "개선", "기능 추가", "만들기"</div>
+    <div class="warning-text">시스템을 <strong>완성해놓고 실제로 안 쓰는 패턴</strong>이 있음<br>Notion 자동화, C 루틴, 정역학 앱 — 전부 방치 중</div>
+    <div class="warning-cost">→ 오늘 기존 시스템 실제로 써봤어?</div>
+  </div>
+
+  <div class="mirror-warning" id="w2" data-keywords="임시,일단,다른 방법,우선,나중에,대충,bypass">
+    <button class="dismiss-btn" onclick="dismissWarning('w2')">✕</button>
+    <div class="warning-trigger">⚠ 트리거: "임시로", "일단 다른 방법으로"</div>
+    <div class="warning-text"><strong>인프라 장애 방치 + 우회로 추가</strong> 패턴<br>Slack 토큰, API 키 타이밍 이슈 수주째 방치 중</div>
+    <div class="warning-cost">→ 10분짜리 근본 원인 고치기 vs 레이어 추가?</div>
+  </div>
+
+  <div class="mirror-warning" id="w3" data-keywords="루틴,시스템,학습,공부,방법,개선,전략,계획">
+    <button class="dismiss-btn" onclick="dismissWarning('w3')">✕</button>
+    <div class="warning-trigger">⚠ 트리거: "루틴 개선", "더 좋은 학습 방법"</div>
+    <div class="warning-text"><strong>설계 > 실행</strong> 패턴<br>C언어 여전히 포인터 수준 — 미엘린은 설계로 안 쌓임</div>
+    <div class="warning-cost">→ 지금 당장 문제 하나 풀어</div>
+  </div>
+
+  <div class="mirror-warning" id="w4" data-keywords="백업,대안,fallback,추가,다른,자동화,새로운 방법">
+    <button class="dismiss-btn" onclick="dismissWarning('w4')">✕</button>
+    <div class="warning-trigger">⚠ 트리거: "백업", "대안 추가", "fallback"</div>
+    <div class="warning-text"><strong>자동화 실패 → 더 복잡한 자동화</strong> 패턴<br>레이어 쌓을수록 어느 곳이 실패한지 추적 불가</div>
+    <div class="warning-cost">→ 기존 걸 단순하게 고쳐</div>
+  </div>
+
+  <div class="mirror-warning" id="w5" data-keywords="재밌,잠깐,이것도,러시아어,마인드맵,영어,게임,다른 프로젝트">
+    <button class="dismiss-btn" onclick="dismissWarning('w5')">✕</button>
+    <div class="warning-trigger">⚠ 트리거: "이것도 재밌겠는데", "잠깐 이거만"</div>
+    <div class="warning-text"><strong>임베디드 목표와 무관한 작업</strong>에 시간 소모<br>최근 커밋: 러시아어 암기, 마인드맵 앱…</div>
+    <div class="warning-cost">→ 이게 임베디드 엔지니어 목표와 어떻게 연결돼?</div>
+  </div>
+</aside>
+
+<!-- CENTER PANEL -->
+<main class="center-panel">
+  <!-- Task Setup -->
+  <div class="task-setup" id="taskSetup">
+    <label>지금 이 블록에서 완료할 것</label>
+    <div class="task-input-row">
+      <input type="text" id="taskInput" placeholder="예: malloc 예제 3개 직접 작성" autocomplete="off">
+      <button class="start-btn" id="startBtn" onclick="startSession()">시작 →</button>
+    </div>
+    <div class="intent-box" id="intentBox">
+      <div class="intent-label">만약 딴 짓이 하고 싶어지면 → 이 창에 적고 타이머로 돌아올 것</div>
+      <textarea id="intentInput" rows="2" placeholder="구체적인 if-then 규칙 (선택)"></textarea>
+    </div>
+    <div class="session-question" id="sessionQuestion">
+      <div class="session-question-q" id="sessionQuestionText">이 작업이 오늘 최우선 과제야?</div>
+      <div>최우선: <strong id="sqPriorityRef" style="color:var(--accent)">—</strong></div>
+      <div class="session-question-btns">
+        <button class="sq-yes" onclick="answerQuestion(true)">✓ 맞아, 시작</button>
+        <button class="sq-no" onclick="answerQuestion(false)">⚠ 다시 생각할게</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Duration selector -->
+  <div class="duration-selector" id="durationSelector">
+    <button class="dur-btn" onclick="setDuration(25)">25분</button>
+    <button class="dur-btn selected" onclick="setDuration(50)">50분</button>
+    <button class="dur-btn" onclick="setDuration(90)">90분</button>
+  </div>
+
+  <!-- Timer -->
+  <div class="timer-ring-wrapper">
+    <svg class="timer-svg" width="220" height="220" viewBox="0 0 220 220">
+      <circle class="timer-track" cx="110" cy="110" r="98"/>
+      <circle class="timer-progress" id="timerProgress" cx="110" cy="110" r="98"
+        stroke-dasharray="615.75" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-center">
+      <div class="timer-display" id="timerDisplay">50:00</div>
+      <div class="timer-label" id="timerLabel">블록 선택 후 시작</div>
+      <div class="timer-phase" id="timerPhase">FOCUS</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="timer-controls">
+    <button class="ctrl-btn primary" id="pauseBtn" onclick="togglePause()" disabled>일시정지</button>
+    <button class="ctrl-btn" id="endBtn" onclick="endSession()" disabled>블록 종료</button>
+  </div>
+</main>
+
+<!-- CAPTURE PANEL -->
+<aside class="capture-panel">
+  <div class="panel-title">🅿 파킹랏 — 떠오른 생각</div>
+  <div class="capture-input-area">
+    <textarea id="captureInput" placeholder="Ctrl+Enter 로 빠르게 저장" rows="2"></textarea>
+    <button class="capture-send" onclick="captureThought()">↑</button>
+  </div>
+  <div class="capture-hint">지금 처리하지 않아도 돼. 여기 놓고 집중해.</div>
+  <div class="parking-lot" id="parkingLot">
+    <div class="empty-state" id="emptyState">아직 아무것도 없어요<br>딴 생각 떠오르면 여기에 던져두고<br>타이머로 돌아와요</div>
+  </div>
+</aside>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-stat">
+    <div class="footer-dot green" id="sessionDot"></div>
+    세션
+    <strong id="sessionCount">0</strong>블록 완료
+  </div>
+  <div class="footer-stat">
+    🧠 총 집중
+    <strong id="totalFocusTime">0분</strong>
+  </div>
+  <div class="footer-stat">
+    🅿 파킹
+    <strong id="captureCount">0</strong>개 저장됨
+  </div>
+  <div style="flex:1"></div>
+  <div style="font-size:11px;color:var(--text-dim)">오늘 <span id="todayDate"></span></div>
+</footer>
+
+<!-- FRICTION OVERLAY -->
+<div class="friction-overlay" id="frictionOverlay">
+  <div class="friction-card">
+    <div class="friction-icon">⚠️</div>
+    <div class="friction-title">태스크 전환하려고?</div>
+    <div class="friction-body">
+      지금까지 <span class="friction-elapsed" id="frictionElapsed">—</span> 집중했어.<br>
+      한 번 끊기면 <strong>23분</strong> 걸려서 다시 집중돼.
+    </div>
+    <div class="friction-urge">
+      <strong>충동은 15~20분 내 스스로 사라져.</strong><br>
+      지금 느끼는 욕구는 잠깐 타이머를 걸고 확인해볼 수 있어.
+    </div>
+    <div class="urge-surf-countdown" id="urgeSurfCountdown"></div>
+    <button class="urge-surf-btn" id="urgeSurfBtn" onclick="startUrgeSurf()">⏱ 20분 후 이 욕구 다시 확인하기 (Urge Surfing)</button>
+    <input class="friction-input" id="frictionCaptureInput" placeholder="지금 하고 싶은 거 파킹랏에 저장 (선택)">
+    <div class="friction-btns">
+      <button class="friction-back" onclick="closeFriction(true)">← 집중으로 돌아가기</button>
+      <button class="friction-capture" onclick="closeFriction(false)">그냥 전환</button>
+    </div>
+  </div>
+</div>
+
+<!-- BREAK OVERLAY -->
+<div class="break-overlay" id="breakOverlay">
+  <div class="break-title">🎉 블록 완료!</div>
+  <div class="break-subtitle">휴식 시간이야. 눈 감고 스트레칭.</div>
+  <div class="break-timer" id="breakTimerDisplay">10:00</div>
+  <div class="break-review" id="breakReview">
+    <div class="break-review-title">📋 파킹랏 검토</div>
+    <div class="break-review-items" id="breakReviewItems">없음</div>
+  </div>
+  <button class="break-skip" onclick="endBreak()">휴식 건너뛰기</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ───
+const CIRCUMFERENCE = 2 * Math.PI * 98; // 615.75
+let state = {
+  running: false,
+  paused: false,
+  totalSeconds: 50 * 60,
+  remaining: 50 * 60,
+  interval: null,
+  sessionCount: 0,
+  totalFocusSecs: 0,
+  currentTask: '',
+  thoughts: [],
+  breakInterval: null,
+  breakRemaining: 10 * 60,
+  topPriority: '',
+  impulseToAvoid: '',
+  urgeSurfInterval: null,
+  urgeSurfRemaining: 0,
+  questionPending: false,
+};
+
+// ─── INIT ───
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ko-KR', {month:'long', day:'numeric', weekday:'short'});
+document.getElementById('timerProgress').style.strokeDasharray = CIRCUMFERENCE;
+document.getElementById('timerProgress').style.strokeDashoffset = 0;
+loadFromStorage();
+initPriorityModal();
+
+// Priority modal input validation
+document.getElementById('topPriorityInput').addEventListener('input', validatePriorityInputs);
+document.getElementById('impulseInput').addEventListener('input', validatePriorityInputs);
+
+function validatePriorityInputs() {
+  const top = document.getElementById('topPriorityInput').value.trim();
+  const imp = document.getElementById('impulseInput').value.trim();
+  document.getElementById('priorityConfirmBtn').disabled = !top || !imp;
+}
+
+function initPriorityModal() {
+  const saved = JSON.parse(localStorage.getItem('focusPriority') || '{}');
+  if (saved.date === new Date().toDateString() && saved.topPriority) {
+    state.topPriority = saved.topPriority;
+    state.impulseToAvoid = saved.impulseToAvoid || '';
+    updatePriorityAnchor();
+  } else {
+    document.getElementById('priorityModal').classList.add('show');
+  }
+}
+
+function confirmPriority() {
+  const top = document.getElementById('topPriorityInput').value.trim();
+  const imp = document.getElementById('impulseInput').value.trim();
+  if (!top || !imp) return;
+  state.topPriority = top;
+  state.impulseToAvoid = imp;
+  localStorage.setItem('focusPriority', JSON.stringify({
+    date: new Date().toDateString(),
+    topPriority: top,
+    impulseToAvoid: imp,
+  }));
+  document.getElementById('priorityModal').classList.remove('show');
+  updatePriorityAnchor();
+  // Add impulse as mirror warning trigger dynamically
+  addImpulseMirrorWarning(imp);
+  showToast('🎯 오늘의 최우선 과제 설정 완료!');
+}
+
+function updatePriorityAnchor() {
+  if (!state.topPriority) return;
+  const anchor = document.getElementById('priorityAnchor');
+  anchor.classList.add('show');
+  document.getElementById('priorityAnchorText').textContent = state.topPriority;
+}
+
+function checkPriorityMismatch(currentTask) {
+  if (!state.topPriority || !currentTask) return;
+  const anchor = document.getElementById('priorityAnchor');
+  const alert = document.getElementById('priorityAnchorAlert');
+  // Simple keyword overlap check
+  const topWords = state.topPriority.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+  const currWords = currentTask.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+  const overlap = topWords.some(w => currWords.some(c => c.includes(w) || w.includes(c)));
+  if (!overlap) {
+    anchor.classList.add('mismatch');
+    alert.style.display = 'inline';
+  } else {
+    anchor.classList.remove('mismatch');
+    alert.style.display = 'none';
+  }
+}
+
+function showPriorityReminder() {
+  if (!state.topPriority) return;
+  showToast(`🎯 오늘 TOP-1: ${state.topPriority} | ⚠ 충동: ${state.impulseToAvoid}`);
+}
+
+function addImpulseMirrorWarning(impulseText) {
+  // Add impulse keyword to w5 (impulsive other projects warning)
+  const w5 = document.getElementById('w5');
+  if (w5) {
+    const kw = w5.dataset.keywords;
+    w5.dataset.keywords = kw + ',' + impulseText.split(/[\s,]+/).slice(0, 3).join(',');
+  }
+}
+
+// ─── SESSION QUESTION ───
+function showSessionQuestion(task) {
+  if (!state.topPriority) return;
+  document.getElementById('sqPriorityRef').textContent = state.topPriority;
+  document.getElementById('sessionQuestion').classList.add('show');
+  state.questionPending = true;
+  checkPriorityMismatch(task);
+}
+
+function answerQuestion(isAligned) {
+  document.getElementById('sessionQuestion').classList.remove('show');
+  state.questionPending = false;
+  if (isAligned) {
+    doStartSession();
+  } else {
+    showToast('💡 최우선 과제로 조정해봐: ' + state.topPriority);
+    document.getElementById('taskInput').value = '';
+    document.getElementById('taskInput').focus();
+    document.getElementById('startBtn').disabled = true;
+  }
+}
+
+// ─── URGE SURFING ───
+function startUrgeSurf() {
+  const btn = document.getElementById('urgeSurfBtn');
+  const countdown = document.getElementById('urgeSurfCountdown');
+  state.urgeSurfRemaining = 20 * 60;
+  btn.disabled = true;
+  btn.textContent = '⏱ 20분 타이머 실행 중…';
+  countdown.classList.add('show');
+  clearInterval(state.urgeSurfInterval);
+  state.urgeSurfInterval = setInterval(() => {
+    state.urgeSurfRemaining--;
+    const m = Math.floor(state.urgeSurfRemaining / 60).toString().padStart(2,'0');
+    const s = (state.urgeSurfRemaining % 60).toString().padStart(2,'0');
+    countdown.textContent = `${m}:${s} 후 욕구 재확인 — 지금은 집중!`;
+    if (state.urgeSurfRemaining <= 0) {
+      clearInterval(state.urgeSurfInterval);
+      countdown.textContent = '20분이 지났어. 아직도 그게 하고 싶어?';
+      btn.textContent = '⏱ 20분 후 이 욕구 다시 확인하기 (Urge Surfing)';
+      btn.disabled = false;
+    }
+  }, 1000);
+  closeFriction(true);
+}
+
+document.getElementById('taskInput').addEventListener('input', () => {
+  const val = document.getElementById('taskInput').value.trim();
+  document.getElementById('startBtn').disabled = !val;
+  document.getElementById('intentBox').classList.toggle('visible', val.length > 0);
+  checkMirrorTriggers(val);
+});
+
+document.getElementById('captureInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); captureThought(); }
+});
+
+document.getElementById('captureInput').addEventListener('input', e => {
+  checkMirrorTriggers(e.target.value);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && state.running) showFriction();
+});
+
+// ─── MIRROR ───
+function checkMirrorTriggers(text) {
+  document.querySelectorAll('.mirror-warning').forEach(el => {
+    if (el.classList.contains('dismissed')) return;
+    const keywords = el.dataset.keywords.split(',');
+    const triggered = keywords.some(k => text.includes(k.trim()));
+    el.classList.toggle('active', triggered);
+  });
+}
+
+function dismissWarning(id) {
+  const el = document.getElementById(id);
+  el.classList.add('dismissed');
+  el.classList.remove('active');
+}
+
+// ─── DURATION ───
+function setDuration(mins) {
+  if (state.running) return;
+  state.totalSeconds = mins * 60;
+  state.remaining = mins * 60;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+  updateTimerDisplay();
+}
+
+// ─── SESSION ───
+function startSession() {
+  const task = document.getElementById('taskInput').value.trim();
+  if (!task) return;
+  // Show priority alignment question first
+  if (state.topPriority && !state.questionPending) {
+    showSessionQuestion(task);
+    return;
+  }
+  doStartSession();
+}
+
+function doStartSession() {
+  const task = document.getElementById('taskInput').value.trim();
+  if (!task) return;
+  state.currentTask = task;
+  state.running = true;
+  state.paused = false;
+  state.remaining = state.totalSeconds;
+  state.questionPending = false;
+  document.getElementById('sessionQuestion').classList.remove('show');
+
+  document.getElementById('headerTask').innerHTML = `지금: <span>${task}</span>`;
+  document.getElementById('pauseBtn').disabled = false;
+  document.getElementById('endBtn').disabled = false;
+  document.getElementById('taskInput').disabled = true;
+  document.getElementById('startBtn').disabled = true;
+
+  clearInterval(state.interval);
+  state.interval = setInterval(tick, 1000);
+  updateTimerDisplay();
+  checkPriorityMismatch(task);
+  showToast('🟢 집중 시작! 딴 생각은 파킹랏으로.');
+}
+
+function tick() {
+  if (state.paused) return;
+  state.remaining--;
+  state.totalFocusSecs++;
+  if (state.remaining <= 0) {
+    clearInterval(state.interval);
+    completeBlock();
+    return;
+  }
+  updateTimerDisplay();
+  saveToStorage();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(state.remaining / 60).toString().padStart(2, '0');
+  const s = (state.remaining % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+
+  const pct = state.remaining / state.totalSeconds;
+  const offset = CIRCUMFERENCE * (1 - pct);
+  document.getElementById('timerProgress').style.strokeDashoffset = offset;
+
+  const prog = document.getElementById('timerProgress');
+  prog.classList.remove('warning', 'urgent');
+  if (pct <= 0.1) prog.classList.add('urgent');
+  else if (pct <= 0.25) prog.classList.add('warning');
+
+  document.getElementById('timerLabel').textContent = state.running && !state.paused ? '집중 중' : (state.paused ? '일시정지' : '대기 중');
+  document.getElementById('totalFocusTime').textContent = Math.floor(state.totalFocusSecs / 60) + '분';
+}
+
+function togglePause() {
+  state.paused = !state.paused;
+  document.getElementById('pauseBtn').textContent = state.paused ? '재개' : '일시정지';
+  document.getElementById('timerLabel').textContent = state.paused ? '일시정지' : '집중 중';
+  if (state.paused) showToast('⏸ 일시정지. 딴 생각은 파킹랏에.');
+}
+
+function endSession() {
+  showFriction();
+}
+
+function completeBlock() {
+  state.running = false;
+  state.sessionCount++;
+  document.getElementById('sessionCount').textContent = state.sessionCount;
+  document.getElementById('streakBadge').textContent = `🔥 ${state.sessionCount} 블록`;
+  showBreak();
+  saveToStorage();
+}
+
+// ─── FRICTION ───
+function showFriction() {
+  if (!state.running) return;
+  const elapsed = state.totalSeconds - state.remaining;
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  document.getElementById('frictionElapsed').textContent = `${m}분 ${s}초`;
+  document.getElementById('frictionOverlay').classList.add('show');
+  document.getElementById('frictionCaptureInput').focus();
+}
+
+function closeFriction(goBack) {
+  const input = document.getElementById('frictionCaptureInput').value.trim();
+  if (input) addThought(input);
+  document.getElementById('frictionCaptureInput').value = '';
+  document.getElementById('frictionOverlay').classList.remove('show');
+  if (!goBack) {
+    clearInterval(state.interval);
+    state.running = false;
+    resetUI();
+    showToast('태스크 전환됨. 다음 블록에 집중하세요.');
+  } else {
+    showToast('💪 좋아. 집중으로 돌아왔어!');
+  }
+}
+
+// ─── BREAK ───
+function showBreak() {
+  state.breakRemaining = 10 * 60;
+  const items = state.thoughts.slice(-5);
+  const reviewEl = document.getElementById('breakReviewItems');
+  reviewEl.innerHTML = items.length
+    ? items.map(t => `• ${t.text}`).join('<br>')
+    : '없음 — 엄청 집중했네!';
+  document.getElementById('breakOverlay').classList.add('show');
+  updateBreakDisplay();
+  state.breakInterval = setInterval(() => {
+    state.breakRemaining--;
+    updateBreakDisplay();
+    if (state.breakRemaining <= 0) {
+      clearInterval(state.breakInterval);
+      endBreak();
+    }
+  }, 1000);
+}
+
+function updateBreakDisplay() {
+  const m = Math.floor(state.breakRemaining / 60).toString().padStart(2, '0');
+  const s = (state.breakRemaining % 60).toString().padStart(2, '0');
+  document.getElementById('breakTimerDisplay').textContent = `${m}:${s}`;
+}
+
+function endBreak() {
+  clearInterval(state.breakInterval);
+  document.getElementById('breakOverlay').classList.remove('show');
+  resetUI();
+  showToast('🔄 휴식 완료. 다음 블록 시작할게?');
+}
+
+// ─── CAPTURE ───
+function captureThought() {
+  const input = document.getElementById('captureInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addThought(text);
+  input.value = '';
+  input.focus();
+}
+
+function addThought(text) {
+  const thought = { id: Date.now(), text, time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) };
+  state.thoughts.push(thought);
+  renderParking();
+  updateCaptureCount();
+  showToast('✅ 파킹랏에 저장됨. 집중으로 돌아가!');
+  saveToStorage();
+}
+
+function renderParking() {
+  const lot = document.getElementById('parkingLot');
+  const empty = document.getElementById('emptyState');
+  if (state.thoughts.length === 0) {
+    empty.style.display = 'block';
+    lot.querySelectorAll('.parking-item').forEach(e => e.remove());
+    return;
+  }
+  empty.style.display = 'none';
+  lot.innerHTML = '';
+  [...state.thoughts].reverse().forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'parking-item';
+    div.innerHTML = `<span class="parking-item-text">${escHtml(t.text)}</span><span class="parking-item-time">${t.time}</span><button class="parking-item-del" onclick="removeThought(${t.id})">✕</button>`;
+    lot.appendChild(div);
+  });
+}
+
+function removeThought(id) {
+  state.thoughts = state.thoughts.filter(t => t.id !== id);
+  renderParking();
+  updateCaptureCount();
+  saveToStorage();
+}
+
+function updateCaptureCount() {
+  document.getElementById('captureCount').textContent = state.thoughts.length;
+}
+
+// ─── UTILS ───
+function resetUI() {
+  document.getElementById('taskInput').disabled = false;
+  document.getElementById('taskInput').value = '';
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('pauseBtn').disabled = true;
+  document.getElementById('pauseBtn').textContent = '일시정지';
+  document.getElementById('endBtn').disabled = true;
+  document.getElementById('headerTask').innerHTML = '지금 뭐 할지 정하세요';
+  document.getElementById('intentBox').classList.remove('visible');
+  document.querySelectorAll('.mirror-warning').forEach(el => el.classList.remove('active'));
+  state.running = false;
+  state.paused = false;
+  state.remaining = state.totalSeconds;
+  updateTimerDisplay();
+  document.getElementById('timerLabel').textContent = '블록 선택 후 시작';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function saveToStorage() {
+  localStorage.setItem('focusState', JSON.stringify({
+    sessionCount: state.sessionCount,
+    totalFocusSecs: state.totalFocusSecs,
+    thoughts: state.thoughts,
+    date: new Date().toDateString(),
+  }));
+}
+
+function loadFromStorage() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('focusState') || '{}');
+    if (saved.date === new Date().toDateString()) {
+      state.sessionCount = saved.sessionCount || 0;
+      state.totalFocusSecs = saved.totalFocusSecs || 0;
+      state.thoughts = saved.thoughts || [];
+    } else {
+      state.thoughts = [];
+    }
+  } catch(e) {}
+  document.getElementById('sessionCount').textContent = state.sessionCount;
+  document.getElementById('streakBadge').textContent = `🔥 ${state.sessionCount} 블록`;
+  document.getElementById('totalFocusTime').textContent = Math.floor(state.totalFocusSecs / 60) + '분';
+  renderParking();
+  updateCaptureCount();
+  updateTimerDisplay();
+}
+</script>
+</body>
+</html>
