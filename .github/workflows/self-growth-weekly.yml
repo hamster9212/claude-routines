@@ -2,7 +2,7 @@ name: Self-Growth Weekly Analysis
 
 on:
   schedule:
-    - cron: '0 19 * * 2'  # 매주 수요일 04:00 KST (UTC 화요일 19:00)
+    - cron: '5 19 * * 2'  # 매주 수요일 04:05 KST (UTC 화요일 19:05) - jitter 영향 최소화
   workflow_dispatch:
 
 jobs:

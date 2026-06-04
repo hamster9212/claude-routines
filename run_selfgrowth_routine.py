@@ -108,7 +108,34 @@ def log(msg: str):
     except UnicodeEncodeError:
         logger.info(msg.encode("ascii", errors="replace").decode("ascii"))
 
+# ── 24시간 중복 실행 방지 ──────────────────────────────────────────
+# 마지막 실행 시간 기록 파일
+LAST_RUN_FILE = Path.home() / ".claude" / "last_selfgrowth_routine_run.txt"
+
+def check_already_ran_today():
+    """오늘 이미 실행했으면 True 반환"""
+    if not LAST_RUN_FILE.exists():
+        return False
+    try:
+        last_run_str = LAST_RUN_FILE.read_text(encoding="utf-8").strip()
+        last_run = datetime.fromisoformat(last_run_str)
+        # KST로 비교 (naive datetime이므로 tzinfo 제거)
+        last_run_kst = last_run.replace(tzinfo=None)
+        now_kst_naive = now_kst.replace(tzinfo=None)
+        elapsed = (now_kst_naive - last_run_kst).total_seconds()
+        if elapsed < 86400:  # 24시간 미만
+            return True
+    except Exception:
+        pass
+    return False
+
 log(f"[시작] Self-Growth Weekly 루틴 (KST: {now_kst.strftime('%Y-%m-%d %H:%M:%S')})")
+
+# 24시간 중복 실행 체크
+if check_already_ran_today():
+    log("[SKIP] 오늘 이미 실행됨 (24시간 내 중복 실행 방지)")
+    log("[완료] 조기 종료")
+    sys.exit(0)
 
 # ── 환경변수 ──────────────────────────────────────────────────────
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -450,7 +477,8 @@ weakness_text = "\n".join(f"  - {w}" for w in weaknesses[:3]) if weaknesses else
 recommend_text = "\n".join(f"  - {r}" for r in recommended[:3]) if recommended else "  - 없음"
 
 slack_msg = (
-    f"🧠 자기 성장 루틴 분석 완료 ({today_str})\n"
+    f"🧠 자기 성장 루틴 분석 완료\n"
+    f"실행시각: {now_kst.strftime('%Y-%m-%d %H:%M:%S')} KST\n"
     f"건강점수: {health_score}/100\n"
     f"요약: {summary}\n"
     f"약점:\n{weakness_text}\n"
@@ -482,6 +510,15 @@ if SLACK_BOT_TOKEN:
 else:
     log("[Agent C-2] SLACK_BOT_TOKEN 미설정 - Slack 스킵")
     log(f"[Agent C-2] 메시지 미리보기:\n{slack_msg}")
+
+
+# ── 마지막 실행 시간 기록 ──────────────────────────────────────────
+try:
+    LAST_RUN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    # naive datetime으로 저장 (fromisoformat과 호환성)
+    LAST_RUN_FILE.write_text(now_kst.replace(tzinfo=None).isoformat(), encoding="utf-8")
+except Exception as e:
+    log(f"[WARNING] 마지막 실행 시간 기록 실패: {e}")
 
 
 # ─────────────────────────────────────────────────────────────────

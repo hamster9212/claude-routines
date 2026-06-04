@@ -2,7 +2,7 @@ name: Notion-Beeminder Daily Sync
 
 on:
   schedule:
-    - cron: '0 14 * * *'  # 매일 23:00 KST (UTC 14:00)
+    - cron: '5 14 * * *'  # 매일 23:05 KST (UTC 14:05) - jitter 영향 최소화
   workflow_dispatch:        # 수동 실행도 가능
 
 jobs:

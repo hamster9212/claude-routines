@@ -109,7 +109,34 @@ def log(msg: str):
     except UnicodeEncodeError:
         logger.info(msg.encode("ascii", errors="replace").decode("ascii"))
 
+# ── 24시간 중복 실행 방지 ──────────────────────────────────────────
+# 마지막 실행 시간 기록 파일
+LAST_RUN_FILE = Path.home() / ".claude" / "last_notion_routine_run.txt"
+
+def check_already_ran_today():
+    """오늘 이미 실행했으면 True 반환"""
+    if not LAST_RUN_FILE.exists():
+        return False
+    try:
+        last_run_str = LAST_RUN_FILE.read_text(encoding="utf-8").strip()
+        last_run = datetime.fromisoformat(last_run_str)
+        # KST로 비교 (naive datetime이므로 tzinfo 제거)
+        last_run_kst = last_run.replace(tzinfo=None)
+        now_kst_naive = now_kst.replace(tzinfo=None)
+        elapsed = (now_kst_naive - last_run_kst).total_seconds()
+        if elapsed < 86400:  # 24시간 미만
+            return True
+    except Exception:
+        pass
+    return False
+
 log(f"[시작] Notion-Beeminder 루틴 (KST: {now_kst.strftime('%Y-%m-%d %H:%M:%S')})")
+
+# 24시간 중복 실행 체크
+if check_already_ran_today():
+    log("[SKIP] 오늘 이미 실행됨 (24시간 내 중복 실행 방지)")
+    log("[완료] 조기 종료")
+    sys.exit(0)
 
 # ── 환경변수 ──────────────────────────────────────────────────────
 NOTION_TOKEN    = os.environ.get("NOTION_TOKEN", "")
@@ -384,7 +411,8 @@ if SLACK_BOT_TOKEN:
         emoji = "❌"
 
     final_msg = (
-        f"{emoji} Notion-Beeminder 루틴 완료 ({today_str} KST)\n"
+        f"{emoji} Notion-Beeminder 루틴 완료\n"
+        f"실행시각: {now_kst.strftime('%Y-%m-%d %H:%M:%S')} KST\n"
         f"회사 미완료: {company_count}개 | 기타 미완료: {personal_count}개 | 대기중: {waiting_count}개\n"
         f"{slack_message}"
     )
@@ -413,6 +441,14 @@ if SLACK_BOT_TOKEN:
 else:
     log("[STEP 4] SLACK_BOT_TOKEN 미설정 - 스킵")
 
+
+# ── 마지막 실행 시간 기록 ──────────────────────────────────────────
+try:
+    LAST_RUN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    # naive datetime으로 저장 (fromisoformat과 호환성)
+    LAST_RUN_FILE.write_text(now_kst.replace(tzinfo=None).isoformat(), encoding="utf-8")
+except Exception as e:
+    log(f"[WARNING] 마지막 실행 시간 기록 실패: {e}")
 
 log(f"[완료] company={company_count}, personal={personal_count}, waiting={waiting_count}")
 sys.exit(result_returncode)
