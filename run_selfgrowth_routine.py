@@ -108,6 +108,28 @@ def log(msg: str):
     except UnicodeEncodeError:
         logger.info(msg.encode("ascii", errors="replace").decode("ascii"))
 
+# ── headroom 컨텍스트 압축 (선택적, import 실패 시 원본 그대로) ──────
+# Claude API로 보내는 로그/JSON 토큰을 60~95% 절감한다.
+# headroom 패키지는 이 저장소 루트에 있으며 외부 의존성이 없다.
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import headroom as _headroom  # noqa: E402
+
+    def hr_compress(text: str, label: str = "") -> str:
+        """텍스트를 압축한다. 어떤 오류에도 원본을 반환(graceful degradation)."""
+        try:
+            res = _headroom.compress_text(text, reversible=False)
+            if res.saved > 0:
+                log(f"[headroom] {label} 압축: {res.before_tokens}→{res.after_tokens} "
+                    f"토큰 ({res.ratio*100:.1f}% 절감, {res.content_type})")
+            return res.text
+        except Exception as e:
+            log(f"[headroom] 압축 건너뜀({label}): {e}")
+            return text
+except Exception as _e:
+    def hr_compress(text: str, label: str = "") -> str:
+        return text
+
 # ── 24시간 중복 실행 방지 ──────────────────────────────────────────
 # 마지막 실행 시간 기록 파일
 LAST_RUN_FILE = Path.home() / ".claude" / "last_selfgrowth_routine_run.txt"
@@ -307,7 +329,9 @@ agent_a_result = {
     "fail_count": fail_count,
     "daily_results": run_summary[:20],  # 최대 20개
     "log_files_found": len(log_contents),
-    "log_sample": "\n".join(log_contents)[:3000] if log_contents else "(로그 없음)",
+    # headroom 압축: 반복 로그 라인을 dedup하여 의미는 보존하되 토큰 절감
+    "log_sample": hr_compress("\n".join(log_contents), "log_sample")[:3000]
+        if log_contents else "(로그 없음)",
 }
 
 

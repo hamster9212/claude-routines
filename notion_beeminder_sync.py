@@ -170,6 +170,26 @@ def log(msg: str):
         logger.info(msg.encode("ascii", errors="replace").decode("ascii"))
 
 
+# ── headroom 컨텍스트 압축 (선택적, 실패 시 원본 그대로) ──────────
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import headroom as _headroom
+
+    def hr_compress(text: str, label: str = "") -> str:
+        try:
+            res = _headroom.compress_text(text, reversible=False)
+            if res.saved > 0:
+                log(f"[headroom] {label} 압축: {res.before_tokens}→{res.after_tokens} "
+                    f"토큰 ({res.ratio*100:.1f}% 절감)")
+            return res.text
+        except Exception as e:
+            log(f"[headroom] 압축 건너뜀({label}): {e}")
+            return text
+except Exception:
+    def hr_compress(text: str, label: str = "") -> str:
+        return text
+
+
 def with_retry(func, max_retries=3, base_delay=2):
     """재시도 로직 - 모든 API 호출에 적용"""
     last_exc = None
@@ -438,6 +458,8 @@ def analyze_package_image(image_data: str, packages: list, is_base64: bool = Tru
         f"[3단계] {p.get('step3', '')}"
         for p in packages
     ])
+    # headroom 압축: 참고용 패키지 목록의 반복 구조를 dedup하여 토큰 절감
+    package_text = hr_compress(package_text, "package_text")
 
     prompt = f"""사진 속 풀이가 아래 3단계 구조를 따랐는지 판단해주세요.
 
