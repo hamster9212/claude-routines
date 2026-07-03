@@ -1,0 +1,46 @@
+name: Proof-Split Daily Verify
+
+on:
+  schedule:
+    # 매일 00:05 / 00:35 / 01:05 KST (UTC 15:05 / 15:35 / 16:05)
+    # GitHub cron 지연·누락 대비 3중 등록. 스크립트가 Notion 검증결과 +
+    # Beeminder daystamp로 중복 실행을 자체 차단하므로 안전하다.
+    - cron: '5 15 * * *'
+    - cron: '35 15 * * *'
+    - cron: '5 16 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '정산할 날짜 (YYYY-MM-DD, 비우면 어제)'
+        required: false
+      dry_run:
+        description: 'dry-run (쓰기 없음)'
+        type: boolean
+        default: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests anthropic
+
+      - name: Run proof-split verify
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          BEEMINDER_TOKEN: ${{ secrets.BEEMINDER_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python proof_split_verify.py $ARGS
