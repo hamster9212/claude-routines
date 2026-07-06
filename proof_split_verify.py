@@ -12,8 +12,13 @@ proof-split: 하루 2조각 사진 인증 시스템 (Notion → Beeminder)
 
 거짓증명 차단:
   1. 업로드 시간 검증 - Notion 페이지 last_edited_time이 해당 조각 시간창 안이어야 함
-  2. AI 엄격 판정 - 조각 목표표의 목표/기준과 사진을 Claude Vision이 대조,
-     애매하면 무조건 FAIL
+  2. AI 엄격 판정 - 조각 목표표의 목표/기준과 사진을 Groq 무료 vision 모델
+     (llama-4-scout)이 대조, 애매하면 무조건 FAIL. 크레딧 비용 0원.
+
+시스템 장애 처리:
+  - Groq 장애/한도초과 등 판정 자체가 불가능하면 해당 조각은 보류하고
+    다음 cron(00:35, 01:05)이 재시도. 01:00 이후 실행에서도 장애면
+    사용자 잘못이 아니므로 자동 PASS 처리(벌금 없음).
 
 Beeminder:
   - 오전 PASS → proof-am +1 / 오후 PASS → proof-pm +1 (FAIL이면 미전송 → derail)
@@ -29,7 +34,7 @@ Beeminder:
   python proof_split_verify.py --dry-run        # Beeminder/Notion/Slack 쓰기 없음
 
 필요 환경변수(GitHub Secrets):
-  NOTION_TOKEN, BEEMINDER_TOKEN, ANTHROPIC_API_KEY, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID
+  NOTION_TOKEN, BEEMINDER_TOKEN, GROQ_API_KEY, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID
 """
 
 import os
@@ -92,9 +97,15 @@ load_env()
 
 NOTION_TOKEN      = os.environ.get("NOTION_TOKEN", "")
 BEEMINDER_TOKEN   = os.environ.get("BEEMINDER_TOKEN", "")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+GROQ_API_KEY      = os.environ.get("GROQ_API_KEY", "")
 SLACK_BOT_TOKEN   = os.environ.get("SLACK_BOT_TOKEN", "")
 SLACK_CHANNEL_ID  = os.environ.get("SLACK_CHANNEL_ID", "U0B66D6H12S")
+
+# Groq 무료 vision 모델 (OpenAI 호환 API). 무료 한도: 1,000요청/일 - 하루 2회 사용
+GROQ_API_URL   = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL     = "meta-llama/llama-4-scout-17b-16e-instruct"
+# 01:00 KST 이후 실행 = 마지막 재시도 (00:05/00:35/01:05 cron 중 마지막)
+FINAL_ATTEMPT_HOUR = 1
 
 NOTION_HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
@@ -350,14 +361,13 @@ def guess_media_type(data: bytes) -> str:
     return "image/jpeg"
 
 
-# ── Claude Vision 엄격 판정 ────────────────────────────────────────
-def judge_photos(photos: list[bytes], goal: dict, target: date, piece: str) -> tuple[bool, str]:
-    """Returns (passed, reason). 애매하면 FAIL."""
-    if not ANTHROPIC_API_KEY:
-        return False, "ANTHROPIC_API_KEY 미설정"
-
-    from anthropic import Anthropic
-    client = Anthropic(api_key=ANTHROPIC_API_KEY)
+# ── Groq Vision 엄격 판정 (무료) ───────────────────────────────────
+def judge_photos(photos: list[bytes], goal: dict, target: date, piece: str) -> tuple[str, str]:
+    """Returns (status, reason). status: 'PASS' | 'FAIL' | 'ERROR'.
+    PASS/FAIL = 판정 완료. ERROR = 시스템 장애로 판정 불가(재시도 대상).
+    애매하면 FAIL."""
+    if not GROQ_API_KEY:
+        return "ERROR", "GROQ_API_KEY 미설정"
 
     goal_text = hr_compress(goal["goal"], "goal")
     criteria  = hr_compress(goal["criteria"], "criteria") if goal["criteria"] else "(별도 기준 없음 - 목표 내용 자체로 판정)"
@@ -380,42 +390,53 @@ def judge_photos(photos: list[bytes], goal: dict, target: date, piece: str) -> t
 RESULT: PASS 또는 FAIL
 REASON: 판정 근거 한두 문장 (무엇이 보였고 무엇이 부족했는지)"""
 
+    # OpenAI 호환 형식: image_url + base64 data URL (Groq에서 실검증 완료)
     content = []
     for p in photos:
+        b64 = base64.standard_b64encode(p).decode("utf-8")
         content.append({
-            "type": "image",
-            "source": {
-                "type": "base64",
-                "media_type": guess_media_type(p),
-                "data": base64.standard_b64encode(p).decode("utf-8"),
-            },
+            "type": "image_url",
+            "image_url": {"url": f"data:{guess_media_type(p)};base64,{b64}"},
         })
     content.append({"type": "text", "text": prompt})
 
     def _vision():
-        response = client.messages.create(
-            model="claude-opus-4-8",
-            max_tokens=300,
-            messages=[{"role": "user", "content": content}],
+        resp = requests.post(
+            GROQ_API_URL,
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "User-Agent": "proof-split/1.0",
+            },
+            json={
+                "model": GROQ_MODEL,
+                "max_tokens": 300,
+                "temperature": 0,
+                "messages": [{"role": "user", "content": content}],
+            },
+            timeout=60,
         )
-        return "".join(b.text for b in response.content if b.type == "text").strip()
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"].strip()
 
     try:
         text = with_retry(_vision)
-        log(f"[VISION] 응답: {text[:200]}")
+        log(f"[VISION] 원본 응답: {text[:200]}")
     except Exception as e:
         log(f"[VISION ERROR] {type(e).__name__}: {e}")
-        return False, f"Vision API 호출 실패: {str(e)[:100]}"
+        return "ERROR", f"Groq API 호출 실패: {str(e)[:100]}"
 
-    passed = False
-    reason = "응답 형식 오류"
+    passed = None
+    reason = "응답에서 판정 근거를 찾지 못함"
     for line in text.splitlines():
         line = line.strip()
         if line.upper().startswith("RESULT:"):
             passed = "PASS" in line.upper()
         elif line.upper().startswith("REASON:"):
             reason = line[len("REASON:"):].strip() or reason
-    return passed, reason
+    if passed is None:
+        # 형식 미준수 응답 - 판정 불능이 아니라 엄격 원칙에 따라 FAIL
+        return "FAIL", f"AI 응답 형식 오류(엄격 원칙에 따라 FAIL): {text[:100]}"
+    return ("PASS" if passed else "FAIL"), reason
 
 
 # ── 조각 검증 ─────────────────────────────────────────────────────
@@ -483,11 +504,22 @@ def verify_piece(target: date, piece: str, dry_run: bool) -> dict:
         return {"result": "FAIL", "reason": reason}
 
     # 6. AI 엄격 판정 (거짓증명 차단 2)
-    passed, reason = judge_photos(photos, goal, target, piece)
-    result = "PASS" if passed else "FAIL"
-    log(f"[{piece}] {result} - {reason}")
-    update_proof_row(page_id, result, reason, upload_str, dry_run)
-    return {"result": result, "reason": reason}
+    status, reason = judge_photos(photos, goal, target, piece)
+
+    # 시스템 장애: 사용자 잘못이 아님. 다음 cron이 재시도하도록 Notion에 기록하지 않음.
+    # 01:00 이후(마지막 재시도)에도 장애면 자동 PASS 처리(벌금 없음).
+    if status == "ERROR":
+        if datetime.now(KST).hour >= FINAL_ATTEMPT_HOUR:
+            reason = f"시스템 장애로 판정 불가(재시도 소진) - 자동 인정: {reason}"
+            log(f"[{piece}] PASS(자동 인정) - {reason}")
+            update_proof_row(page_id, "PASS", reason, upload_str, dry_run)
+            return {"result": "PASS", "reason": reason}
+        log(f"[{piece}] 판정 보류 - {reason} (다음 cron이 재시도)")
+        return {"result": "DEFER", "reason": reason}
+
+    log(f"[{piece}] {status} - {reason}")
+    update_proof_row(page_id, status, reason, upload_str, dry_run)
+    return {"result": status, "reason": reason}
 
 
 # ── notion-daily 할일 체크 (기존 로직 이식) ─────────────────────────
@@ -583,7 +615,7 @@ def main():
     missing = [k for k, v in {
         "NOTION_TOKEN": NOTION_TOKEN,
         "BEEMINDER_TOKEN": BEEMINDER_TOKEN,
-        "ANTHROPIC_API_KEY": ANTHROPIC_API_KEY,
+        "GROQ_API_KEY": GROQ_API_KEY,
     }.items() if not v]
     if missing:
         log(f"[CRITICAL] 필수 환경변수 누락: {', '.join(missing)}")
@@ -622,12 +654,14 @@ def main():
 
     # 4) Slack 요약
     def badge(r):
-        return {"PASS": "✅", "FAIL": "❌", "SKIP_DUP": "↩️", "ERROR": "⚠️"}.get(r, "❓")
+        return {"PASS": "✅", "FAIL": "❌", "SKIP_DUP": "↩️",
+                "DEFER": "⏳", "ERROR": "⚠️"}.get(r, "❓")
 
     lines = [f"📸 proof-split 정산 — {target} ({WEEKDAY_KR[target.weekday()]})"]
     for piece in ("오전", "오후"):
         r = results[piece]
-        lines.append(f"{badge(r['result'])} {piece}: {r['result']} — {r['reason'][:120]}")
+        label = "판정 보류(재시도 예정)" if r["result"] == "DEFER" else r["result"]
+        lines.append(f"{badge(r['result'])} {piece}: {label} — {r['reason'][:200]}")
     lines.append(
         f"{'✅' if todo['passed'] else '❌'} 할일: 회사 {todo['company']} / "
         f"기타 {todo['personal']} / 대기중 {todo['waiting']}"
