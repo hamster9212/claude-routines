@@ -56,9 +56,11 @@ AM_DEADLINE = dtime(13, 0)   # 오전 조각 마감
 PM_DEADLINE = dtime(23, 0)   # 오후 조각 마감
 
 # ── Notion DB ─────────────────────────────────────────────────────
-PROOF_DB_ID = os.environ.get("PROOF_DB_ID", "6faa28fb3b8c494f8045f11bf55ff464")   # 인증 기록
-GOALS_DB_ID = os.environ.get("GOALS_DB_ID", "1a4d906eebb64a919caac77bbaa580f2")   # 조각 목표표
-TODO_DB_ID  = os.environ.get("TODO_DB_ID", "6e5e0fc8-1e56-82f9-b751-87a3cf6d4f7a")  # 할일 DB (기존)
+# 2025-09-03 API부터 "데이터베이스"와 "데이터 소스"가 분리됨.
+# 조회는 반드시 data source ID로 해야 함 (database 컨테이너 ID 아님).
+PROOF_DB_ID = os.environ.get("PROOF_DB_ID", "1d565f54-273c-45f5-956b-de33f51a5655")   # 인증 기록 (data source)
+GOALS_DB_ID = os.environ.get("GOALS_DB_ID", "acf7ba1e-9dc3-4b32-a695-d71feaf0a3d5")   # 조각 목표표 (data source)
+TODO_DB_ID  = os.environ.get("TODO_DB_ID", "6e5e0fc8-1e56-82f9-b751-87a3cf6d4f7a")  # 할일 DB (data source, 기존)
 
 WEEKDAY_KR = ["월", "화", "수", "목", "금", "토", "일"]
 PLACEHOLDER_MARKERS = ("여기에 목표 입력", "AI 판정 기준 입력")
@@ -109,7 +111,7 @@ FINAL_ATTEMPT_HOUR = 1
 
 NOTION_HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
-    "Notion-Version": "2022-06-28",
+    "Notion-Version": "2025-09-03",
     "Content-Type": "application/json",
 }
 
@@ -180,7 +182,8 @@ def with_retry(func, max_retries=3, base_delay=2):
 
 # ── Notion 공통 ───────────────────────────────────────────────────
 def query_notion_db(db_id: str, filter_body: dict | None = None) -> list:
-    url = f"https://api.notion.com/v1/databases/{db_id}/query"
+    """db_id는 반드시 data source ID (database 컨테이너 ID 아님)."""
+    url = f"https://api.notion.com/v1/data_sources/{db_id}/query"
     body = filter_body or {}
     results = []
     while True:
@@ -240,7 +243,7 @@ def create_missing_row(target: date, piece: str, dry_run: bool):
         log(f"[DRY-RUN] 미제출 행 생성 생략: {target} {piece}")
         return
     body = {
-        "parent": {"database_id": PROOF_DB_ID},
+        "parent": {"data_source_id": PROOF_DB_ID},
         "properties": {
             "이름": {"title": [{"text": {"content": f"{target.isoformat()} {piece} (미제출)"}}]},
             "날짜": {"date": {"start": target.isoformat()}},
