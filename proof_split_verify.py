@@ -3,7 +3,9 @@
 proof-split: 하루 2조각 사진 인증 시스템 (Notion → Beeminder)
 
 기존 notion-beeminder-daily 시스템을 대체한다.
-매일 00:05 KST(GitHub Actions)에 실행되어 "방금 끝난 하루"를 정산한다.
+실행 시간대에 따라 두 가지 모드로 동작한다 (GitHub Actions cron):
+  - 낮 실행(13:05/13:35/14:05 KST): 오늘의 오전 조각만 즉시 검증
+  - 자정 실행(00:05/00:35/01:05 KST): 어제의 오후 조각 정산 + 놓친 오전 보완 + 할일 체크
 
 조각 규칙:
   - 오전 조각: 당일 00:00 ~ 13:00 사이에 인증 기록 행 + 사진 업로드 완료해야 함
@@ -29,7 +31,7 @@ Beeminder:
   - Beeminder: 해당 날짜 datapoint가 이미 있으면 미전송
 
 사용법:
-  python proof_split_verify.py                  # 어제(방금 끝난 날) 정산
+  python proof_split_verify.py                  # 실행 시각에 따라 낮/자정 모드 자동 결정
   python proof_split_verify.py --date 2026-07-03
   python proof_split_verify.py --dry-run        # Beeminder/Notion/Slack 쓰기 없음
 
@@ -106,8 +108,10 @@ SLACK_CHANNEL_ID  = os.environ.get("SLACK_CHANNEL_ID", "U0B66D6H12S")
 # Groq 무료 vision 모델 (OpenAI 호환 API). 무료 한도: 1,000요청/일 - 하루 2회 사용
 GROQ_API_URL   = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL     = "meta-llama/llama-4-scout-17b-16e-instruct"
-# 01:00 KST 이후 실행 = 마지막 재시도 (00:05/00:35/01:05 cron 중 마지막)
-FINAL_ATTEMPT_HOUR = 1
+# 마지막 재시도 판단 기준 시각 (이 시각 이후 실행에서 장애면 자동 PASS)
+# 자정 실행(00:05/00:35/01:05 cron): 01:00 이후 / 낮 실행(13:05/13:35/14:05 cron): 14:00 이후
+FINAL_ATTEMPT_HOUR_NIGHT = 1
+FINAL_ATTEMPT_HOUR_DAY   = 14
 
 NOTION_HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
@@ -443,10 +447,10 @@ REASON: 판정 근거 한두 문장 (무엇이 보였고 무엇이 부족했는�
 
 
 # ── 조각 검증 ─────────────────────────────────────────────────────
-def verify_piece(target: date, piece: str, dry_run: bool) -> dict:
+def verify_piece(target: date, piece: str, dry_run: bool, is_final: bool) -> dict:
     """
-    한 조각을 검증한다.
-    Returns {"result": "PASS"|"FAIL"|"SKIP_DUP", "reason": str}
+    한 조각을 검증한다. is_final=True면 시스템 장애 시 자동 PASS(재시도 소진).
+    Returns {"result": "PASS"|"FAIL"|"SKIP_DUP"|"DEFER", "reason": str}
     """
     deadline = AM_DEADLINE if piece == "오전" else PM_DEADLINE
     window_start = dtime(0, 0) if piece == "오전" else AM_DEADLINE
@@ -510,9 +514,9 @@ def verify_piece(target: date, piece: str, dry_run: bool) -> dict:
     status, reason = judge_photos(photos, goal, target, piece)
 
     # 시스템 장애: 사용자 잘못이 아님. 다음 cron이 재시도하도록 Notion에 기록하지 않음.
-    # 01:00 이후(마지막 재시도)에도 장애면 자동 PASS 처리(벌금 없음).
+    # 마지막 재시도에서도 장애면 자동 PASS 처리(벌금 없음).
     if status == "ERROR":
-        if datetime.now(KST).hour >= FINAL_ATTEMPT_HOUR:
+        if is_final:
             reason = f"시스템 장애로 판정 불가(재시도 소진) - 자동 인정: {reason}"
             log(f"[{piece}] PASS(자동 인정) - {reason}")
             update_proof_row(page_id, "PASS", reason, upload_str, dry_run)
@@ -603,16 +607,28 @@ def main():
     args = parser.parse_args()
 
     now_kst = datetime.now(KST)
+
+    # 실행 시간대로 모드 결정:
+    #   낮 실행(06:00~17:59 KST, cron 13:05/13:35/14:05) → 오늘의 오전 조각만 즉시 검증
+    #   그 외(자정 cron 00:05/00:35/01:05) → 어제의 오후 조각 + 놓친 오전 보완 + 할일 체크
+    day_mode = 6 <= now_kst.hour <= 17
+    pieces = ("오전",) if day_mode else ("오전", "오후")
+    is_final = now_kst.hour >= (FINAL_ATTEMPT_HOUR_DAY if day_mode
+                                else FINAL_ATTEMPT_HOUR_NIGHT)
+
     if args.date:
         target = date.fromisoformat(args.date)
+    elif day_mode:
+        target = now_kst.date()
     else:
-        # 00:05~05:59 실행 → 어제를 정산. 그 외 수동 실행도 어제 기준.
+        # 00:05~05:59 실행 → 어제를 정산
         target = (now_kst - timedelta(hours=6)).date()
         if target == now_kst.date():
             target = target - timedelta(days=1)
 
     log("=" * 60)
-    log(f"START proof-split: 대상={target} ({WEEKDAY_KR[target.weekday()]}), "
+    log(f"START proof-split[{'낮:오전조각' if day_mode else '자정:하루정산'}]: "
+        f"대상={target} ({WEEKDAY_KR[target.weekday()]}), "
         f"실행={now_kst.strftime('%Y-%m-%d %H:%M:%S')} KST, dry_run={args.dry_run}")
 
     missing = [k for k, v in {
@@ -624,18 +640,18 @@ def main():
         log(f"[CRITICAL] 필수 환경변수 누락: {', '.join(missing)}")
         return 1
 
-    # 1) 두 조각 검증
+    # 1) 조각 검증 (낮 모드: 오전만 / 자정 모드: 오전 보완 + 오후)
     results = {}
-    for piece in ("오전", "오후"):
+    for piece in pieces:
         try:
-            results[piece] = verify_piece(target, piece, args.dry_run)
+            results[piece] = verify_piece(target, piece, args.dry_run, is_final)
         except Exception as e:
             log(f"[{piece} ERROR] {type(e).__name__}: {e}")
             results[piece] = {"result": "ERROR", "reason": str(e)[:200]}
 
-    # 두 조각 모두 이미 판정됨 → 중복 실행. Beeminder/할일/Slack 생략하고 종료
+    # 검증 대상 조각이 전부 이미 판정됨 → 중복 실행. 이후 단계 생략하고 종료
     if all(r["result"] == "SKIP_DUP" for r in results.values()):
-        log("[중복 실행] 두 조각 모두 이미 판정됨 - 조기 종료")
+        log("[중복 실행] 대상 조각 모두 이미 판정됨 - 조기 종료")
         log("=" * 60)
         return 0
 
@@ -649,34 +665,39 @@ def main():
         else:
             log(f"[BEEMINDER] {goal} 미전송 ({res['result']}) → derail 압박")
 
-    # 3) notion-daily 할일 체크
-    todo = check_todos(target)
-    if todo["passed"]:
-        send_beeminder(GOAL_NOTION, target, PM_DEADLINE,
-                       f"할일 완료 - 회사:{todo['company']} 기타:{todo['personal']}", args.dry_run)
+    # 3) notion-daily 할일 체크 (자정 정산에서만)
+    todo = None
+    if not day_mode:
+        todo = check_todos(target)
+        if todo["passed"]:
+            send_beeminder(GOAL_NOTION, target, PM_DEADLINE,
+                           f"할일 완료 - 회사:{todo['company']} 기타:{todo['personal']}", args.dry_run)
 
     # 4) Slack 요약
     def badge(r):
         return {"PASS": "✅", "FAIL": "❌", "SKIP_DUP": "↩️",
                 "DEFER": "⏳", "ERROR": "⚠️"}.get(r, "❓")
 
-    lines = [f"📸 proof-split 정산 — {target} ({WEEKDAY_KR[target.weekday()]})"]
-    for piece in ("오전", "오후"):
+    title = "오전 조각 검증" if day_mode else "하루 정산"
+    lines = [f"📸 proof-split {title} — {target} ({WEEKDAY_KR[target.weekday()]})"]
+    for piece in pieces:
         r = results[piece]
         label = "판정 보류(재시도 예정)" if r["result"] == "DEFER" else r["result"]
         lines.append(f"{badge(r['result'])} {piece}: {label} — {r['reason'][:200]}")
-    lines.append(
-        f"{'✅' if todo['passed'] else '❌'} 할일: 회사 {todo['company']} / "
-        f"기타 {todo['personal']} / 대기중 {todo['waiting']}"
-    )
+    if todo is not None:
+        lines.append(
+            f"{'✅' if todo['passed'] else '❌'} 할일: 회사 {todo['company']} / "
+            f"기타 {todo['personal']} / 대기중 {todo['waiting']}"
+        )
     fails = [p for p, r in results.items() if r["result"] in ("FAIL", "ERROR")]
-    if fails or not todo["passed"]:
+    todo_failed = todo is not None and not todo["passed"]
+    if fails or todo_failed:
         lines.append("💸 벌금 압박: " + ", ".join(
             ([f"proof-{'am' if p == '오전' else 'pm'}" for p in fails]) +
-            ([] if todo["passed"] else [GOAL_NOTION])
+            ([GOAL_NOTION] if todo_failed else [])
         ))
     else:
-        lines.append("🎉 오늘 미션 전부 완료! Beeminder 안전")
+        lines.append("🎉 미션 완료! Beeminder 안전")
     send_slack("\n".join(lines), args.dry_run)
 
     log("END proof-split")
